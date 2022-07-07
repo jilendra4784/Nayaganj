@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/custom_toolbar" />
+
+            <ImageView
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:src="@drawable/message_verification">
+
+            </ImageView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/otp_verification"
+                android:textSize="@dimen/_18sdp" />
+
+
+            <TextView
+                android:id="@+id/otp_mobileNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/lyotp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text=""
+                android:textSize="@dimen/_12sdp">
+
+            </TextView>
+
+
+            <LinearLayout
+                android:id="@+id/lyotp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/verify_otp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="@dimen/_3sdp">
+
+                <in.aabhasjindal.otptextview.OtpTextView
+                    android:id="@+id/otp_view_edittext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    app:height="@dimen/_35sdp"
+                    app:width="@dimen/_35sdp"
+                    app:bar_enabled="true"
+                    android:focusable="true"
+                    app:bar_success_color="@color/gray"
+                    app:bar_active_color="@color/black"
+                    app:bar_inactive_color="@color/black"
+                    app:length="4"
+                    app:otp=""
+                    android:fontFamily="@font/poppins__medium"
+                    app:otp_box_background="@drawable/otp_background"
+                    android:textSize="@dimen/_18sdp"/>
+
+
+                <TextView
+                    android:id="@+id/tv_otptimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center"
+                    android:text="Time Remaining 0:30s"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/verify_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:backgroundTint="@color/red_color"
+                android:gravity="center"
+                android:text="Verify OTP"
+                app:cornerRadius="@dimen/_5sdp" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/verify_otp"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+
+                <TextView
+                    android:id="@+id/edit_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/poppins__medium"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:text="Edit Number"
+                    android:textColor="@color/red_color"
+                    android:textSize="@dimen/_12sdp">
+
+                </TextView>
+
+
+                <TextView
+                    android:id="@+id/resend_otp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/poppins__medium"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:text="Resend OTP"
+                    android:textColor="@color/red_color"
+                    android:textSize="@dimen/_12sdp">
+
+                </TextView>
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

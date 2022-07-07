@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Nayaganj</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">All Offers</string>
+    <string name="title_mycart">MyCart</string>
+    <string name="open_string">Open Drawer</string>
+    <string name="close_string">Close Drawer</string>
+    <string name="home">Home</string>
+    <string name="my_account">My Account</string>
+    <string name="shop_by_category">Shop by Category</string>
+    <string name="my_orders">My Orders</string>
+    <string name="my_virtual_order">My Virtual Order</string>
+    <string name="all_offers">All Offers</string>
+    <string name="share_app">Share App</string>
+    <string name="refer_and_earn">Refer and Earn</string>
+    <string name="customer_support">Customer Support</string>
+    <string name="about_us">About Us</string>
+    <string name="privacy_and_policy">Privacy and Policy</string>
+    <string name="logout">Logout</string>
+    <string name="net_wt">Net Wt:</string>
+    <string name="Rs">\u20B9</string>
+    <string name="free_delivery_on_order">Free Delivery on order:</string>
+    <string name="saved_amount">SAVED \u20B9</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="congratulation">Congratulation</string>
+    <string name="order_placed">Your order placed successfully.</string>
+    <string name="check_your_order">Check Your Order</string>
+    <string name="empty_cart_message">Enjoy and continue shopping\nwith <b><font fgcolor="red">NAYA GANJ!</font></b> </string>
+    <string name="otp_verification">OTP Verification</string>
+</resources>
