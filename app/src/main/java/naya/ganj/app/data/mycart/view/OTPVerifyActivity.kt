@@ -1,7 +1,6 @@
 package naya.ganj.app.data.mycart.view
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -12,19 +11,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.google.gson.JsonObject
-import naya.ganj.app.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
+import naya.ganj.app.data.mycart.model.LoginResponseModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.databinding.ActivityOtpactivityBinding
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.*
 
 class OTPVerifyActivity : AppCompatActivity() {
@@ -82,39 +88,76 @@ class OTPVerifyActivity : AppCompatActivity() {
 
         viewModel.getLoginResponse("", jsonObject).observe(this) {
             if (it.status) {
+                app.user.saveUserDetail(it.userDetails)
+                app.user.setLoginSession(true)
+                syncCartData(it)
 
-                if (it.isNewUser) {
-                    app.user.saveUserDetail(it.userDetails)
-                    app.user.setLoginSession(true)
-                    Toast.makeText(this@OTPVerifyActivity, it.msg, Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@OTPVerifyActivity, SignUpActivity::class.java))
-                    //getCartProduct(it.userDetails.userId)
-                } else {
-                    if (it.userDetails.role.equals("deliveryBoy")) {
-                        // Open Deliver Boy Module
-                        //TODO need to Implement Delivery Boy Module
-                        app.user.saveUserDetail(it.userDetails)
-                        app.user.setLoginSession(true)
-                        Toast.makeText(this@OTPVerifyActivity, it.msg, Toast.LENGTH_SHORT).show()
-                    } else {
-                        app.user.saveUserDetail(it.userDetails)
-                        app.user.setLoginSession(true)
-                        val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-                    }
-                }
             } else {
                 Toast.makeText(this@OTPVerifyActivity, it.msg, Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    private fun getCartProduct(userId: String) {
-        // Get Cart Product Detail
-        // Synch local database with Live database
+    private fun syncCartData(loginResponseModel: LoginResponseModel) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val listOfProduct =
+                AppDataBase.getInstance(this@OTPVerifyActivity).productDao().getProductList()
+            if (listOfProduct.isNotEmpty()) {
+                runOnUiThread {
+                    val jsonArray = JSONArray()
+                    for (item in listOfProduct) {
+                        val itemsData = JSONObject()
+                        itemsData.put(Constant.PRODUCT_ID, item.productId)
+                        itemsData.put(Constant.VARIANT_ID, item.variantId)
+                        itemsData.put(Constant.QUANTITY, item.itemQuantity)
+                        jsonArray.put(itemsData)
+                    }
+
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT, jsonArray.toString())
+
+                    viewModel.synchDataRequest(app.user.getUserDetails()!!.userId, jsonObject).observe(this@OTPVerifyActivity) {
+                        Log.e("TAG", "syncCartData: " + it)
+                            /*if (it.status) {
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    AppDataBase.getInstance(this@OTPVerifyActivity).productDao()
+                                        .deleteAllProduct()
+                                }
+                                if (loginResponseModel.isNewUser) {
+                                    Toast.makeText(
+                                        this@OTPVerifyActivity,
+                                        it.msg,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    startActivity(
+                                        Intent(
+                                            this@OTPVerifyActivity,
+                                            SignUpActivity::class.java
+                                        )
+                                    )
+                                } else {
+                                    if (loginResponseModel.userDetails.role.equals("deliveryBoy")) {
+                                        // Open Deliver Boy Module
+                                        //TODO need to Implement Delivery Boy Module
+                                        Toast.makeText(
+                                            this@OTPVerifyActivity,
+                                            it.msg,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        val intent =
+                                            Intent(this@OTPVerifyActivity, MainActivity::class.java)
+                                        intent.flags =
+                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        startActivity(intent)
+                                        finish()
+                                    }
+                                }
+                            }*/
+                    }
+                }
+            }
+        }
     }
 
     private fun reSendOTPRequest() {

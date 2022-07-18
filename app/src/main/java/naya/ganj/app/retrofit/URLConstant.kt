@@ -21,6 +21,7 @@ object URLConstant {
     const val URL_GET_OTP_URL = "sendOtp"
     const val URL_LOGIN_URL = "login"
     const val URL_AUTO_LOGIN_URL = "autoLogin"
+    const val URL_SYNCH_CARTDATA_URL = "syncCartWithLocalDb"
     const val URL_UPDATE_DETAIL_URL = "updateProfile"
 
 }

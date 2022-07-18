@@ -161,6 +161,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onResume() {
         super.onResume()
+        showCartLayout()
         adapter?.notifyDataSetChanged()
     }
 }

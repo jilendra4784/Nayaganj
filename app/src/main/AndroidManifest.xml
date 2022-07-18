@@ -34,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".data.mycart.view.LoginActivity"
-            android:exported="false" />
+            android:exported="true"/>
         <activity
             android:name=".data.sidemenu.view.MyOrdersDetailsActivity"
             android:exported="false" />

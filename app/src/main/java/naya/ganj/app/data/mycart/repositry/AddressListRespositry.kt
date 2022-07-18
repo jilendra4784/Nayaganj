@@ -3,6 +3,7 @@ package naya.ganj.app.data.mycart.repositry
 import com.google.gson.JsonObject
 import naya.ganj.app.retrofit.ApiInterface
 import naya.ganj.app.utility.Constant
+import org.json.JSONObject
 
 class AddressListRespositry(var apiInterface: ApiInterface) {
 
@@ -33,6 +34,11 @@ class AddressListRespositry(var apiInterface: ApiInterface) {
 
     suspend fun sendAutoLoginRequest(userId :String,jsonObject: JsonObject) =
         apiInterface.sendAutoLoginRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
+    suspend fun synchDataRequest(userId :String,jsonObject: JsonObject) =
+        apiInterface.synchDataRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
+
 
     suspend fun updateProfileRequest(jsonObject: JsonObject) =
         apiInterface.updateProfileRequest("", Constant.DEVICE_TYPE, jsonObject)

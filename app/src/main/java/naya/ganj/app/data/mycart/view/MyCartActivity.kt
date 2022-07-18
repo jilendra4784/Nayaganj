@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -44,10 +45,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
         binding.includeToolbar.ivBackArrow.setOnClickListener { finish() }
         binding.includeToolbar.toolbarTitle.text = "My Cart"
 
-
+        Log.e("TAG", "onCreate: Login Session " + app.user.getLoginSession())
         if (app.user.getLoginSession()) {
             binding.btnLoginButton.text = "Checkout"
-            //getMyCartData(app.user.getUserDetails()?.userId.toString(), arguments.orderId)
             getMyCartData(app.user.getUserDetails()?.userId.toString(), "")
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
@@ -95,7 +95,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                 if (listOfProduct.isNotEmpty()) {
                     binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
                     binding.rvMycartList.adapter =
-                        LocalMyCartAdapter(this@MyCartActivity, listOfProduct)
+                        LocalMyCartAdapter(this@MyCartActivity, listOfProduct, this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
                     binding.progressBar.visibility = View.GONE
                     binding.mainConstraintLayout.visibility = View.VISIBLE
@@ -109,11 +109,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                     binding.materialAddressCardview.visibility = View.GONE
                     binding.rvMycartList.visibility = View.GONE
                     binding.emptyCartLayout.visibility = View.VISIBLE
-
                 }
-
             }
-
         }
     }
 
@@ -189,13 +186,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
     }
 
     private fun setAddressDetail(address: MyCartModel.Address.Address) {
-
         addressId = myCartModel.address.id
         val addressString =
             address.houseNo + "," + address.apartName + "," + address.street + "," + address.landmark + "," +
                     address.city + "-" + address.pincode
         binding.tvAddressDetail.text = addressString
-
     }
 
 
@@ -237,10 +232,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                     var cartAmount = 0.0
                     val totalAmount: Double
                     for (item in listOfProduct) {
-                        //cartAmount += item.totalAmount
                         cartAmount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
                     }
-
                     cartAmount = Utility().formatTotalAmount(cartAmount)
 
                     if (app.user.getLoginSession()) {
@@ -292,7 +285,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
             setSavedAmount()
         }, 300)
     }
-
 
     private fun setSavedAmount() {
         var finalSaveAmount = 0.0

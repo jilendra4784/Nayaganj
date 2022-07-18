@@ -6,12 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
+import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.model.LoginResponseModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
+import org.json.JSONObject
 
 class LoginResponseViewModel(val repo: AddressListRespositry) : ViewModel() {
 
     val mutableLiveData = MutableLiveData<LoginResponseModel>()
+    private val apiResponseData = MutableLiveData<ApiResponseModel>()
 
     fun getLoginResponse(userId : String,jsonObject: JsonObject): LiveData<LoginResponseModel> {
         viewModelScope.launch {
@@ -29,6 +32,14 @@ class LoginResponseViewModel(val repo: AddressListRespositry) : ViewModel() {
 
         }
         return  mutableLiveData
+    }
+
+    fun synchDataRequest(userId: String, jsonObject: JsonObject) : LiveData<ApiResponseModel>{
+        viewModelScope.launch {
+            val result=repo.synchDataRequest(userId,jsonObject)
+            apiResponseData.value=result.body()
+        }
+        return apiResponseData
     }
 
 

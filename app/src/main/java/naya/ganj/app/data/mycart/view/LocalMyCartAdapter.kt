@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import naya.ganj.app.databinding.AdapterLocalMycartLayoutBinding
+import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 
 class LocalMyCartAdapter(
     val context: Context,
-    private val listOfProduct: MutableList<ProductDetail>
+    private val listOfProduct: MutableList<ProductDetail>,
+    val listener: OnclickAddOremoveItemListener
 ) :
     RecyclerView.Adapter<LocalMyCartAdapter.MyViewHolder>() {
 
@@ -55,6 +57,7 @@ class LocalMyCartAdapter(
                 AppDataBase.getInstance(context).productDao()
                     .updateProduct(itemQuantity, productDetail.productId, productDetail.variantId)
             }.start()
+            listener.onClickAddOrRemoveItem("", productDetail)
         }
         holder.binding.tvMinus.setOnClickListener {
             var itemQuantity = holder.binding.tvQuantity.text.toString().toInt()
@@ -67,12 +70,16 @@ class LocalMyCartAdapter(
                     AppDataBase.getInstance(context).productDao()
                         .deleteProduct(productDetail.productId, productDetail.variantId)
                 }.start()
+                listener.onClickAddOrRemoveItem("", productDetail)
                 return@setOnClickListener
             }
             Thread {
                 AppDataBase.getInstance(context).productDao()
                     .updateProduct(itemQuantity, productDetail.productId, productDetail.variantId)
             }.start()
+
+            listener.onClickAddOrRemoveItem("", productDetail)
         }
+
     }
 }

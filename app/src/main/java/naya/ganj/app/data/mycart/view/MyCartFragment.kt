@@ -98,13 +98,14 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener, OnSavedAmountL
             val listOfProduct =
                 AppDataBase.getInstance(requireActivity()).productDao().getProductList()
             lifecycleScope.launch(Dispatchers.Main) {
+
                 if (listOfProduct.isNotEmpty()) {
-                    binding.rvMycartList.layoutManager = LinearLayoutManager(requireActivity())
+                   /* binding.rvMycartList.layoutManager = LinearLayoutManager(requireActivity())
                     binding.rvMycartList.adapter =
-                        LocalMyCartAdapter(requireActivity(), listOfProduct)
+                        LocalMyCartAdapter(requireActivity(), listOfProduct,)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
                     binding.progressBar.visibility = View.GONE
-                    binding.mainConstraintLayout.visibility = View.VISIBLE
+                    binding.mainConstraintLayout.visibility = View.VISIBLE*/
 
                 } else {
                     binding.finalCheckoutLayout.visibility = View.GONE

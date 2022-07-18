@@ -5,6 +5,8 @@ object Constant {
     const val PRODUCT_ID = "productId"
     const val ACTION = "action"
     const val VARIANT_ID = "variantId"
+    const val QUANTITY = "quantity"
+    const val PRODUCT = "products"
     const val PROMO_CODE = "promoCodeId"
     const val CATEGORY_ID = "categoryId"
     const val TEXT = "text"

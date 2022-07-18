@@ -361,9 +361,7 @@ class ProductDetailActivity : AppCompatActivity() {
         var totalMaxQuantity = 0
 
         for (item in product.variant) {
-
             if (item.vId == variantId) {
-
                 vPrice = item.vPrice.toDouble()
                 vDiscount = item.vDiscount
                 vUnitQuantity = item.vUnitQuantity
@@ -418,7 +416,7 @@ class ProductDetailActivity : AppCompatActivity() {
                         AppDataBase.getInstance(this@ProductDetailActivity).productDao()
                             .deleteProduct(product.id, variantId)
                     }
-
+                    calculateAmount()
                     return
                 }
                 binding.tvQuantity.text = quantity.toString()

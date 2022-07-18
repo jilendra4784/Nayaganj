@@ -5,6 +5,7 @@ import naya.ganj.app.data.category.model.*
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -145,6 +146,17 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<LoginResponseModel>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_SYNCH_CARTDATA_URL)
+    suspend fun synchDataRequest(
+        @Header("userid") userid: String,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+
 
 
     @Headers("Content-Type: application/json")
