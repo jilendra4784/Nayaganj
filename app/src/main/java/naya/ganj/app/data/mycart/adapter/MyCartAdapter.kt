@@ -60,13 +60,10 @@ class MyCartAdapter(
             holder.binding.tvDiscountPrice.text =
                 Utility().formatTotalAmount(discountAmount).toString()
 
-            addOremoveItemListener.onClickAddOrRemoveItem(
+           /* addOremoveItemListener.onClickAddOrRemoveItem(
                 "add",
-                cart.productId,
-                cart.variantId,
-                "",
-                holder.binding.tvDiscountPrice.text.toString().toDouble()
-            )
+
+            )*/
 
             val itemSavedAmount = (priceAmount - discountAmount)
             holder.binding.tvSaveAmount.text =
@@ -81,13 +78,13 @@ class MyCartAdapter(
             quantity--
 
             if (quantity == 0) {
-                addOremoveItemListener.onClickAddOrRemoveItem(
+                /*addOremoveItemListener.onClickAddOrRemoveItem(
                     "remove",
                     cart.productId,
                     cart.variantId,
                     "",
                     0.0
-                )
+                )*/
                 cartList.remove(cart)
                 notifyItemRemoved(holder.adapterPosition)
                 notifyItemRangeChanged(position, cartList.size)
@@ -104,13 +101,13 @@ class MyCartAdapter(
                     Utility().formatTotalAmount(priceAmount.toDouble()).toString()
                 holder.binding.tvDiscountPrice.text =
                     Utility().formatTotalAmount(discountAmount).toString()
-                addOremoveItemListener.onClickAddOrRemoveItem(
+               /* addOremoveItemListener.onClickAddOrRemoveItem(
                     "remove",
                     cart.productId,
                     cart.variantId,
                     "",
                     holder.binding.tvDiscountPrice.text.toString().toDouble()
-                )
+                )*/
                 val itemSavedAmount = (priceAmount - discountAmount)
                 holder.binding.tvSaveAmount.text =
                     "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(

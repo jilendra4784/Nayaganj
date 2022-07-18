@@ -15,9 +15,9 @@ class AddressListViewModel(val repo: AddressListRespositry) : ViewModel() {
     var mutableLiveData = MutableLiveData<AddressListModel>()
     var mutableDeleteData = MutableLiveData<AddressResponseModel>()
 
-    fun getAddressList(): LiveData<AddressListModel> {
+    fun getAddressList(userid:String?): LiveData<AddressListModel> {
         viewModelScope.launch {
-            val result = repo.getAddressList()
+            val result = repo.getAddressList(userid)
             mutableLiveData.value = result.body()
         }
         return mutableLiveData

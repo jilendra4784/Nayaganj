@@ -1,5 +1,7 @@
 package naya.ganj.app.interfaces
 
+import naya.ganj.app.roomdb.entity.ProductDetail
+
 interface OnclickAddOremoveItemListener {
-    fun onClickAddOrRemoveItem(action: String, productId: String, variantId: String,promoCode:String,totalAmount :Double)
+    fun onClickAddOrRemoveItem(action: String, productDetail: ProductDetail)
 }

@@ -2,12 +2,12 @@ package naya.ganj.app.utility
 
 object Constant {
     const val pageIndex = "pageIndex"
-    const val USER_ID = "61cc52c880b1d508d650b5b4"
     const val PRODUCT_ID = "productId"
     const val ACTION = "action"
     const val VARIANT_ID = "variantId"
     const val PROMO_CODE = "promoCodeId"
     const val CATEGORY_ID = "categoryId"
+    const val TEXT = "text"
     const val ORDER_ID = "orderId"
     const val DEVICE_TYPE = "Android"
 
@@ -23,14 +23,26 @@ object Constant {
     const val nickName = "nickName"
     const val lat = "lat"
     const val long = "long"
-    const val addressId="addressId"
-    const val mode="mode"
-    const val promoCodeId="promoCodeId"
-    const val cashBackAmount="cashBackAmount"
-    const val orderId="orderId"
-    const val orderStatus="orderStatus"
-    const val totalItems="totalItems"
-    const val MobileNumber="mobileNumber"
+    const val addressId = "addressId"
+    const val mode = "mode"
+    const val promoCodeId = "promoCodeId"
+    const val cashBackAmount = "cashBackAmount"
+    const val orderId = "orderId"
+    const val orderStatus = "orderStatus"
+    const val totalItems = "totalItems"
+    const val MobileNumber = "mobileNumber"
+    const val deviceId = "deviceId"
+    const val deviceToken = "deviceToken"
+    const val OTP = "otp"
+    const val newname = "newName"
+    const val newemailid = "newEmailId"
+    const val USER_DETAILS = "user_detail"
+    const val LOGIN_SESSION = "login_session"
+    const val PREFS_NAME = "NAYAGANJ"
+    const val LANGUAGE = "language"
+
+    const val isListActivity = "islistactivity"
+
 
 
 }

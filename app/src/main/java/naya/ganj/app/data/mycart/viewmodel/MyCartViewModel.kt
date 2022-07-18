@@ -10,7 +10,7 @@ class MyCartViewModel : ViewModel() {
 
     var myCartRepositry = MyCartRepositry()
 
-    fun getMyCartData(jsonObject: JsonObject): LiveData<MyCartModel> {
-        return myCartRepositry.getMyCartData(jsonObject)
+    fun getMyCartData(userId:String,jsonObject: JsonObject): LiveData<MyCartModel> {
+        return myCartRepositry.getMyCartData(userId,jsonObject)
     }
 }

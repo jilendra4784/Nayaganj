@@ -18,16 +18,20 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import naya.ganj.app.MainActivity
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductDetailVariantAdapter
 import naya.ganj.app.data.category.model.CheckProductInCartModel
 import naya.ganj.app.data.category.model.ProductDetailModel
 import naya.ganj.app.data.category.viewmodel.ProductDetailViewModel
+import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.databinding.ActivityProductDetailBinding
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.roomdb.entity.AppDataBase
+import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
@@ -43,15 +47,18 @@ class ProductDetailActivity : AppCompatActivity() {
     var variantId = ""
     var productId = ""
     lateinit var productDetailModel: ProductDetailModel
+    lateinit var app: Nayaganj
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        app = application as Nayaganj
+
         binding.include.ivBackArrow.setOnClickListener { finish() }
         binding.include.toolbarTitle.text = "Product Detail"
-        calculateAmount()
+
 
         viewModel = ViewModelProvider(this)[ProductDetailViewModel::class.java]
         if (intent.extras != null) {
@@ -61,73 +68,13 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         binding.addButton.setOnClickListener {
-            binding.addButton.visibility = View.INVISIBLE
-            binding.llMinusPlusLayout.visibility = View.VISIBLE
-            binding.tvQuantity.text = "1"
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                Utility().addRemoveItem("add", productId, variantId, "")
-            }
-            Thread {
-                Utility().insertProduct(
-                    this,
-                    productId,
-                    variantId,
-                    binding.tvDiscountPrice.text.toString().toDouble()
-                )
-            }.start()
-            calculateAmount()
+            updateItemToLocalDB("add", productDetailModel.productDetails)
         }
-
         binding.tvPlus.setOnClickListener {
-            var quantity: Int = binding.tvQuantity.text.toString().toInt()
-            quantity++
-            binding.tvQuantity.text = quantity.toString()
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                Utility().addRemoveItem("add", productId, variantId, "")
-            }
-            Thread {
-                Utility().updateProduct(
-                    this,
-                    productId,
-                    variantId,
-                    quantity * binding.tvDiscountPrice.text.toString().toDouble()
-                )
-            }.start()
-
-            calculateAmount()
+            updateItemToLocalDB("plus", productDetailModel.productDetails)
         }
-
-
         binding.tvMinus.setOnClickListener {
-            var quantity: Int = binding.tvQuantity.text.toString().toInt()
-            quantity--
-
-            if (quantity == 0) {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().addRemoveItem("remove", productId, variantId, "")
-                }
-                Thread { Utility().deleteProduct(this, productId, variantId) }.start()
-                binding.addButton.visibility = View.VISIBLE
-                binding.llMinusPlusLayout.visibility = View.GONE
-                return@setOnClickListener
-            }
-            binding.tvQuantity.text = quantity.toString()
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                Utility().addRemoveItem("remove", productId, variantId, "")
-            }
-            Thread {
-                Utility().updateProduct(
-                    this,
-                    productId,
-                    variantId,
-                    quantity * binding.tvDiscountPrice.text.toString().toDouble()
-                )
-            }.start()
-
-            calculateAmount()
+            updateItemToLocalDB("minus", productDetailModel.productDetails)
         }
 
         binding.llVariantLayout.setOnClickListener {
@@ -136,10 +83,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
 
         binding.llCartLayout.setOnClickListener { v ->
-            val intent = Intent(this@ProductDetailActivity, naya.ganj.app.MainActivity::class.java)
-            intent.putExtra("ORDER_ID", "FROM_PRODUCT_DETAIL")
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            startActivity(Intent(this@ProductDetailActivity, MyCartActivity::class.java))
             finish()
         }
 
@@ -163,27 +107,55 @@ class ProductDetailActivity : AppCompatActivity() {
         binding.tvProductName.text = titleArray[0]
         binding.tvDescription.text = titleDescriptionArray[0]
 
-        for ((i, item) in pModel.variant.withIndex()) {
-            if (item.vId.equals(variantId)) {
-                binding.tvDiscountPrice.text =
-                    (pModel.variant.get(i).vPrice - (pModel.variant.get(i).vPrice * pModel.variant.get(
-                        i
-                    ).vDiscount) / 100).toString()
-                binding.tvPrice.text = pModel.variant.get(i).vPrice.toString()
-                binding.tvUnit.text =
-                    pModel.variant.get(i).vUnitQuantity.toString() + pModel.variant.get(i).vUnit
-                binding.tvOff.text = pModel.variant.get(i).vDiscount.toString() + "% off"
-                if (pModel.variant.get(i).vQuantityInCart > 0) {
-                    binding.tvQuantity.text = pModel.variant.get(i).vQuantityInCart.toString()
+
+        Thread {
+            val isProductExist = AppDataBase.getInstance(this).productDao()
+                .isProductExist(productId, variantId)
+            if (isProductExist) {
+                val item = AppDataBase.getInstance(this).productDao()
+                    .getSingleProduct(productId, variantId)
+                runOnUiThread {
+                    val price = item.vPrice
+                    val vDiscountPrice: Double =
+                        price - ((price * item.vDiscount) / 100)
+                    binding.tvPrice.text = resources.getString(R.string.Rs) + price.toString()
+                    binding.tvDiscountPrice.text =
+                        resources.getString(R.string.Rs) + vDiscountPrice.toString()
+                    binding.tvQuantity.text = item.itemQuantity.toString()
+                    binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
+                    binding.tvOff.text = item.vDiscount.toString() + "% off"
                     binding.addButton.visibility = View.GONE
                     binding.llMinusPlusLayout.visibility = View.VISIBLE
-                } else {
-                    binding.addButton.visibility = View.VISIBLE
-                    binding.llMinusPlusLayout.visibility = View.GONE
+
                 }
-                break
+            } else {
+                runOnUiThread {
+                    for ((i, item) in pModel.variant.withIndex()) {
+                        if (pModel.variant[i].vId == variantId) {
+                            val price = item.vPrice
+                            val vDiscountPrice: Double =
+                                (price - ((price * item.vDiscount) / 100)).toDouble()
+                            binding.tvPrice.text =
+                                resources.getString(R.string.Rs) + price.toString()
+                            binding.tvDiscountPrice.text =
+                                resources.getString(R.string.Rs) + vDiscountPrice.toString()
+                            binding.tvQuantity.text = item.vQuantityInCart.toString()
+                            binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
+                            binding.tvOff.text = item.vDiscount.toString() + "% off"
+
+                            if (item.vQuantityInCart > 0) {
+                                binding.addButton.visibility = View.GONE
+                                binding.llMinusPlusLayout.visibility = View.VISIBLE
+                            } else {
+                                binding.addButton.visibility = View.VISIBLE
+                                binding.llMinusPlusLayout.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+
             }
-        }
+        }.start()
     }
 
     private fun showVariantDialog(
@@ -205,14 +177,69 @@ class ProductDetailActivity : AppCompatActivity() {
                 @SuppressLint("SetTextI18n")
                 override fun onclick(position: Int, data: String) {
                     // Variant Click Handle
-                    variantId = productDetailModel.productDetails.variant.get(position).vId
-                    checkProductInCart(
-                        productDetailModel.productDetails.variant,
-                        productId,
-                        variantId,
-                        position
-                    )
-                    calculateAmount()
+                    variantId = productDetailModel.productDetails.variant[position].vId
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val isVariantExist =
+                            AppDataBase.getInstance(this@ProductDetailActivity).productDao()
+                                .isProductExist(productId, variantId)
+                        if (isVariantExist) {
+                            val item =
+                                AppDataBase.getInstance(this@ProductDetailActivity).productDao()
+                                    .getSingleProduct(productId, variantId)
+                            runOnUiThread {
+                                val price = item.vPrice
+                                val vDiscountPrice: Double =
+                                    price - ((price * item.vDiscount) / 100)
+                                binding.tvPrice.text =
+                                    resources.getString(R.string.Rs) + price.toString()
+                                binding.tvDiscountPrice.text =
+                                    resources.getString(R.string.Rs) + vDiscountPrice.toString()
+                                binding.tvQuantity.text = item.itemQuantity.toString()
+                                binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
+                                binding.tvOff.text = item.vDiscount.toString() + "% off"
+                                binding.addButton.visibility = View.GONE
+                                binding.llMinusPlusLayout.visibility = View.VISIBLE
+
+                            }
+                        } else {
+                            runOnUiThread {
+                                val price =
+                                    productDetailModel.productDetails.variant[position].vPrice
+                                val vDiscountPrice: Double =
+                                    price - ((price * productDetailModel.productDetails.variant[position].vDiscount) / 100).toDouble()
+                                binding.tvPrice.text =
+                                    resources.getString(R.string.Rs) + price.toString()
+                                binding.tvDiscountPrice.text =
+                                    resources.getString(R.string.Rs) + vDiscountPrice.toString()
+                                binding.tvQuantity.text =
+                                    productDetailModel.productDetails.variant[position].vQuantityInCart.toString()
+                                binding.tvUnit.text =
+                                    productDetailModel.productDetails.variant[position].vUnitQuantity.toString() + productDetailModel.productDetails.variant[position].vUnit
+                                binding.tvOff.text =
+                                    productDetailModel.productDetails.variant[position].vDiscount.toString() + "% off"
+                                binding.addButton.visibility = View.GONE
+                                binding.llMinusPlusLayout.visibility = View.VISIBLE
+
+                                if (productDetailModel.productDetails.variant[position].vQuantityInCart > 0) {
+                                    binding.addButton.visibility = View.GONE
+                                    binding.llMinusPlusLayout.visibility = View.VISIBLE
+                                } else {
+                                    binding.addButton.visibility = View.VISIBLE
+                                    binding.llMinusPlusLayout.visibility = View.GONE
+                                }
+                            }
+                        }
+                    }
+
+
+                    /* checkProductInCart(
+                         productDetailModel.productDetails.variant,
+                         productId,
+                         variantId,
+                         position
+                     )
+                     calculateAmount()*/
 
                     alertDialog?.dismiss()
                 }
@@ -243,7 +270,7 @@ class ProductDetailActivity : AppCompatActivity() {
         jsonObject.addProperty(VARIANT_ID, variant_id)
 
         RetrofitClient.instance.checkProductInCartRequest(
-            Constant.USER_ID,
+            "",
             Constant.DEVICE_TYPE, jsonObject
         )
             .enqueue(object : Callback<CheckProductInCartModel> {
@@ -278,7 +305,7 @@ class ProductDetailActivity : AppCompatActivity() {
                             binding.addButton.visibility = View.GONE
 
                             // Save Count in Local
-                            lifecycleScope.launch(Dispatchers.IO) {
+                            /*lifecycleScope.launch(Dispatchers.IO) {
                                 Utility().updateProduct(
                                     this@ProductDetailActivity,
                                     product_Id,
@@ -286,13 +313,13 @@ class ProductDetailActivity : AppCompatActivity() {
                                     response.body()!!.productQuantity * binding.tvDiscountPrice.text.toString()
                                         .toDouble()
                                 )
-                            }
+                            }*/
 
                         } else {
                             binding.llMinusPlusLayout.visibility = View.GONE
                             binding.addButton.visibility = View.VISIBLE
                         }
-                        calculateAmount()
+
                     }
                 }
 
@@ -302,20 +329,19 @@ class ProductDetailActivity : AppCompatActivity() {
             })
     }
 
-    fun calculateAmount() {
+    private fun calculateAmount() {
         lifecycleScope.launch(Dispatchers.IO) {
-            delay(300)
             val listofProduct = Utility().getAllProductList(applicationContext)
             runOnUiThread {
                 if (listofProduct.isNotEmpty()) {
                     binding.llCartLayout.visibility = View.VISIBLE
                     binding.cartView.tvItems.text = listofProduct.size.toString()
-                    var amount = 0.0;
+                    var amount = 0.0
                     for (item in listofProduct) {
-                        amount += item.totalAmount
+                        amount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
                     }
                     binding.cartView.tvTotalAmount.text = amount.toString()
-
+                    binding.cartView.tvTotalAmount.text = Utility().formatTotalAmount(amount).toString()
                 } else {
                     binding.llCartLayout.visibility = View.GONE
                 }
@@ -323,5 +349,94 @@ class ProductDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateItemToLocalDB(
+        action: String,
+        product: ProductDetailModel.ProductDetails
+    ) {
 
+        var vPrice = 0.0
+        var vDiscount = 0
+        var vUnitQuantity = 0
+        var vUnit = ""
+        var totalMaxQuantity = 0
+
+        for (item in product.variant) {
+
+            if (item.vId == variantId) {
+
+                vPrice = item.vPrice.toDouble()
+                vDiscount = item.vDiscount
+                vUnitQuantity = item.vUnitQuantity
+                vUnit = item.vUnit
+                totalMaxQuantity = item.vQuantity
+            }
+        }
+        when (action) {
+            "add" -> {
+                binding.llMinusPlusLayout.visibility = View.VISIBLE
+                binding.addButton.visibility = View.GONE
+                binding.tvQuantity.text = "1"
+                val quantity = 1
+                lifecycleScope.launch(Dispatchers.IO) {
+                    AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
+                        ProductDetail(
+                            productId,
+                            variantId,
+                            quantity,
+                            product.productName,
+                            product.imgUrl.get(0),
+                            vPrice,
+                            vDiscount,
+                            vUnitQuantity,
+                            vUnit,
+                            totalMaxQuantity
+                        )
+                    )
+                }
+
+            }
+            "plus" -> {
+                var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                quantity++
+                binding.tvQuantity.text = quantity.toString()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Utility().updateProduct(
+                        this@ProductDetailActivity,
+                        productId,
+                        variantId,
+                        quantity
+                    )
+                }
+            }
+            "minus" -> {
+                var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                quantity--
+                if (quantity == 0) {
+                    binding.llMinusPlusLayout.visibility = View.GONE
+                    binding.addButton.visibility = View.VISIBLE
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        AppDataBase.getInstance(this@ProductDetailActivity).productDao()
+                            .deleteProduct(product.id, variantId)
+                    }
+
+                    return
+                }
+                binding.tvQuantity.text = quantity.toString()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Utility().updateProduct(
+                        this@ProductDetailActivity,
+                        productId,
+                        variantId,
+                        quantity
+                    )
+                }
+            }
+        }
+        calculateAmount()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        calculateAmount()
+    }
 }

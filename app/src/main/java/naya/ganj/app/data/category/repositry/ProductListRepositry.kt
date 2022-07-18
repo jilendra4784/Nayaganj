@@ -18,7 +18,7 @@ class ProductListRepositry {
     private var addremoveStatus = MutableLiveData<AddRemoveModel>()
 
     fun getProductList(
-        userid: String,
+        userid: String?,
         d: String,
         jsonObject: JsonObject
     ): LiveData<ProductListModel> {
@@ -44,7 +44,7 @@ class ProductListRepositry {
     ): LiveData<AddRemoveModel> {
 
         RetrofitClient.instance.addremoveItemRequest(
-            Constant.USER_ID,
+            "",
             "ANDROID",
             jsonObject
         )

@@ -18,7 +18,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.PRODUCT_LIST_URL)
     fun getProductList(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Call<ProductListModel>
@@ -26,7 +26,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.ADD_REMOVE_URL)
     fun addremoveItemRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Call<AddRemoveModel>
@@ -60,7 +60,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @GET(URLConstant.URL_ADDRESS_LIST_URL)
     suspend fun getAddressList(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String
     ): Response<AddressListModel>
 
@@ -127,8 +127,33 @@ interface ApiInterface {
         @Header("userid") userid: String,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_LOGIN_URL)
+    suspend fun sendLoginRequest(
+        @Header("userid") userid: String,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
     ): Response<LoginResponseModel>
 
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_AUTO_LOGIN_URL)
+    suspend fun sendAutoLoginRequest(
+        @Header("userid") userid: String,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<LoginResponseModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_UPDATE_DETAIL_URL)
+    suspend fun updateProfileRequest(
+        @Header("userid") userid: String,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
 
 
 }

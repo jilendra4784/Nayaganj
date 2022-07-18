@@ -17,18 +17,24 @@ class Utility {
 
     //Common Function to add or Remove Item
     fun addRemoveItem(
+        userId: String?,
         action: String,
         productId: String,
         variantId: String,
         promoCode: String,
-    ) {
+
+        ) {
         val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.PRODUCT_ID, productId)
         jsonObject.addProperty(Constant.ACTION, action)
         jsonObject.addProperty(Constant.VARIANT_ID, variantId)
         jsonObject.addProperty(Constant.PROMO_CODE, "")
 
-        RetrofitClient.instance.addremoveItemRequest(Constant.USER_ID, "Android", jsonObject)
+        RetrofitClient.instance.addremoveItemRequest(
+            userId,
+            Constant.DEVICE_TYPE,
+            jsonObject
+        )
             .enqueue(object : Callback<AddRemoveModel> {
                 override fun onResponse(
                     call: Call<AddRemoveModel>,
@@ -43,13 +49,13 @@ class Utility {
             })
     }
 
-    fun insertProduct(context: Context, productID: String, variantId: String, amount: Double) {
+    fun insertProduct(context: Context, productDetail: ProductDetail) {
         AppDataBase.getInstance(context).productDao()
-            .insert(ProductDetail(productID, variantId.toInt(), amount))
+            .insert(productDetail)
     }
 
-    fun updateProduct(context: Context, productID: String, variantId: String, amount: Double) {
-        AppDataBase.getInstance(context).productDao().updateProduct(productID, variantId, amount)
+    fun updateProduct(context: Context, productID: String, variantId: String, itemCount: Int) {
+        AppDataBase.getInstance(context).productDao().updateProduct(itemCount, productID, variantId)
     }
 
     fun deleteProduct(context: Context, productID: String, variantId: String) {
@@ -85,14 +91,6 @@ class Utility {
 
     fun deleteAllProduct(paymentOptionActivity: Activity) {
         AppDataBase.getInstance(paymentOptionActivity).productDao().deleteAllProduct()
-    }
-
-    fun hideAppBar() {
-
-    }
-
-    fun showAppBar() {
-
     }
 
 }

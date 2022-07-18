@@ -19,5 +19,8 @@ object URLConstant {
     const val URL_MY_ORDER_LIST_URL = "ordersList"
     const val URL_ORDER_DETAIL_URL = "orderDetails"
     const val URL_GET_OTP_URL = "sendOtp"
+    const val URL_LOGIN_URL = "login"
+    const val URL_AUTO_LOGIN_URL = "autoLogin"
+    const val URL_UPDATE_DETAIL_URL = "updateProfile"
 
 }

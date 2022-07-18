@@ -40,7 +40,7 @@ class CustomVariantAdapter(
                 "(" + variantList.get(position).vDiscount + "%" + " off )"
 
             holder.itemView.setOnClickListener {
-                onitemClickListener.onclick(holder.adapterPosition, "")
+                onitemClickListener.onclick(holder.adapterPosition, variantList.get(holder.adapterPosition).vId)
             }
 
 

@@ -3,19 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        app:rippleColor="@android:color/transparent"
-        android:layout_marginTop="@dimen/_10sdp"
         app:cardElevation="@dimen/_2sdp"
-        android:layout_margin="@dimen/_5sdp"
+        app:rippleColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +22,7 @@
             android:layout_height="@dimen/_100sdp">
 
             <ImageView
-                android:id="@+id/iv_imagview"
+                android:id="@+id/iv_imageview"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_100sdp"
                 android:src="@mipmap/ic_launcher_round"
@@ -53,6 +52,7 @@
                 android:maxLines="1"
                 android:paddingTop="@dimen/_5sdp"
                 android:text="Product detail"
+                android:visibility="gone"
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -80,6 +80,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -91,33 +92,18 @@
 
                     <LinearLayout
                         android:id="@+id/ll_variant_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:background="@drawable/bg_quantity">
 
                         <TextView
                             android:id="@+id/tv_unit_quantity"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:paddingStart="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_10sdp" />
-
-                        <TextView
-                            android:id="@+id/tv_unit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:paddingStart="@dimen/_5sdp"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_10sdp" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_down_arrow" />
 
 
                     </LinearLayout>
@@ -182,7 +168,7 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/ll_plus_minus_layout"
@@ -190,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/_10sdp"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <com.google.android.material.textview.MaterialTextView
 
@@ -249,7 +235,17 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:src="@drawable/ic_delete_icon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 

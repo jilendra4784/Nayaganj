@@ -1,30 +1,40 @@
 package naya.ganj.app.data.mycart.repositry
 
+import com.google.gson.JsonObject
 import naya.ganj.app.retrofit.ApiInterface
 import naya.ganj.app.utility.Constant
-import com.google.gson.JsonObject
 
 class AddressListRespositry(var apiInterface: ApiInterface) {
 
-    suspend fun getAddressList() =
-        apiInterface.getAddressList(Constant.USER_ID, Constant.DEVICE_TYPE)
+    suspend fun getAddressList(userId: String?) =
+        apiInterface.getAddressList(userId, Constant.DEVICE_TYPE)
 
     suspend fun addAddressRequest(jsonObject: JsonObject) =
-        apiInterface.addAddressRequest(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.addAddressRequest("", Constant.DEVICE_TYPE, jsonObject)
 
     suspend fun deleteAddressRequest(jsonObject: JsonObject) =
-        apiInterface.deleteAddressRequest(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.deleteAddressRequest("", Constant.DEVICE_TYPE, jsonObject)
 
     suspend fun updateAddressRequest(jsonObject: JsonObject) =
-        apiInterface.updateAddressRequest(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.updateAddressRequest("", Constant.DEVICE_TYPE, jsonObject)
 
     suspend fun setAddress(jsonObject: JsonObject) =
-        apiInterface.setAddress(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.setAddress("", Constant.DEVICE_TYPE, jsonObject)
 
     suspend fun orderPlaceRequest(jsonObject: JsonObject) =
-        apiInterface.orderPlaceRequest(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.orderPlaceRequest("", Constant.DEVICE_TYPE, jsonObject)
 
 
     suspend fun getOTPRequest(jsonObject: JsonObject) =
-        apiInterface.getOTPRequest(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
+        apiInterface.getOTPRequest("", Constant.DEVICE_TYPE, jsonObject)
+
+    suspend fun sendLoginRequest(userId :String,jsonObject: JsonObject) =
+        apiInterface.sendLoginRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
+    suspend fun sendAutoLoginRequest(userId :String,jsonObject: JsonObject) =
+        apiInterface.sendAutoLoginRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
+    suspend fun updateProfileRequest(jsonObject: JsonObject) =
+        apiInterface.updateProfileRequest("", Constant.DEVICE_TYPE, jsonObject)
+
 }

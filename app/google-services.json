@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "832828133422",
+    "project_id": "nayaganjapp",
+    "storage_bucket": "nayaganjapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832828133422:android:5342d7cfb54875b9734fbf",
+        "android_client_info": {
+          "package_name": "naya.ganj.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832828133422-vgg3v4ljomhfvf671v7mbilp3c37ugis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNTVXI3l9N3uP2p-i3TyOS2JLeZvlV4Eo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832828133422-vgg3v4ljomhfvf671v7mbilp3c37ugis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

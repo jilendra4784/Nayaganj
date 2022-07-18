@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.JsonObject
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.mycart.adapter.AddressListAdapter
 import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
@@ -14,7 +16,6 @@ import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
-import com.google.gson.JsonObject
 
 class AddressListActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var binding: ActivityAddressListBinding
@@ -22,12 +23,14 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var addresListAdapter: AddressListAdapter
     lateinit var addressList: MutableList<AddressListModel.Address>
     var addressId = ""
+    lateinit var app: Nayaganj
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityAddressListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        app = applicationContext as Nayaganj
 
         binding.include.ivBackArrow.setOnClickListener { finish() }
         binding.include.toolbarTitle.setText("Address List")
@@ -47,8 +50,7 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
 
     override fun onResume() {
         super.onResume()
-
-        viewModel.getAddressList().observe(this) {
+        viewModel.getAddressList(app.user.getUserDetails()?.userId).observe(this) {
             it.let {
                 addressList = it.addressList
                 addresListAdapter = AddressListAdapter(

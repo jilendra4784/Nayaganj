@@ -1,5 +1,6 @@
 package naya.ganj.app.data.category.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,11 @@ import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.appbar.AppBarLayout
-import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
 import naya.ganj.app.databinding.FragmentDashboardBinding
+import naya.ganj.app.utility.Constant
 
 class CategoryFragment : Fragment() {
 
@@ -47,25 +46,19 @@ class CategoryFragment : Fragment() {
         })
 
         binding.expandablelist.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-
-            /* val intent = Intent(requireActivity(), ProductListActivity::class.java)
-             intent.putExtra(
-                 "PRODUCT_ID",
-                 cateModel.categoryList.get(groupPosition).subCategoryList.get(childPosition).id
-             )
-             startActivity(intent)*/
-            val bundle = Bundle()
+            /*val bundle = Bundle()
             bundle.putString(
-                "PRODUCT_ID",
+                Constant.CATEGORY_ID,
                 cateModel.categoryList.get(groupPosition).subCategoryList.get(childPosition).id
             )
-            /*Navigation.findNavController(binding.root)
-                .navigate(R.id.action_navigation_dashboard_to_productListFragment, bundle)
-            */
-            findNavController().navigate(
-                R.id.action_navigation_dashboard_to_productListFragment,
-                bundle
+            findNavController().navigate(R.id.productListFragment, bundle)
+*/
+            val intent = Intent(requireActivity(), ProductListActivity::class.java)
+            intent.putExtra(
+                Constant.CATEGORY_ID,
+                cateModel.categoryList.get(groupPosition).subCategoryList.get(childPosition).id
             )
+            startActivity(intent)
             true
         }
     }
@@ -82,9 +75,4 @@ class CategoryFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        val appbar = requireActivity().findViewById<AppBarLayout>(R.id.appBarLayout)
-        appbar.visibility = View.VISIBLE
-    }
 }

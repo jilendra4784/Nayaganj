@@ -12,7 +12,7 @@ class ProductListViewModel : ViewModel() {
     var repositry = ProductListRepositry()
 
     fun getProductList(
-        userId: String,
+        userId: String?,
         deviceType: String,
         jsonObject: JsonObject
     ): LiveData<ProductListModel> {

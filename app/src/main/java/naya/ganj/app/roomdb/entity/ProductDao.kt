@@ -11,19 +11,22 @@ interface ProductDao {
     fun insert(productDetail: ProductDetail)
 
     @Query("SELECT * FROM productdetail")
-    fun getProductList(): List<ProductDetail>
+    fun getProductList(): MutableList<ProductDetail>
 
-    @Query("Select * from productdetail  where product_id=:productId and variant_id=:variantId")
+    @Query("SELECT * FROM productdetail where productId=:productId ")
+    fun getProductListByProductId(productId: String): List<ProductDetail>
+
+    @Query("Select * from productdetail  where productId=:productId and variantId=:variantId")
     fun getSingleProduct(productId: String, variantId: String): ProductDetail
 
-    @Query("update productdetail set total_amount=:amount where product_id=:productId and variant_id=:variantId")
-    fun updateProduct(productId: String, variantId: String, amount: Double)
+    @Query("update productdetail set itemQuantity =:itemQuantity where productId=:productId and variantId=:variantId")
+    fun updateProduct(itemQuantity:Int,productId: String,variantId: String)
 
-    @Query("delete from productdetail where product_id=:productId and variant_id=:variantId")
+    @Query("delete from productdetail where productId=:productId and variantId=:variantId")
     fun deleteProduct(productId: String, variantId: String)
 
-    @Query("SELECT EXISTS(SELECT * FROM productdetail WHERE product_id = :id and variant_id=:variantId)")
-    fun isProductExist(id: String, variantId: String): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM productdetail WHERE productid = :proId and variantId=:variantId)")
+    fun isProductExist(proId: String, variantId: String): Boolean
 
     @Query("DELETE FROM productdetail")
     fun deleteAllProduct()

@@ -11,71 +11,40 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import naya.ganj.app.data.home.view.HomeFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.gson.JsonObject
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import naya.ganj.app.data.mycart.model.MyCartModel
+import naya.ganj.app.data.home.view.HomeFragmentDirections
+import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.MyOrderActivity
 import naya.ganj.app.databinding.ActivityMainBinding
-import naya.ganj.app.retrofit.RetrofitClient
-import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
-import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
-
-
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var binding: ActivityMainBinding
     var orderID: String? = null
     var notificationsBadge: View? = null
+    lateinit var app: Nayaganj
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        app = applicationContext as Nayaganj
 
-        binding.navView.menu.forEach { it.isEnabled = true }
+        //binding.navView.menu.forEach { it.isEnabled = true }
         orderID = intent.getStringExtra("ORDER_ID")
         if (orderID != null) {
-            if (orderID.equals("FROM_PRODUCT_DETAIL")) {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().deleteAllProduct(this@MainActivity)
-                    withContext(Dispatchers.Main) {
-                        getMyCartData("")
-                    }
-                }
-                val action = HomeFragmentDirections.actionMainToMycart("")
-                findNavController(R.id.nav_host_fragment_activity_main).navigate(action)
-            } else {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().deleteAllProduct(this@MainActivity)
-                    withContext(Dispatchers.Main) {
-                        getMyCartData(orderID!!)
-                    }
-                }
-                val action = HomeFragmentDirections.actionMainToMycart(orderID!!)
-                findNavController(R.id.nav_host_fragment_activity_main).navigate(action)
-            }
-
-        } else {
-            lifecycleScope.launch(Dispatchers.IO) {
-                AppDataBase.getInstance(this@MainActivity).productDao().deleteAllProduct()
-                withContext(Dispatchers.Main) {
-                    getMyCartData("")
-                }
-            }
+            val action = HomeFragmentDirections.actionMainToMycart(orderID!!)
+            findNavController(R.id.nav_host_fragment_activity_main).navigate(action)
         }
 
         toggle = ActionBarDrawerToggle(
@@ -91,28 +60,25 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         binding.navView.setupWithNavController(navController)
 
-        binding.navView.setOnItemSelectedListener {
-            binding.appBarLayout.visibility = View.VISIBLE
-            binding.navView.visibility = View.VISIBLE
-            when (it.itemId) {
-                R.id.navigation_home -> {
-                    findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_home)
-                }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            showAppBar()
+            showBottomNav()
+            when (destination.id) {
+                R.id.navigation_home -> {}
+                R.id.navigation_dashboard -> {}
+                R.id.navigation_notifications -> {}
                 R.id.navigation_mycart -> {
-                    findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_mycart)
-                    setBadgeCount()
-                }
-                R.id.navigation_dashboard -> {
-                    findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_dashboard)
-                    setBadgeCount()
+                    Log.e("TAG", "onCreate: ")
+
+                    startActivity(Intent(this@MainActivity, MyCartActivity::class.java))
                 }
                 else -> {
-                    findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_notifications)
-                    setBadgeCount()
+                    //hideBottomNav()
+                    // hideBottomNav()
                 }
             }
-            return@setOnItemSelectedListener true
         }
+
         binding.sideNavigation.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
@@ -127,8 +93,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.my_order -> {
-                    startActivity(Intent(this@MainActivity, MyOrderActivity::class.java))
                     checkDrawerIsOpen()
+                    startActivity(Intent(this@MainActivity, MyOrderActivity::class.java))
                 }
                 R.id.myvirtualorder -> {
                     showMessage(item.title.toString())
@@ -152,15 +118,36 @@ class MainActivity : AppCompatActivity() {
                     showMessage(item.title.toString())
                 }
                 R.id.logout -> {
-                    showMessage(item.title.toString())
+                    showLogoutDialog()
                 }
 
             }
             true
         }
 
-        // Synch MyCart Data with Local Database
+        // Todo Hide Side Menu Item
+        binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
+    }
 
+    private fun showLogoutDialog() {
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle("LOGOUT")
+            .setMessage("Are you sure, you want to logout?")
+            .setPositiveButton(
+                "YES"
+            ) { dialogInterface, i ->
+                checkDrawerIsOpen()
+                app.user.clearSharedPreference()
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                dialogInterface.dismiss()
+                finish()
+            }
+            .setNegativeButton(
+                "CANCEL"
+            ) { dialogInterface, i -> dialogInterface.dismiss() }
+            .show()
     }
 
     private fun setBadgeCount() {
@@ -186,39 +173,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getMyCartData(orderID: String) {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty(Constant.ORDER_ID, orderID)
-
-        RetrofitClient.instance.getMyCartData(Constant.USER_ID, Constant.DEVICE_TYPE, jsonObject)
-            .enqueue(object : Callback<MyCartModel> {
-                override fun onResponse(call: Call<MyCartModel>, response: Response<MyCartModel>) {
-                    if (response.isSuccessful) {
-                        if (response.body() != null) {
-                            Log.e("TAG", "onResponse: " + response.body()!!.cartList.size)
-                            for (item in response.body()!!.cartList) {
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    Utility().insertProduct(
-                                        this@MainActivity,
-                                        item.productId,
-                                        item.variantId,
-                                        item.actualPrice.toDouble()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<MyCartModel>, t: Throwable) {
-
-                }
-            })
-    }
-
-
     private fun addBadge(count: String) {
-
         val mbottomNavigationMenuView = binding.navView.getChildAt(0) as BottomNavigationMenuView
         notificationsBadge = LayoutInflater.from(this).inflate(
             R.layout.custom_badge_layout,
@@ -230,4 +185,21 @@ class MainActivity : AppCompatActivity() {
         }
         binding.navView.addView(notificationsBadge)
     }
+
+    private fun showBottomNav() {
+        binding.navView.visibility = View.VISIBLE
+    }
+
+    private fun hideBottomNav() {
+        binding.navView.visibility = View.GONE
+    }
+
+    private fun showAppBar() {
+        binding.appBarLayout.visibility = View.VISIBLE
+    }
+
+    private fun hideAppBar() {
+        binding.appBarLayout.visibility = View.GONE
+    }
+
 }

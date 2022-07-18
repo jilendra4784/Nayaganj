@@ -4,16 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import naya.ganj.app.data.mycart.model.LoginResponseModel
+import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 
-class LoginViewModel(val repo: AddressListRespositry) : ViewModel() {
+class OTPViewModel(val repo: AddressListRespositry) : ViewModel() {
 
-    val mutableLiveData = MutableLiveData<LoginResponseModel>()
+    val mutableLiveData = MutableLiveData<ApiResponseModel>()
 
-    fun getOTPRequest(jsonObject: JsonObject): LiveData<LoginResponseModel> {
+    fun getOTPRequest(jsonObject: JsonObject): LiveData<ApiResponseModel> {
 
         viewModelScope.launch {
             val result = repo.getOTPRequest(jsonObject)

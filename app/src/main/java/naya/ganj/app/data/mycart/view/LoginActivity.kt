@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
-import naya.ganj.app.data.mycart.viewmodel.LoginViewModel
+import naya.ganj.app.data.mycart.viewmodel.OTPViewModel
 import naya.ganj.app.databinding.ActivityLoginBinding
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant.MobileNumber
@@ -15,7 +15,7 @@ import com.google.gson.JsonObject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
-    lateinit var viewModel: LoginViewModel
+    lateinit var viewModel: OTPViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
-        )[LoginViewModel::class.java]
+        )[OTPViewModel::class.java]
 
         binding.btnNextButton.setOnClickListener {
             val mobileNumber: String = binding.textInputLayout.editText?.text.toString()
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.getOTPRequest(jsonObject).observe(this) {
             if (it.status) {
-                val intent = Intent(this@LoginActivity, OTPActivity::class.java)
+                val intent = Intent(this@LoginActivity, OTPVerifyActivity::class.java)
                 intent.putExtra(MobileNumber, mobileNumber)
                 startActivity(intent)
             } else {
