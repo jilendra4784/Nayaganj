@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.Nayaganj
@@ -19,19 +20,19 @@ import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
 import naya.ganj.app.databinding.ActivityMyCartBinding
-import naya.ganj.app.interfaces.OnSavedAmountListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
 
-class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSavedAmountListener {
+class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     lateinit var app: Nayaganj
     lateinit var myCartViewModel: MyCartViewModel
     lateinit var binding: ActivityMyCartBinding
     lateinit var myCartModel: MyCartModel
     private var addressId: String? = null
+    var orderId:String?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,19 +42,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
 
         myCartViewModel = ViewModelProvider(this).get(MyCartViewModel::class.java)
         app = applicationContext as Nayaganj
-
+        orderId=intent.getStringExtra(Constant.orderId)
         binding.includeToolbar.ivBackArrow.setOnClickListener { finish() }
         binding.includeToolbar.toolbarTitle.text = "My Cart"
 
         Log.e("TAG", "onCreate: Login Session " + app.user.getLoginSession())
-        if (app.user.getLoginSession()) {
-            binding.btnLoginButton.text = "Checkout"
-            getMyCartData(app.user.getUserDetails()?.userId.toString(), "")
-        } else {
-            binding.btnLoginButton.text = "Login/SignUp"
-            getLocalCartData()
-        }
-
         binding.btnChangeAddress.setOnClickListener {
             val intent = Intent(this@MyCartActivity, AddressListActivity::class.java)
             intent.putExtra("ADDRESS_ID", addressId)
@@ -65,22 +58,55 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                 if (addressId == null) {
                     startActivity(Intent(this@MyCartActivity, AddAddressActivity::class.java))
                 } else {
-                    val intent = Intent(this@MyCartActivity, PaymentOptionActivity::class.java)
-                    intent.putExtra("TOTAL_AMOUNT", binding.tvFinalAmount.text.toString())
-                    intent.putExtra("ADDRESS_ID", addressId)
-                    intent.putExtra("PROMO_CODE", "")
-                    intent.putExtra("WALLET_BALANCE", "0")
-                    startActivity(intent)
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val allProduct = AppDataBase.getInstance(this@MyCartActivity).productDao()
+                            .getProductList()
+                        if (allProduct.isNotEmpty()) {
+                            runOnUiThread {
+                                val intent =
+                                    Intent(this@MyCartActivity, PaymentOptionActivity::class.java)
+                                intent.putExtra(
+                                    "TOTAL_AMOUNT",
+                                    binding.tvFinalAmount.text.toString()
+                                )
+                                intent.putExtra("ADDRESS_ID", addressId)
+                                intent.putExtra("PROMO_CODE", "")
+                                intent.putExtra("WALLET_BALANCE", "0")
+                                startActivity(intent)
 
+                            }
+                        }
+                    }
                 }
+
             } else {
                 startActivity(Intent(this@MyCartActivity, LoginActivity::class.java))
             }
         }
 
-
         binding.btnShopNow.setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Thread {
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+        }.start()
+
+        if (app.user.getLoginSession()) {
+            binding.btnLoginButton.text = "Checkout"
+            if(orderId==null){
+                orderId=""
+            }
+
+            getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
+        } else {
+            binding.btnLoginButton.text = "Login/SignUp"
+            getLocalCartData()
         }
     }
 
@@ -101,6 +127,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.finalCheckoutLayout.visibility = View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
                 } else {
                     binding.progressBar.visibility = View.GONE
                     binding.finalCheckoutLayout.visibility = View.GONE
@@ -122,68 +149,39 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
         jsonObject.addProperty(Constant.ORDER_ID, orderId)
         myCartViewModel.getMyCartData(userId, jsonObject).observe(this@MyCartActivity) {
             myCartModel = it
-            setListData(it)
-
-            /* Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                 if (isAdded)
-                     calculateAmount()
-                 // setSavedAmount()
-             }, 300)*/
-
-            // Set Saved Amount
-            /* for (item in it.cartList) {
-                 lifecycleScope.launch(Dispatchers.IO) {
-                     val savedAmountModel =
-                         SavedAmountModel(
-                             item.productId,
-                             item.variantId.toInt(),
-                             item.discountPrice.toDouble()
-                         )
-
-                     val isItemExist = AppDataBase.getInstance(requireActivity()).productDao()
-                         .isSavedItemIsExist(item.productId, item.variantId.toInt())
-
-                     if (isItemExist) {
-                         AppDataBase.getInstance(requireActivity()).productDao()
-                             .updateAmount(
-                                 item.discountPrice.toDouble(),
-                                 item.productId,
-                                 item.variantId.toInt()
-                             )
-                     } else {
-                         AppDataBase.getInstance(requireActivity()).productDao()
-                             .insertSavedAmount(savedAmountModel)
-                     }
-                 }
-             }*/
-
-        }
-    }
-
-    private fun setListData(mModel: MyCartModel?) {
-        val myCartAdapter =
-            mModel?.let {
-                MyCartAdapter(
+            if (it.cartList.size > 0) {
+                val adapter = MyCartAdapter(
                     this@MyCartActivity,
                     it.cartList,
                     this@MyCartActivity,
-                    this@MyCartActivity
+                    this@MyCartActivity,
+                    app
                 )
-            }
-        binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
-        binding.rvMycartList.adapter = myCartAdapter
-        binding.nestedscrollview.isNestedScrollingEnabled = false
-        binding.progressBar.visibility = View.GONE
-        binding.mainConstraintLayout.visibility = View.VISIBLE
-        binding.finalCheckoutLayout.visibility = View.VISIBLE
+                binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
+                binding.nestedscrollview.isNestedScrollingEnabled = false
+                binding.rvMycartList.adapter = adapter
+                binding.progressBar.visibility = View.GONE
 
-        if (app.user.getLoginSession()) {
-            if (myCartModel.address != null) {
-                setAddressDetail(myCartModel.address.address)
-                binding.materialAddressCardview.visibility = View.VISIBLE
+                binding.mainConstraintLayout.visibility = View.VISIBLE
+
+                if (myCartModel.address != null) {
+                    setAddressDetail(myCartModel.address.address)
+                    binding.materialAddressCardview.visibility = View.VISIBLE
+                }
+                Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+                Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.emptyCartLayout.visibility = View.VISIBLE
+                Thread {
+                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
+                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+                }.start()
             }
         }
     }
+
 
     private fun setAddressDetail(address: MyCartModel.Address.Address) {
         addressId = myCartModel.address.id
@@ -198,44 +196,124 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
         action: String,
         productDetail: ProductDetail
     ) {
-        /* Utility().addRemoveItem(action, productId, variantId, promoCode)
-         if (totalAmount > 0) {
-             lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                 val isProductExist = async {
-                     Utility().isProductAvailable(
-                         requireActivity(),
-                         productId,
-                         variantId
-                     )
-                 }.await()
+        when (action) {
+            Constant.INSERT -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Utility().insertProduct(this@MyCartActivity, productDetail)
+                }
+                if (app.user.getLoginSession()) {
+                    Utility().addRemoveItem(
+                        app.user.getUserDetails()?.userId,
+                        "add",
+                        productDetail.productId,
+                        productDetail.variantId,
+                        ""
+                    )
+                }
+            }
+            Constant.ADD -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Utility().updateProduct(
+                        this@MyCartActivity,
+                        productDetail.productId,
+                        productDetail.variantId,
+                        productDetail.itemQuantity
+                    )
+                }
+                if (app.user.getLoginSession()) {
+                    Utility().addRemoveItem(
+                        app.user.getUserDetails()?.userId,
+                        Constant.ADD,
+                        productDetail.productId,
+                        productDetail.variantId,
+                        ""
+                    )
+                }
 
-                 if (isProductExist) {
-                     Utility().updateProduct(requireActivity(), productId, variantId, totalAmount)
+            }
+            Constant.REMOVE -> {
+                if (productDetail.itemQuantity > 0) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utility().updateProduct(
+                            this@MyCartActivity,
+                            productDetail.productId,
+                            productDetail.variantId,
+                            productDetail.itemQuantity
+                        )
+                    }
+                } else {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utility().deleteProduct(
+                            this@MyCartActivity,
+                            productDetail.productId,
+                            productDetail.variantId
+                        )
+                    }
+                }
 
-                 } else {
-                     Utility().insertProduct(requireActivity(), productId, variantId, totalAmount)
-                 }
-             }
-         } else {
-             lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                 Utility().deleteProduct(requireActivity(), productId, variantId)
-             }
-         }*/
+
+                if (app.user.getLoginSession()) {
+                    Utility().addRemoveItem(
+                        app.user.getUserDetails()?.userId,
+                        "remove",
+                        productDetail.productId,
+                        productDetail.variantId,
+                        ""
+                    )
+                }
+            }
+        }
         Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+
     }
 
     private fun calculateAmount() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val listOfProduct = Utility().getAllProductList(this@MyCartActivity)
-            runOnUiThread {
-                if (listOfProduct.isNotEmpty()) {
-                    var cartAmount = 0.0
-                    val totalAmount: Double
-                    for (item in listOfProduct) {
-                        cartAmount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
-                    }
-                    cartAmount = Utility().formatTotalAmount(cartAmount)
+        var cartAmount = 0.0
+        var totalAmount: Double
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (app.user.getLoginSession()) {
+                cartAmount = async {
+                    val cartList = AppDataBase.getInstance(this@MyCartActivity).productDao()
+                        .getCartItemList()
+                    if (cartList.isNotEmpty()) {
+                        for (item in cartList) {
+                            cartAmount += item.cartAmount
+                        }
+                    }
+                    return@async cartAmount
+                }.await()
+
+            } else {
+                cartAmount = async {
+                    val listOfProduct = Utility().getAllProductList(this@MyCartActivity)
+                    if (listOfProduct.isNotEmpty()) {
+                        for (item in listOfProduct) {
+                            cartAmount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
+                        }
+                    }
+                    return@async cartAmount
+                }.await()
+            }
+            Log.e("TAG", "Cart Amount: " + cartAmount)
+
+            withContext(Dispatchers.Main) {
+                if (cartAmount <= 0) {
+                    binding.finalCheckoutLayout.visibility = View.GONE
+                    binding.constraintCartAmountLayout.visibility = View.GONE
+                    binding.constraintOfferLayout.visibility = View.GONE
+                    binding.materialAddressCardview.visibility = View.GONE
+                    binding.rvMycartList.visibility = View.GONE
+                    binding.emptyCartLayout.visibility = View.VISIBLE
+                    binding.mainConstraintLayout.visibility = View.GONE
+                    Thread {
+                        AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
+                        AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+                        AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+                    }.start()
+                } else {
+                    cartAmount = Utility().formatTotalAmount(cartAmount)
                     if (app.user.getLoginSession()) {
                         if (cartAmount > myCartModel.deliveryChargesThreshHold) {
                             binding.tvDeliveryCharges.text = "0.0"
@@ -244,6 +322,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                             totalAmount = cartAmount + myCartModel.deliveryCharges
                             binding.tvDeliveryCharges.text = myCartModel.deliveryCharges.toString()
                         }
+                        binding.deliveryCardLayout.visibility = View.VISIBLE
+
                     } else {
                         totalAmount = cartAmount
                     }
@@ -251,58 +331,40 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnSav
                     binding.tvCartAmount.text = cartAmount.toString()
                     binding.tvTotalAmount.text = totalAmount.toString()
                     binding.tvFinalAmount.text = Utility().formatTotalAmount(totalAmount).toString()
-                } else {
-                    binding.finalCheckoutLayout.visibility = View.GONE
-                    binding.constraintCartAmountLayout.visibility = View.GONE
-                    binding.constraintOfferLayout.visibility = View.GONE
-                    binding.materialAddressCardview.visibility = View.GONE
-                    binding.rvMycartList.visibility = View.GONE
-                    binding.emptyCartLayout.visibility = View.VISIBLE
-                }
-            }
-        }
-    }
 
-    override fun onSavedAmount(productId: String, variantId: Int, amount: Double) {
+                    binding.mainConstraintLayout.visibility = View.VISIBLE
+                    binding.finalCheckoutLayout.visibility = View.VISIBLE
+                    binding.constraintCartAmountLayout.visibility = View.VISIBLE
+                    binding.constraintOfferLayout.visibility = View.VISIBLE
 
-        if (amount > 0) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val isItemExist = AppDataBase.getInstance(this@MyCartActivity).productDao()
-                    .isSavedItemIsExist(productId, variantId)
-                if (isItemExist) {
-                    AppDataBase.getInstance(this@MyCartActivity).productDao()
-                        .updateAmount(amount, productId, variantId)
+                    binding.rvMycartList.visibility = View.VISIBLE
+                    binding.emptyCartLayout.visibility = View.GONE
                 }
             }
 
-        } else {
-            lifecycleScope.launch(Dispatchers.IO) {
-                AppDataBase.INSTANCE?.productDao()
-                    ?.deleteAmount(productId, variantId)
-            }
         }
-        Handler(Looper.getMainLooper()).postDelayed({
-            setSavedAmount()
-        }, 300)
+
+
     }
 
-    private fun setSavedAmount() {
+    private fun loadSavedAmount() {
         var finalSaveAmount = 0.0
         lifecycleScope.launch(Dispatchers.IO) {
-            val listOfSavedAmount =
+            val savedAmountList =
                 AppDataBase.getInstance(this@MyCartActivity).productDao().getSavedAmountList()
-            if (!listOfSavedAmount.isNotEmpty()) {
-                withContext(Dispatchers.Main) {
-                    if (listOfSavedAmount.isNotEmpty())
-                        for (item in listOfSavedAmount) {
-                            finalSaveAmount += item.totalAmount
-                        }
+            if (savedAmountList.isNotEmpty()) {
+                for (item in savedAmountList) {
+                    finalSaveAmount += item.totalAmount
+                }
+                runOnUiThread {
                     binding.tvFinalSavedAmount.text =
                         Utility().formatTotalAmount(finalSaveAmount).toString()
                 }
             }
         }
+
     }
+
 
     override fun onBackPressed() {
         super.onBackPressed()

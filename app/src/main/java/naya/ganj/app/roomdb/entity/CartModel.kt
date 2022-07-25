@@ -4,18 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ProductDetail(
+data class CartModel(
     val productId: String,
     val variantId: String,
     var itemQuantity: Int,
-    val productName: String,
-    val imageUrl: String,
-    val vPrice: Double,
-    val vDiscount: Int,
-    val vUnitQuantity: Int,
-    val vUnit: String,
-    val totalVariantQuantity: Int
+    val cartAmount: Double,
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
 }
+

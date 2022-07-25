@@ -88,8 +88,7 @@ class PaymentOptionActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.addressId, addressId)
         jsonObject.addProperty(Constant.mode, mode)
         jsonObject.addProperty(Constant.promoCodeId, "")
-        jsonObject.addProperty(Constant.cashBackAmount, "")
-
+        jsonObject.addProperty(Constant.cashBackAmount, 0)
 
         viewmodel.orderPlaceRequest(jsonObject).observe(this) {
             Log.e("TAG", "placeOrderRequest: $it")

@@ -5,7 +5,7 @@ import naya.ganj.app.data.category.model.*
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
-import org.json.JSONObject
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -43,10 +43,19 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_CHECK_PRODUCT_IN_CART_URL)
     fun checkProductInCartRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Call<CheckProductInCartModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_REMOVE_ITEM_URL)
+    fun removeProduct(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Call<ApiResponseModel>
 
 
     @Headers("Content-Type: application/json")
@@ -147,12 +156,12 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Response<LoginResponseModel>
 
-    @Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST(URLConstant.URL_SYNCH_CARTDATA_URL)
     suspend fun synchDataRequest(
         @Header("userid") userid: String,
         @Header("devicetype") d: String,
-        @Body jsonObject: JsonObject
+        @Body jsonObject: RequestBody
     ): Response<ApiResponseModel>
 
 

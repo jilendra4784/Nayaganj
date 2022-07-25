@@ -9,6 +9,7 @@ object URLConstant {
     const val ADD_REMOVE_URL = "createCart"
     const val URL_MYCART_URL = "getCart"
     const val URL_CHECK_PRODUCT_IN_CART_URL = "checkProductInCart"
+    const val URL_REMOVE_ITEM_URL = "deleteProductFromCart"
     const val URL_PRODUCT_DETAIL_URL = "getProductDetails"
     const val URL_ADDRESS_LIST_URL = "getAddress"
     const val URL_ADD_ADDRESS_URL = "saveAddress"

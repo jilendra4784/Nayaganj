@@ -105,9 +105,11 @@ class SplashActivity : AppCompatActivity() {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                     app.user.setLoginSession(true)
                     app.user.saveUserDetail(it.userDetails)
+                    finish()
                 }
             } else {
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
                 Toast.makeText(this@SplashActivity, it.msg, Toast.LENGTH_SHORT).show()
             }
         }

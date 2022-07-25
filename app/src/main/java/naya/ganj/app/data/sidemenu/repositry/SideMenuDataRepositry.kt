@@ -6,7 +6,7 @@ import com.google.gson.JsonObject
 
 class SideMenuDataRepositry(val api : ApiInterface) {
 
-   suspend fun getMyOrderList()=api.getMyOrderList("",Constant.DEVICE_TYPE)
+   suspend fun getMyOrderList(userid:String)=api.getMyOrderList(userid,Constant.DEVICE_TYPE)
 
-   suspend fun getOrderDetailRequest(jsonObject: JsonObject) =api.getOrderDetailRequest("",Constant.DEVICE_TYPE,jsonObject)
+   suspend fun getOrderDetailRequest(userId:String,jsonObject: JsonObject) =api.getOrderDetailRequest(userId,Constant.DEVICE_TYPE,jsonObject)
 }

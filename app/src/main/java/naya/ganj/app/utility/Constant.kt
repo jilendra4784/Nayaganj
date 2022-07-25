@@ -42,9 +42,11 @@ object Constant {
     const val LOGIN_SESSION = "login_session"
     const val PREFS_NAME = "NAYAGANJ"
     const val LANGUAGE = "language"
-
     const val isListActivity = "islistactivity"
 
+    const val INSERT = "insert"
+    const val ADD = "add"
+    const val REMOVE = "remove"
 
 
 }

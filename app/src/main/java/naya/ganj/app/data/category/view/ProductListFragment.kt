@@ -78,7 +78,7 @@ class ProductListFragment : Fragment(), OnclickAddOremoveItemListener {
                     binding.productList.adapter = ProductListAdapter(
                         requireActivity(),
                         requireActivity(),
-                        it.productList, productListFragment
+                        it.productList, productListFragment, app
                     )
                 }
             }

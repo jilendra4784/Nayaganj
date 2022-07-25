@@ -235,7 +235,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

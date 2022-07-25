@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:checkable="true"
-    android:clickable="true"
     app:cardElevation="@dimen/_5sdp"
     app:cardUseCompatPadding="true"
     android:focusable="true"
@@ -218,7 +216,7 @@
             android:background="@drawable/bg_primary_border"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:visibility="visible"
+            android:visibility="gone"
             android:textSize="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_imagview"
             app:layout_constraintEnd_toEndOf="@+id/iv_imagview"
@@ -226,6 +224,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_imagview"
             app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/iv_Delete"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_margin="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_delete_icon" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

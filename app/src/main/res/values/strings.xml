@@ -29,4 +29,5 @@
     <string name="check_your_order">Check Your Order</string>
     <string name="empty_cart_message">Enjoy and continue shopping\nwith <b><font fgcolor="red">NAYA GANJ!</font></b> </string>
     <string name="otp_verification">OTP Verification</string>
+    <string name="user_name">Nayaganj User</string>
 </resources>

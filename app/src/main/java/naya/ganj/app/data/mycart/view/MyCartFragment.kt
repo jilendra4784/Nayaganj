@@ -23,14 +23,13 @@ import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
 import naya.ganj.app.databinding.FragmentMycartLayoutBinding
-import naya.ganj.app.interfaces.OnSavedAmountListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant.ORDER_ID
 import naya.ganj.app.utility.Utility
 
-class MyCartFragment : Fragment(), OnclickAddOremoveItemListener, OnSavedAmountListener {
+class MyCartFragment : Fragment(), OnclickAddOremoveItemListener {
 
     lateinit var myCartViewModel: MyCartViewModel
     lateinit var binding: FragmentMycartLayoutBinding
@@ -170,7 +169,13 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener, OnSavedAmountL
 
     private fun setListData(mModel: MyCartModel?) {
         val myCartAdapter =
-            mModel?.let { MyCartAdapter(requireActivity(), it.cartList, this, this) }
+            mModel?.let { MyCartAdapter(
+                requireActivity(),
+                it.cartList,
+                this,
+                requireActivity(),
+                app
+            ) }
         binding.rvMycartList.layoutManager = LinearLayoutManager(requireActivity())
         binding.rvMycartList.adapter = myCartAdapter
         binding.nestedscrollview.isNestedScrollingEnabled = false
@@ -261,30 +266,6 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener, OnSavedAmountL
                 }*/
             }
         }
-    }
-
-    override fun onSavedAmount(productId: String, variantId: Int, amount: Double) {
-
-        if (amount > 0) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val isItemExist = AppDataBase.getInstance(requireActivity()).productDao()
-                    .isSavedItemIsExist(productId, variantId)
-                if (isItemExist) {
-                    AppDataBase.getInstance(requireActivity()).productDao()
-                        .updateAmount(amount, productId, variantId)
-                }
-            }
-
-        } else {
-            lifecycleScope.launch(Dispatchers.IO) {
-                AppDataBase.INSTANCE?.productDao()
-                    ?.deleteAmount(productId, variantId)
-            }
-        }
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (isAdded)
-                setSavedAmount()
-        }, 300)
     }
 
 

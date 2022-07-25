@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.model.LoginResponseModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 class LoginResponseViewModel(val repo: AddressListRespositry) : ViewModel() {
@@ -34,7 +35,7 @@ class LoginResponseViewModel(val repo: AddressListRespositry) : ViewModel() {
         return  mutableLiveData
     }
 
-    fun synchDataRequest(userId: String, jsonObject: JsonObject) : LiveData<ApiResponseModel>{
+    fun synchDataRequest(userId: String, jsonObject: RequestBody) : LiveData<ApiResponseModel>{
         viewModelScope.launch {
             val result=repo.synchDataRequest(userId,jsonObject)
             apiResponseData.value=result.body()

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -20,9 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.data.home.view.HomeFragmentDirections
+import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.MyOrderActivity
 import naya.ganj.app.databinding.ActivityMainBinding
+import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Utility
 
@@ -43,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         //binding.navView.menu.forEach { it.isEnabled = true }
         orderID = intent.getStringExtra("ORDER_ID")
         if (orderID != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                AppDataBase.getInstance(this@MainActivity).productDao().deleteAllProduct()
+            }
             val action = HomeFragmentDirections.actionMainToMycart(orderID!!)
             findNavController(R.id.nav_host_fragment_activity_main).navigate(action)
         }
@@ -70,7 +76,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_mycart -> {
                     Log.e("TAG", "onCreate: ")
 
-                    startActivity(Intent(this@MainActivity, MyCartActivity::class.java))
+                    val intent = Intent(this@MainActivity, MyCartActivity::class.java)
+                    intent.putExtra("ORDER_ID", orderID)
+                    startActivity(intent)
                 }
                 else -> {
                     //hideBottomNav()
@@ -127,6 +135,39 @@ class MainActivity : AppCompatActivity() {
 
         // Todo Hide Side Menu Item
         binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
+
+        val userName =
+            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
+        val mobileNo =
+            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_mobile) as TextView
+        val llLoginSignUp = binding.sideNavigation.getHeaderView(0)
+            .findViewById(R.id.ll_login_signup_layout) as LinearLayout
+        val llUserInfoLayout = binding.sideNavigation.getHeaderView(0)
+            .findViewById(R.id.ll_user_info_layout) as LinearLayout
+
+
+        if (app.user.getLoginSession()) {
+            if (app.user.getUserDetails()?.name.equals("")) {
+                userName.text = resources.getString(R.string.user_name)
+            } else {
+                userName.text = app.user.getUserDetails()?.name
+            }
+            mobileNo.text = app.user.getUserDetails()?.mNumber
+            llUserInfoLayout.visibility = View.VISIBLE
+        } else {
+            llLoginSignUp.visibility = View.VISIBLE
+        }
+
+        binding.sideNavigation.getHeaderView(0).setOnClickListener {
+            if (!app.user.getLoginSession()) {
+                startActivity(
+                    Intent(
+                        this@MainActivity,
+                        LoginActivity::class.java
+                    )
+                )
+            }
+        }
     }
 
     private fun showLogoutDialog() {

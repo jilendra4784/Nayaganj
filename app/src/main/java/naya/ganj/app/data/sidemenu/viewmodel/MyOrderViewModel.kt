@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 class MyOrderViewModel(val repositry: SideMenuDataRepositry) : ViewModel() {
     private val mutableLiveData = MutableLiveData<MyOrderListModel>()
 
-    fun getMyOrderList(): LiveData<MyOrderListModel> {
+    fun getMyOrderList(userid: String): LiveData<MyOrderListModel> {
         viewModelScope.launch {
-            val result = repositry.getMyOrderList()
+            val result = repositry.getMyOrderList(userid)
             mutableLiveData.value = result.body()
         }
         return mutableLiveData
