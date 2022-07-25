@@ -24,6 +24,7 @@ import naya.ganj.app.data.home.view.HomeFragmentDirections
 import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.MyOrderActivity
+import naya.ganj.app.data.sidemenu.view.PrivacyPolicyActivity
 import naya.ganj.app.databinding.ActivityMainBinding
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                     showMessage(item.title.toString())
                 }
                 R.id.privacy_policy -> {
-                    showMessage(item.title.toString())
+                    startActivity(Intent(this@MainActivity, PrivacyPolicyActivity::class.java))
                 }
                 R.id.logout -> {
                     showLogoutDialog()
@@ -134,6 +135,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Todo Hide Side Menu Item
+        binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.myvirtualorder).isVisible =
+            app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
 
         val userName =
