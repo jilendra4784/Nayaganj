@@ -13,7 +13,7 @@
         android:layout_height="@dimen/_80sdp"
         android:layout_marginStart="20dp"
         android:src="@drawable/demo_image"
-        app:civ_border_color="#FF000000"
+        app:civ_border_color="@color/purple_700"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,8 +37,8 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="Jilendra Singh"
-            android:textSize="@dimen/_18sdp"
             android:textStyle="bold"
+            android:textSize="@dimen/_18sdp"
             tools:layout_editor_absoluteX="124dp"
             tools:layout_editor_absoluteY="6dp" />
 
@@ -49,6 +49,7 @@
             android:fontFamily="sans-serif"
             android:text="9910494784"
             android:textSize="@dimen/_15sdp"
+            android:textColor="#565656"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="223dp"
             tools:layout_editor_absoluteY="27dp" />

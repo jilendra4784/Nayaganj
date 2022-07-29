@@ -65,12 +65,10 @@ class CategoryFragment : Fragment() {
 
     private fun getCategoryData() {
         categoryViewModel?.getCategoryData()?.observe(requireActivity(), Observer {
-
-            it.let {
+            if (it != null) {
                 cateModel = it
                 adapter = ExpandableListAdapter(it)
                 binding.expandablelist.setAdapter(adapter)
-
             }
         })
     }

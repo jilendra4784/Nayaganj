@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".data.sidemenu.view.CustomerSupportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".data.sidemenu.view.AboutUsActivity"
+            android:exported="false" />
+        <activity
             android:name=".data.sidemenu.view.PrivacyPolicyActivity"
             android:exported="false" />
         <activity
@@ -61,7 +67,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

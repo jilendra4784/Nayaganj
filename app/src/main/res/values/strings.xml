@@ -30,4 +30,6 @@
     <string name="empty_cart_message">Enjoy and continue shopping\nwith <b><font fgcolor="red">NAYA GANJ!</font></b> </string>
     <string name="otp_verification">OTP Verification</string>
     <string name="user_name">Nayaganj User</string>
+    <string name="about_us_text">NayaGanj is India’s online spices and grocery store. Choose from a wide range of options in every category, exclusively handpicked to help you find the best quality available at the lowest prices. Select a time slot for delivery and your order will be delivered right to your doorstep, anywhere in Kanpur, Lucknow, and Varanasi You can pay online using your debit/credit card or by cash on delivery. We guarantee on-time delivery and the best quality.</string>
+    <string name="support_mail">info@nayaganjsupport.com</string>
 </resources>

@@ -2,7 +2,6 @@ package naya.ganj.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -20,13 +20,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import naya.ganj.app.data.home.view.HomeFragmentDirections
 import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
+import naya.ganj.app.data.sidemenu.view.AboutUsActivity
+import naya.ganj.app.data.sidemenu.view.CustomerSupportActivity
 import naya.ganj.app.data.sidemenu.view.MyOrderActivity
 import naya.ganj.app.data.sidemenu.view.PrivacyPolicyActivity
 import naya.ganj.app.databinding.ActivityMainBinding
-import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Utility
 
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var orderID: String? = null
     var notificationsBadge: View? = null
+    lateinit var navController: NavController
     lateinit var app: Nayaganj
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,16 +44,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         app = applicationContext as Nayaganj
-
-        //binding.navView.menu.forEach { it.isEnabled = true }
-        orderID = intent.getStringExtra("ORDER_ID")
-        if (orderID != null) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                AppDataBase.getInstance(this@MainActivity).productDao().deleteAllProduct()
-            }
-            val action = HomeFragmentDirections.actionMainToMycart(orderID!!)
-            findNavController(R.id.nav_host_fragment_activity_main).navigate(action)
-        }
 
         toggle = ActionBarDrawerToggle(
             this,
@@ -64,26 +55,17 @@ class MainActivity : AppCompatActivity() {
 
         toggle.syncState()
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        navController = findNavController(R.id.nav_host_fragment_activity_main)
         binding.navView.setupWithNavController(navController)
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            showAppBar()
-            showBottomNav()
             when (destination.id) {
                 R.id.navigation_home -> {}
                 R.id.navigation_dashboard -> {}
                 R.id.navigation_notifications -> {}
                 R.id.navigation_mycart -> {
-                    Log.e("TAG", "onCreate: ")
-
                     val intent = Intent(this@MainActivity, MyCartActivity::class.java)
                     intent.putExtra("ORDER_ID", orderID)
                     startActivity(intent)
-                }
-                else -> {
-                    //hideBottomNav()
-                    // hideBottomNav()
                 }
             }
         }
@@ -91,7 +73,8 @@ class MainActivity : AppCompatActivity() {
         binding.sideNavigation.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
-                    showMessage(item.title.toString())
+                    isDrawerIsOpen()
+
                 }
                 R.id.myaccount -> {
                     showMessage(item.title.toString())
@@ -102,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.my_order -> {
-                    checkDrawerIsOpen()
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity, MyOrderActivity::class.java))
                 }
                 R.id.myvirtualorder -> {
@@ -118,10 +101,10 @@ class MainActivity : AppCompatActivity() {
                     showMessage(item.title.toString())
                 }
                 R.id.customer_support -> {
-                    showMessage(item.title.toString())
+                    startActivity(Intent(this@MainActivity, CustomerSupportActivity::class.java))
                 }
                 R.id.about_us -> {
-                    showMessage(item.title.toString())
+                    startActivity(Intent(this@MainActivity, AboutUsActivity::class.java))
                 }
                 R.id.privacy_policy -> {
                     startActivity(Intent(this@MainActivity, PrivacyPolicyActivity::class.java))
@@ -183,7 +166,7 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(
                 "YES"
             ) { dialogInterface, i ->
-                checkDrawerIsOpen()
+                isDrawerIsOpen()
                 app.user.clearSharedPreference()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -212,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun checkDrawerIsOpen() {
+    private fun isDrawerIsOpen() {
         if (binding.drawerlayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerlayout.closeDrawer(Gravity.LEFT); //CLOSE Nav Drawer!
         } else {
@@ -231,22 +214,6 @@ class MainActivity : AppCompatActivity() {
             textView.text = count
         }
         binding.navView.addView(notificationsBadge)
-    }
-
-    private fun showBottomNav() {
-        binding.navView.visibility = View.VISIBLE
-    }
-
-    private fun hideBottomNav() {
-        binding.navView.visibility = View.GONE
-    }
-
-    private fun showAppBar() {
-        binding.appBarLayout.visibility = View.VISIBLE
-    }
-
-    private fun hideAppBar() {
-        binding.appBarLayout.visibility = View.GONE
     }
 
 }

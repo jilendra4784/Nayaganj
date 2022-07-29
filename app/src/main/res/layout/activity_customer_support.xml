@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:src="@drawable/splash_logo">
+
+    </ImageView>
+
+
+    <LinearLayout
+        android:id="@+id/customer_support"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Dear"
+            android:textSize="@dimen/_12sdp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="Customer"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/_12sdp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="thank you for"
+            android:textSize="@dimen/_12sdp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/customer_support1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/customer_support"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="using our service, you can mail us on"
+        android:textSize="@dimen/_12sdp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/tv_email_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/customer_support1"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_regular"
+        android:text="@string/support_mail"
+        android:textColor="@color/red_color"
+        android:textSize="@dimen/_12sdp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/customer_support3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_email_address"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="for any query."
+        android:textSize="@dimen/_12sdp">
+
+    </TextView>
+</RelativeLayout>
