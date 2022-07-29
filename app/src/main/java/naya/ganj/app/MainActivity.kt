@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.home -> {
                     isDrawerIsOpen()
+                    moveToHomeFragment()
 
                 }
                 R.id.myaccount -> {
@@ -81,7 +82,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.shop_category -> {
-                    showMessage(item.title.toString())
+                    isDrawerIsOpen()
+                    moveToDashboard()
+
                 }
 
                 R.id.my_order -> {
@@ -155,6 +158,26 @@ class MainActivity : AppCompatActivity() {
                         LoginActivity::class.java
                     )
                 )
+            }
+        }
+    }
+
+    private fun moveToDashboard() {
+        if (navController.currentDestination?.id != R.id.navigation_dashboard) {
+            if (navController.currentDestination?.id == R.id.navigation_home) {
+                findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_home_to_navigation_dashboard)
+            } else {
+                findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_notifications_to_navigation_dashboard)
+            }
+        }
+    }
+
+    private fun moveToHomeFragment() {
+        if (navController.currentDestination?.id != R.id.navigation_home) {
+            if (navController.currentDestination?.id == R.id.navigation_notifications) {
+                findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_notifications_to_navigation_home)
+            } else {
+                findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_dashboard_to_navigation_home)
             }
         }
     }

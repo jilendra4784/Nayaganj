@@ -3,8 +3,12 @@ package naya.ganj.app.data.sidemenu.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.revesoft.revechatsdk.model.VisitorInfo
+import com.revesoft.revechatsdk.ui.activity.ReveChatActivity
+import com.revesoft.revechatsdk.utils.ReveChat
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.ActivityCustomerSupportBinding
 
@@ -44,14 +48,15 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         binding.toolbar.ivChatIcon.visibility = View.VISIBLE
         binding.toolbar.ivChatIcon.setOnClickListener {
-            /*ReveChat.init("4447722")
+            Log.e("TAG", "onCreate: " + userName + "," + mNumber + "," + deviceToken)
+            ReveChat.init("4447722")
             val visitorInfo = VisitorInfo.Builder()
                 .name(userName).email("")
                 .phoneNumber(mNumber).build()
 
             ReveChat.setVisitorInfo(visitorInfo)
             ReveChat.setDeviceTokenId(deviceToken)
-            startActivity(Intent(this, ReveChatActivity::class.java))*/
+            startActivity(Intent(this, ReveChatActivity::class.java))
         }
 
     }

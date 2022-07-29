@@ -91,6 +91,7 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation('com.revesoft.revechatsdk:revechatsdk:1.0.14.3.0')
 
 
 }
