@@ -22,10 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
-import naya.ganj.app.data.sidemenu.view.AboutUsActivity
-import naya.ganj.app.data.sidemenu.view.CustomerSupportActivity
-import naya.ganj.app.data.sidemenu.view.MyOrderActivity
-import naya.ganj.app.data.sidemenu.view.PrivacyPolicyActivity
+import naya.ganj.app.data.sidemenu.view.*
 import naya.ganj.app.databinding.ActivityMainBinding
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Utility
@@ -78,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 R.id.myaccount -> {
-                    showMessage(item.title.toString())
+                    startActivity(Intent(this@MainActivity,MyAccountActivity::class.java))
                 }
 
                 R.id.shop_category -> {
