@@ -12,6 +12,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.PaymentOptionsViewModel
@@ -21,13 +25,11 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
 import naya.ganj.app.utility.Utility
-import com.google.gson.JsonObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class PaymentOptionActivity : AppCompatActivity() {
     lateinit var binding: ActivityPaymentOptionBinding
     lateinit var viewmodel: PaymentOptionsViewModel
+    lateinit var app: Nayaganj
 
     var amount = ""
     var addressId = ""
@@ -38,6 +40,7 @@ class PaymentOptionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPaymentOptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        app = applicationContext as Nayaganj
 
         binding.include3.ivBackArrow.setOnClickListener { finish() }
         binding.include3.toolbarTitle.text = "Make Payment"
@@ -90,7 +93,7 @@ class PaymentOptionActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.promoCodeId, "")
         jsonObject.addProperty(Constant.cashBackAmount, 0)
 
-        viewmodel.orderPlaceRequest(jsonObject).observe(this) {
+        viewmodel.orderPlaceRequest(app.user.getUserDetails()?.userId, jsonObject).observe(this) {
             Log.e("TAG", "placeOrderRequest: $it")
             it.let {
                 if (it.status) {

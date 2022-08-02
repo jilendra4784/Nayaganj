@@ -12,9 +12,17 @@ class SideMenuViewModelFactory constructor(val repo: SideMenuDataRepositry) :
             MyOrderViewModel(this.repo) as T
         } else if (modelClass.isAssignableFrom(OrderDetailViewModel::class.java)) {
             OrderDetailViewModel(this.repo) as T
-        } else {
+        }else if (modelClass.isAssignableFrom(UpdateProfileActivityViewModel::class.java)) {
+            UpdateProfileActivityViewModel(this.repo) as T
+        } else if (modelClass.isAssignableFrom(VirtualOrderViewModel::class.java)) {
+            VirtualOrderViewModel(this.repo) as T
+        }else if (modelClass.isAssignableFrom(RetailerViewModel::class.java)) {
+            RetailerViewModel(this.repo) as T
+        }else {
             throw IllegalArgumentException("ViewModel Not Found")
         }
+
+
 
     }
 }

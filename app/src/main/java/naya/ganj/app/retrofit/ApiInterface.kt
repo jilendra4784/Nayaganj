@@ -5,6 +5,7 @@ import naya.ganj.app.data.category.model.*
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
+import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
@@ -110,7 +111,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_CHECKOUT_URL)
     suspend fun orderPlaceRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<OrderPlacedModel>
@@ -122,6 +123,20 @@ interface ApiInterface {
         @Header("devicetype") d: String
     ): Response<MyOrderListModel>
 
+    @Headers("Content-Type: application/json")
+    @GET(URLConstant.URL_MY_VIRTUAL_ORDER_LIST_URL)
+    suspend fun getMyVirtualOrderList(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String
+    ): Response<VirtualOrderModel>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_RETAILER_URL)
+    suspend fun sendRetailerRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_ORDER_DETAIL_URL)
@@ -130,6 +145,29 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<OrderDetailModel>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_UPDATE_USER_DETAIL_URL)
+    suspend fun updateUserDetailRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<LoginResponseModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_UPDATE_USER_DETAIL_URL)
+    suspend fun updateMobileNumber(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+
+
+
+
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_GET_OTP_URL)
@@ -163,9 +201,6 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: RequestBody
     ): Response<ApiResponseModel>
-
-
-
 
 
     @Headers("Content-Type: application/json")

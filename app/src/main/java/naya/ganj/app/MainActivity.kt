@@ -95,7 +95,12 @@ class MainActivity : AppCompatActivity() {
                     showMessage(item.title.toString())
                 }
                 R.id.share_App -> {
-                    showMessage(item.title.toString())
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+                    sendIntent.type = "text/plain"
+                    startActivity(sendIntent)
                 }
                 R.id.refer_earn -> {
                     showMessage(item.title.toString())
@@ -124,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
+
 
         val userName =
             binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView

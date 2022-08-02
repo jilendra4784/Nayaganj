@@ -23,8 +23,8 @@ class AddressListRespositry(var apiInterface: ApiInterface) {
     suspend fun setAddress(jsonObject: JsonObject) =
         apiInterface.setAddress("", Constant.DEVICE_TYPE, jsonObject)
 
-    suspend fun orderPlaceRequest(jsonObject: JsonObject) =
-        apiInterface.orderPlaceRequest("", Constant.DEVICE_TYPE, jsonObject)
+    suspend fun orderPlaceRequest(userId: String?,jsonObject: JsonObject) =
+        apiInterface.orderPlaceRequest(userId, Constant.DEVICE_TYPE, jsonObject)
 
 
     suspend fun getOTPRequest(jsonObject: JsonObject) =

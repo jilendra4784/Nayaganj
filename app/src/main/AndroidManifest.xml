@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".data.sidemenu.view.RetailerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".data.sidemenu.view.MyVirtualActivity"
+            android:exported="false" />
+        <activity
             android:name=".data.sidemenu.view.UpdateProfileActivity"
             android:exported="false" />
         <activity

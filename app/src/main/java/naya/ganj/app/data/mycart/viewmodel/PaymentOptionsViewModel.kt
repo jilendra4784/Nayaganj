@@ -13,9 +13,9 @@ class PaymentOptionsViewModel(var repo: AddressListRespositry) : ViewModel() {
 
      private var mutableLiveData= MutableLiveData<OrderPlacedModel>()
 
-    fun orderPlaceRequest(jsonObject: JsonObject): LiveData<OrderPlacedModel> {
+    fun orderPlaceRequest(userId:String?,jsonObject: JsonObject): LiveData<OrderPlacedModel> {
         viewModelScope.launch {
-            val result = repo.orderPlaceRequest(jsonObject)
+            val result = repo.orderPlaceRequest(userId,jsonObject)
             mutableLiveData.value = result.body()
         }
         return mutableLiveData

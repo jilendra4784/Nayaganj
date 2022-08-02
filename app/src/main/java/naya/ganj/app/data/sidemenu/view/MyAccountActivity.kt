@@ -22,16 +22,21 @@ class MyAccountActivity : AppCompatActivity() {
         app=applicationContext as Nayaganj
         binding.include10.ivBackArrow.setOnClickListener { finish() }
         binding.include10.toolbarTitle.text = "My Account"
-
         binding.cvMyOrder.setOnClickListener { startActivity(Intent(this@MyAccountActivity, MyOrderActivity::class.java)) }
+        binding.cvMyVirtualOrder.setOnClickListener{startActivity(Intent(this@MyAccountActivity, MyVirtualActivity::class.java))}
         binding.cvMyaddress.setOnClickListener{startActivity(Intent(this@MyAccountActivity, AddressListActivity::class.java))}
         binding.cvCustomerSupport.setOnClickListener{startActivity(Intent(this@MyAccountActivity, CustomerSupportActivity::class.java))}
         binding.cvAboutUs.setOnClickListener{startActivity(Intent(this@MyAccountActivity, AboutUsActivity::class.java))}
         binding.cvLogout.setOnClickListener{ showLogoutDialog() }
         binding.ivEdit.setOnClickListener{startActivity(Intent(this@MyAccountActivity, UpdateProfileActivity::class.java))}
-
-
-
+        binding.cvShare.setOnClickListener{
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" +"naya.ganj.app" )
+            sendIntent.type = "text/plain"
+            startActivity(sendIntent)
+        }
+        binding.cvRetailer.setOnClickListener{startActivity(Intent(this@MyAccountActivity, RetailerActivity::class.java))}
     }
     private fun showLogoutDialog() {
         MaterialAlertDialogBuilder(this@MyAccountActivity)
@@ -51,5 +56,11 @@ class MyAccountActivity : AppCompatActivity() {
                 "CANCEL"
             ) { dialogInterface, i -> dialogInterface.dismiss() }
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tvuUsername.text = app.user.getUserDetails()?.name
+        binding.tvMobile.text = app.user.getUserDetails()?.mNumber
     }
 }

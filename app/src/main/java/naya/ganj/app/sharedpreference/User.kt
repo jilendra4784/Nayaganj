@@ -11,13 +11,12 @@ class User(context: Context) {
     private val sharedPref: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun saveUserDetail(userDetails: LoginResponseModel.UserDetails) {
+    fun saveUserDetail(userDetails: LoginResponseModel.UserDetails?) {
         val editor: SharedPreferences.Editor = sharedPref.edit()
         val gson = Gson()
         val json = gson.toJson(userDetails)
         editor.putString(Constant.USER_DETAILS, json)
         editor.apply()
-
     }
 
     fun getUserDetails(): LoginResponseModel.UserDetails? {

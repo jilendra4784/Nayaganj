@@ -22,11 +22,11 @@ data class LoginResponseModel(
         @SerializedName("deviceToken")
         val deviceToken: String,
         @SerializedName("emailId")
-        val emailId: String,
+        var emailId: String,
         @SerializedName("mNumber")
         val mNumber: String,
         @SerializedName("name")
-        val name: String,
+        var name: String,
         @SerializedName("role")
         val role: String,
         @SerializedName("userId")

@@ -18,11 +18,15 @@ object URLConstant {
     const val URL_SET_ADDRESS_URL = "setAddress"
     const val URL_CHECKOUT_URL = "checkOut"
     const val URL_MY_ORDER_LIST_URL = "ordersList"
+    const val URL_MY_VIRTUAL_ORDER_LIST_URL = "getVirtualOrdersList"
+    const val URL_RETAILER_URL = "saveRetailer"
+
     const val URL_ORDER_DETAIL_URL = "orderDetails"
     const val URL_GET_OTP_URL = "sendOtp"
     const val URL_LOGIN_URL = "login"
     const val URL_AUTO_LOGIN_URL = "autoLogin"
     const val URL_SYNCH_CARTDATA_URL = "syncCartWithLocalDb"
     const val URL_UPDATE_DETAIL_URL = "updateProfile"
+    const val URL_UPDATE_USER_DETAIL_URL = "updateProfile"
 
 }

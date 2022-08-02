@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvu_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -52,16 +52,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/tv_mobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="9910494784"
             android:textSize="@dimen/_15sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="@+id/tvu_username"
             app:layout_constraintHorizontal_bias="0.405"
-            app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/tvu_username"
+            app:layout_constraintTop_toBottomOf="@+id/tvu_username"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
@@ -128,6 +128,7 @@
             android:background="@color/gray" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_my_virtual_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -227,6 +228,7 @@
             android:background="@color/gray" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_retailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -261,6 +263,7 @@
             android:background="@color/gray" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
