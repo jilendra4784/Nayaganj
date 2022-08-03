@@ -30,7 +30,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <fragment
             android:id="@+id/nav_host_fragment_activity_main"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -48,7 +47,9 @@
             android:id="@+id/nav_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/white"
+            app:itemIconTint="@drawable/bottom_navigation_selector"
+            app:itemTextColor="@color/red"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +57,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment_activity_main"
             app:layout_constraintVertical_bias="1.0"
-
             app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

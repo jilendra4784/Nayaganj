@@ -43,6 +43,8 @@ object Constant {
     const val PREFS_NAME = "NAYAGANJ"
     const val LANGUAGE = "language"
     const val isListActivity = "islistactivity"
+    const val categoryId = "categoryId"
+    const val text="text"
 
     const val INSERT = "insert"
     const val ADD = "add"

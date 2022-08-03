@@ -65,12 +65,27 @@
             android:id="@+id/action_navigation_mycart_to_navigation_home2"
             app:destination="@id/navigation_home"
             app:popUpTo="@id/navigation_home"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/productListFragment"
-        android:name="naya.ganj.app.data.category.view.ProductListFragment"
-        android:label="ProductListFragment">
+        android:id="@+id/navigation_search"
+        android:name="naya.ganj.app.data.search.view.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_home2"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
+
     </fragment>
+
+
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="naya.ganj.app.data.search.ProductListFragment"
+        android:label="ProductListFragment" />
+
 </navigation>

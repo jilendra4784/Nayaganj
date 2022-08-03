@@ -35,4 +35,6 @@
     <string name="be_a_retailer">Be a Retailer</string>
     <string name="my_wallet">My Wallet</string>
     <string name="my_address">My Address</string>
+    <string name="search">Search</string>
+    <string name="categories">Categories</string>
 </resources>

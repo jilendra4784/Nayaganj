@@ -211,5 +211,17 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>
 
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_SEARCH_PRODUCT_LIST_URL)
+    suspend fun getSearchDataRequest(
+        @Header("text") text: String,
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ProductListModel>
+
+
+
+
 
 }

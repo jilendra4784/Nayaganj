@@ -28,5 +28,6 @@ object URLConstant {
     const val URL_SYNCH_CARTDATA_URL = "syncCartWithLocalDb"
     const val URL_UPDATE_DETAIL_URL = "updateProfile"
     const val URL_UPDATE_USER_DETAIL_URL = "updateProfile"
+    const val URL_SEARCH_PRODUCT_LIST_URL = "getProductList"
 
 }

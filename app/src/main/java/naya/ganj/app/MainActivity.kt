@@ -1,5 +1,6 @@
 package naya.ganj.app
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -20,6 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import naya.ganj.app.data.category.view.ProductListActivity
 import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.*
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         app = applicationContext as Nayaganj
 
-        toggle = ActionBarDrawerToggle(
+        /*toggle = ActionBarDrawerToggle(
             this,
             binding.drawerlayout,
             binding.materialToolbar,
@@ -50,15 +52,20 @@ class MainActivity : AppCompatActivity() {
             R.string.close_string
         )
 
-        toggle.syncState()
+        toggle.syncState()*/
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         binding.navView.setupWithNavController(navController)
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
+
             when (destination.id) {
                 R.id.navigation_home -> {}
                 R.id.navigation_dashboard -> {}
                 R.id.navigation_notifications -> {}
+                R.id.navigation_search -> {
+                    startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
+                }
                 R.id.navigation_mycart -> {
                     val intent = Intent(this@MainActivity, MyCartActivity::class.java)
                     intent.putExtra("ORDER_ID", orderID)
@@ -89,7 +96,8 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this@MainActivity, MyOrderActivity::class.java))
                 }
                 R.id.myvirtualorder -> {
-                    showMessage(item.title.toString())
+                    isDrawerIsOpen()
+                    startActivity(Intent(this@MainActivity, MyVirtualActivity::class.java))
                 }
                 R.id.all_offer -> {
                     showMessage(item.title.toString())
@@ -241,5 +249,23 @@ class MainActivity : AppCompatActivity() {
         }
         binding.navView.addView(notificationsBadge)
     }
+
+    fun hideAppBar() {
+        /* binding.appBarLayout.visibility = View.VISIBLE
+         val animate = TranslateAnimation(0f, 0f, binding.appBarLayout.height.toFloat(), 0f)
+         animate.duration = 500.toLong()
+         animate.fillAfter = true
+         binding.appBarLayout.startAnimation(animate)*/
+    }
+
+    fun showAppBar() {
+        /* binding.appBarLayout.visibility = View.VISIBLE
+         val animate = TranslateAnimation(0f, 0f, 0f, binding.appBarLayout.height.toFloat())
+         animate.duration = 500.toLong()
+         animate.fillAfter = true
+         binding.appBarLayout.startAnimation(animate)*/
+
+    }
+
 
 }

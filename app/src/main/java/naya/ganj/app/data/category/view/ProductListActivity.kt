@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +41,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         super.onCreate(savedInstanceState)
         binding = ActivityProductListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         viewModel = ViewModelProvider(this).get(ProductListViewModel::class.java)
         app = applicationContext as Nayaganj
 
@@ -46,10 +49,43 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         binding.include7.toolbarTitle.setText("Product List")
         val categoryId = intent.getStringExtra(Constant.CATEGORY_ID)
 
-        if (app.user.getLoginSession()) {
-            getProductList(app.user.getUserDetails()?.userId, categoryId)
+        if (categoryId == null || categoryId.equals("")) {
+            // It will act as a Search Activity
+            binding.frameLayout.visibility = View.VISIBLE
+            binding.editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                    if (p0.toString().length >= 3) {
+                        binding.productList.visibility = View.VISIBLE
+                        if (app.user.getLoginSession()) {
+                            getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
+                        } else {
+                            getProductList(p0.toString(), "", "")
+                        }
+                    } else {
+                        if (p0.toString().isEmpty()) {
+                            binding.tvNoProduct.visibility = View.GONE
+                            binding.productList.visibility = View.GONE
+                            binding.llCartLayout.visibility = View.GONE
+                        }
+                    }
+                }
+            })
+
         } else {
-            getProductList("", categoryId)
+            binding.include7.customToolbar.visibility = View.VISIBLE
+            if (app.user.getLoginSession()) {
+                getProductList("", app.user.getUserDetails()?.userId, categoryId)
+            } else {
+                getProductList("", "", categoryId)
+            }
         }
 
         binding.llCartLayout.setOnClickListener {
@@ -59,17 +95,22 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             startActivity(intent)
         }
 
+        binding.arrowIcon.setOnClickListener {
+            Log.e("TAG", "onCreate: " + "")
+            finish()
+        }
+
     }
 
     private fun getProductList(
+        text: String,
         userId: String?,
-        productId: String?,
+        cateId: String?,
     ) {
         val json = JsonObject()
-        json.addProperty(Constant.CATEGORY_ID, productId)
-        json.addProperty(Constant.TEXT, "")
+        json.addProperty(Constant.CATEGORY_ID, cateId)
+        json.addProperty(Constant.TEXT, text)
         json.addProperty(Constant.pageIndex, "0")
-
 
         viewModel.getProductList(userId, Constant.DEVICE_TYPE, json)
             .observe(this) {
@@ -110,6 +151,14 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         LinearLayoutManager(this@ProductListActivity)
                     binding.productList.isNestedScrollingEnabled = false
                     binding.productList.adapter = adapter
+                    binding.tvNoProduct.visibility = View.GONE
+                    binding.productList.visibility = View.VISIBLE
+                    binding.llCartLayout.visibility = View.VISIBLE
+
+                } else {
+                    binding.tvNoProduct.visibility = View.VISIBLE
+                    binding.productList.visibility = View.GONE
+                    binding.llCartLayout.visibility = View.GONE
                 }
             }
 

@@ -8,7 +8,64 @@
 
     <include
         android:id="@+id/include7"
-        layout="@layout/custom_toolbar" />
+        layout="@layout/custom_toolbar"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_500"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/include7">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginVertical="@dimen/_20sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/arrow_icon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/back_arrow"
+                app:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@drawable/edittext_round_corner"
+                android:fontFamily="@font/poppins_regular"
+                android:hint="Search 100+ product"
+                android:paddingStart="@dimen/_10sdp"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_no_product"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Product not available!"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="@dimen/_12sdp"
+        android:fontFamily="@font/poppins_medium"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_list"
@@ -17,7 +74,7 @@
         app:layout_constraintBottom_toTopOf="@+id/ll_cart_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include7"
+        app:layout_constraintTop_toBottomOf="@+id/tv_no_product"
         app:layout_constraintVertical_bias="0.96" />
 
 
