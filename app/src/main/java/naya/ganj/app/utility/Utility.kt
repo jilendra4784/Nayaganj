@@ -1,10 +1,17 @@
 package naya.ganj.app.utility
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
@@ -12,6 +19,7 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class Utility {
 
@@ -91,6 +99,38 @@ class Utility {
 
     fun deleteAllProduct(paymentOptionActivity: Activity) {
         AppDataBase.getInstance(paymentOptionActivity).productDao().deleteAllProduct()
+    }
+
+    fun checkPermission(context: Context, permission: String): Boolean {
+        var isPermissionGranted = false
+        Dexter.withContext(context)
+            .withPermissions(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+
+                    if (report.areAllPermissionsGranted()) {
+                        isPermissionGranted = true
+                    }
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        isPermissionGranted = false
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    isPermissionGranted = false
+                    MaterialAlertDialogBuilder(context)
+                        .setMessage("Please Enable this permission for your order.")
+                        .setPositiveButton("Ok", null)
+                        .show()
+                }
+            }).check()
+        return isPermissionGranted
     }
 
 }

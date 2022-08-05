@@ -5,11 +5,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.view.AddAddressActivity
 import naya.ganj.app.databinding.AdapterAddressListRowBinding
 import naya.ganj.app.interfaces.OnitemClickListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AddressListAdapter(
     private val addressList: MutableList<AddressListModel.Address>,

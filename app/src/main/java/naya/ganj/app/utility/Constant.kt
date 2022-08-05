@@ -51,4 +51,9 @@ object Constant {
     const val REMOVE = "remove"
 
 
+    const val jpg="jpg"
+    const val format="format"
+    const val data="data"
+
+
 }

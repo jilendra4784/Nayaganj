@@ -44,4 +44,9 @@ class AddressListRespositry(var apiInterface: ApiInterface) {
     suspend fun updateProfileRequest(jsonObject: JsonObject) =
         apiInterface.updateProfileRequest("", Constant.DEVICE_TYPE, jsonObject)
 
+    suspend fun placeVirtualOrderRequest(userId:String?,jsonObject: JsonObject) =
+        apiInterface.placeVirtualOrderRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
+
+
 }

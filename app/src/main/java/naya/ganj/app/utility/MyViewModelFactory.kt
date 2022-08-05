@@ -20,6 +20,8 @@ class MyViewModelFactory constructor(val repo: AddressListRespositry) : ViewMode
             return LoginResponseViewModel(this.repo) as T
         }else if (modelClass.isAssignableFrom(PersonalDetailViewModel::class.java)) {
             return PersonalDetailViewModel(this.repo) as T
+        }else if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
+            return MainActivityViewModel(this.repo) as T
         }else {
             throw IllegalArgumentException("ViewModel Not Found")
         }

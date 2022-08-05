@@ -212,6 +212,17 @@ interface ApiInterface {
     ): Response<ApiResponseModel>
 
     @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_PLACE_VIRTUAL_ORDER_URL)
+    suspend fun placeVirtualOrderRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+
+
+    @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_SEARCH_PRODUCT_LIST_URL)
     suspend fun getSearchDataRequest(
         @Header("text") text: String,

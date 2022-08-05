@@ -22,7 +22,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_navigation_home_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            app:destination="@id/navigation_dashboard"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -30,9 +32,6 @@
         android:name="naya.ganj.app.data.category.view.CategoryFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@id/productListFragment"
-            app:destination="@id/productListFragment" />
         <action
             android:id="@+id/action_navigation_dashboard_to_navigation_home"
             app:destination="@id/navigation_home" />
@@ -81,11 +80,5 @@
 
     </fragment>
 
-
-
-    <fragment
-        android:id="@+id/productListFragment"
-        android:name="naya.ganj.app.data.search.ProductListFragment"
-        android:label="ProductListFragment" />
 
 </navigation>

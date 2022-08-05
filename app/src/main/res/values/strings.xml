@@ -37,4 +37,5 @@
     <string name="my_address">My Address</string>
     <string name="search">Search</string>
     <string name="categories">Categories</string>
+    <string name="make_order_by_taking_image_or_voice">Make Order by Taking Image or Voice</string>
 </resources>
