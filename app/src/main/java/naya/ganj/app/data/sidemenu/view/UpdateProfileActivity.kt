@@ -24,7 +24,7 @@ class UpdateProfileActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var app: Nayaganj
     private var valueIdentifier = 0
     lateinit var viewModel: UpdateProfileActivityViewModel
-    private lateinit var modalBottomSheet: BottomSheetDialogFragment
+    private lateinit var modalBottomSheet: BottomSheetDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +100,7 @@ class UpdateProfileActivity : AppCompatActivity(), OnitemClickListener {
         if (title == 4) {
             // show language dialog
         } else {
-            modalBottomSheet = BottomSheetDialogFragment(title, value, this)
+            modalBottomSheet = BottomSheetDialog(title, value, this)
             modalBottomSheet.show(supportFragmentManager, modalBottomSheet.tag)
         }
     }

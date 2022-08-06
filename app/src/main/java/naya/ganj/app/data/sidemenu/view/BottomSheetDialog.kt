@@ -16,7 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import naya.ganj.app.R
 import naya.ganj.app.interfaces.OnitemClickListener
 
-class BottomSheetDialogFragment(
+open class BottomSheetDialog(
     private val tittle: Int,
     val value: String?,
     private val onitemClickListener: OnitemClickListener

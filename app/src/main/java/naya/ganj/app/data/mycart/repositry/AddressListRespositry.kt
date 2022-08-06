@@ -11,6 +11,11 @@ class AddressListRespositry(var apiInterface: ApiInterface) {
     suspend fun getAddressList(userId: String?) =
         apiInterface.getAddressList(userId, Constant.DEVICE_TYPE)
 
+
+     fun getAddressListForMain(userId: String?) =
+        apiInterface.getAddressListForMain(userId, Constant.DEVICE_TYPE)
+
+
     suspend fun addAddressRequest(jsonObject: JsonObject) =
         apiInterface.addAddressRequest("", Constant.DEVICE_TYPE, jsonObject)
 

@@ -75,6 +75,21 @@ interface ApiInterface {
         @Header("devicetype") d: String
     ): Response<AddressListModel>
 
+    @Headers("Content-Type: application/json")
+    @GET(URLConstant.URL_ADDRESS_LIST_URL)
+     fun getAddressListForMain(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String
+    ): Call<AddressListModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_ADD_ADDRESS_URL)
+    fun AddAddressForMain(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Call<AddressListModel>
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_ADD_ADDRESS_URL)

@@ -16,7 +16,7 @@ class MainActivityViewModel(val repo: AddressListRespositry) : ViewModel() {
 
     fun getAddressListRequest(userId: String?): LiveData<AddressListModel> {
         viewModelScope.launch {
-            val result = repo.getAddressList(userId);
+            val result = repo.getAddressList(userId)
             addressData.value = result.body()
         }
 

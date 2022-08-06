@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -29,11 +27,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.data.category.view.ProductListActivity
+import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
@@ -43,12 +43,15 @@ import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
 
-open class MainActivity : AppCompatActivity(), OnitemClickListener {
+open class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var orderID: String? = null
     var notificationsBadge: View? = null
@@ -56,8 +59,12 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var app: Nayaganj
     lateinit var imageUri: Uri
     lateinit var viewModel: MainActivityViewModel
+    lateinit var rvAddressList: RecyclerView
+    var addressId = ""
+    private var virtualCaptureImge = ""
+    private var virtualCameraAlertDialog: AlertDialog? = null
 
-    var virtualCameraAlertDialog: AlertDialog? = null
+    lateinit var bottomSheetAddressDialog: BottomSheetDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -281,8 +288,8 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
             val tvVoiceRequest = dialogView.findViewById(R.id.tv_voice_record_request) as TextView
             val ivClose = dialogView.findViewById(R.id.imageView13) as ImageView
             ivClose.setOnClickListener { virtualCameraAlertDialog?.dismiss() }
-            tvCameraRequest.setOnClickListener {//openCamera()
-
+            tvCameraRequest.setOnClickListener {
+                //openCamera()
                 if (Utility().checkPermission(
                         this@MainActivity,
                         android.Manifest.permission.CAMERA
@@ -321,7 +328,6 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
         )
     }
 
-
     private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {
 
         var width = image.width
@@ -338,7 +344,6 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
 
-
     var cameraResult = registerForActivityResult(ActivityResultContracts.TakePicture()) {
         val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
         val selectedImage = BitmapFactory.decodeStream(imageStream)
@@ -346,78 +351,206 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
         val baos1 = ByteArrayOutputStream()
         converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
         val imageByteArray2 = baos1.toByteArray()
-        val encodedImage: String = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
-        showBottomSheetDialog(encodedImage)
+        virtualCaptureImge = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
+        checkAddressExist()
     }
 
+    private fun checkAddressExist() {
 
-    private fun showBottomSheetDialog(encodedImage: String) {
-        var addressId = ""
-        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_address)
-        val dismissBottom = bottomSheetDialog.findViewById<ImageView>(R.id.iv_close)
-        val btnAddAddress = bottomSheetDialog.findViewById<Button>(R.id.btn_add_address)
-        val btnPlaceOrder = bottomSheetDialog.findViewById<Button>(R.id.btn_place_order)
+        RetrofitClient.instance.getAddressListForMain(
+            app.user.getUserDetails()?.userId,
+            Constant.DEVICE_TYPE
+        )
+            .enqueue(object : Callback<AddressListModel> {
+                override fun onResponse(
+                    call: Call<AddressListModel>,
+                    response: Response<AddressListModel>
+                ) {
+                    if (response.isSuccessful) {
+                        if (response.body()?.addressList?.size!! > 0) {
+                            showBottomSheetDialog()
+                            rvAddressList.adapter =
+                                OrderByImageVirtualAdapter(
+                                    response.body()?.addressList!!,
+                                    object : OnitemClickListener {
+                                        override fun onclick(position: Int, data: String) {
+                                            addressId = data
+                                        }
+                                    })
 
-        val rvAddressList = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv_address_list)
-        rvAddressList?.layoutManager = LinearLayoutManager(this@MainActivity)
-
-
-        /*   if (sharedPreference.getlanguage(ApiConstants.language) == 1) {
-               add_new_address.setText(getString(R.string.add_new_address_h))
-               select_address?.setText(getString(R.string.select_address_h))
-           }*/
-
-        viewModel.getAddressListRequest(app.user.getUserDetails()?.userId).observe(this, Observer {
-            if (it.addressList.size > 0) {
-                rvAddressList?.adapter =
-                    OrderByImageVirtualAdapter(it.addressList, object : OnitemClickListener {
-                        override fun onclick(position: Int, data: String) {
-                            addressId = data
+                        } else {
+                            showAddAddressDialog()
                         }
-                    })
-            }
-        })
+                    }
+                }
 
-        bottomSheetDialog.setCancelable(false)
-        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        dismissBottom?.setOnClickListener { bottomSheetDialog.dismiss() }
-        /*  add_new_address?.setOnClickListener {
-              add_new_address?.isEnabled = false
-              addAddressDialog()
-          }*/
+                override fun onFailure(call: Call<AddressListModel>, t: Throwable) {
+
+                }
+            })
+    }
+
+    private fun showBottomSheetDialog() {
+
+        bottomSheetAddressDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
+        bottomSheetAddressDialog.setContentView(R.layout.bottom_sheet_address)
+        val dismissBottom = bottomSheetAddressDialog.findViewById<ImageView>(R.id.iv_close)
+        val btnAddAddress = bottomSheetAddressDialog.findViewById<Button>(R.id.btn_add_address)
+        val btnPlaceOrder = bottomSheetAddressDialog.findViewById<Button>(R.id.btn_place_order)
+
+        rvAddressList = bottomSheetAddressDialog.findViewById<RecyclerView>(R.id.rv_address_list)!!
+        rvAddressList.layoutManager = LinearLayoutManager(this@MainActivity)
+
+        bottomSheetAddressDialog.setCancelable(false)
+        bottomSheetAddressDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dismissBottom?.setOnClickListener { bottomSheetAddressDialog.dismiss() }
+        btnAddAddress?.setOnClickListener {
+            // Add Address Dialog
+            showAddAddressDialog()
+        }
         btnPlaceOrder!!.setOnClickListener {
             if (!addressId.equals("")) {
-                placeOrderApi(addressId, encodedImage, bottomSheetDialog)
+                placeOrderApi(addressId, bottomSheetAddressDialog)
             } else {
                 Toast.makeText(this, "Please select address", Toast.LENGTH_SHORT).show()
             }
         }
 
-        bottomSheetDialog.show()
+        bottomSheetAddressDialog.show()
+    }
+
+    private fun showAddAddressDialog() {
+        val ad = BottomSheetDialog(this)
+        ad.setContentView(R.layout.virtual_add_address)
+        val dismissAddAddress = ad.findViewById<ImageView>(R.id.iv_close)
+        val addAddressRequest = ad.findViewById<Button>(R.id.btn_add_address)
+
+        ad.setCancelable(false)
+        ad.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dismissAddAddress?.setOnClickListener { ad.dismiss() }
+        ad.show()
+
+        val firstName = ad.findViewById<TextInputLayout>(R.id.tv_first_name) as TextInputLayout
+        val lastname = ad.findViewById<TextInputLayout>(R.id.tv_last_name) as TextInputLayout
+        val mobile = ad.findViewById<TextInputLayout>(R.id.tv_mobile) as TextInputLayout
+        val house = ad.findViewById<TextInputLayout>(R.id.tv_house) as TextInputLayout
+        val apart = ad.findViewById<TextInputLayout>(R.id.tv_apart) as TextInputLayout
+        val street = ad.findViewById<TextInputLayout>(R.id.tv_street) as TextInputLayout
+        val address = ad.findViewById<TextInputLayout>(R.id.tv_address) as TextInputLayout
+        val city = ad.findViewById<TextInputLayout>(R.id.tv_city) as TextInputLayout
+        val pin = ad.findViewById<TextInputLayout>(R.id.tv_pin) as TextInputLayout
+        val autoComplte =
+            ad.findViewById<TextInputLayout>(R.id.autoCompleteTextView) as AutoCompleteTextView
+
+        val addressList =
+            listOf("Home(7 AM - 9 PM delivery)", "Office/Commercial(10 AM - 6 PM delivery)")
+        val addressAdapter =
+            ArrayAdapter(this@MainActivity, R.layout.auto_list_item, addressList)
+        autoComplte.setAdapter(addressAdapter)
+
+        addAddressRequest?.setOnClickListener {
+
+            if (firstName.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please Enter First Name")
+            } else if (lastname.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please Enter Last Name")
+            } else if (mobile.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please Enter Mobile Number")
+            } else if (mobile.editText?.text.toString().startsWith("0")) {
+                Utility().showToast(this@MainActivity, "Please enter a valid mobile number")
+            } else if (mobile.editText?.text.toString().length < 10) {
+                Utility().showToast(this@MainActivity, "Please enter a valid mobile number")
+            } else if (house.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please enter house number")
+            } else if (apart.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please enter apartment name")
+            } else if (street.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please enter street name")
+            } else if (address.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please enter area details")
+            } else if (city.editText?.text.toString().equals("")) {
+                Utility().showToast(this@MainActivity, "Please select city")
+            } else if (pin.equals("")) {
+                Utility().showToast(this@MainActivity, "Please enter pincode")
+            } else if (pin.editText?.text.toString().startsWith("0")) {
+                Utility().showToast(this@MainActivity, "Invalid pincode")
+            } else if (pin.editText?.text.toString().length < 6) {
+                Utility().showToast(this@MainActivity, "Invalid pincode")
+            } else if (autoComplte.text.toString().equals("", ignoreCase = true)) {
+                Utility().showToast(this@MainActivity, "Please select address type")
+            } else {
+                val jsonObject = JsonObject()
+                jsonObject.addProperty(Constant.firstName, firstName.editText?.text.toString())
+                jsonObject.addProperty(Constant.LastName, lastname.editText?.text.toString())
+                jsonObject.addProperty(Constant.contactNumber, mobile.editText?.text.toString())
+                jsonObject.addProperty(Constant.houseNo, house.editText?.text.toString())
+                jsonObject.addProperty(Constant.ApartName, apart.editText?.text.toString())
+                jsonObject.addProperty(Constant.street, street.editText?.text.toString())
+                jsonObject.addProperty(Constant.landmark, address.editText?.text.toString())
+                jsonObject.addProperty(Constant.city, city.editText?.text.toString())
+                jsonObject.addProperty(Constant.pincode, pin.editText?.text.toString())
+                jsonObject.addProperty(Constant.nickName, autoComplte.text.toString())
+                jsonObject.addProperty(Constant.lat, "")
+                jsonObject.addProperty(Constant.long, "")
+                addAddressRequestAPI(jsonObject, ad)
+            }
+        }
+    }
+
+    private fun addAddressRequestAPI(jsonObject: JsonObject, aDialog: BottomSheetDialog) {
+
+        RetrofitClient.instance.AddAddressForMain(
+            app.user.getUserDetails()?.userId,
+            Constant.DEVICE_TYPE,
+            jsonObject
+        )
+            .enqueue(object : Callback<AddressListModel> {
+                override fun onResponse(
+                    call: Call<AddressListModel>,
+                    response: Response<AddressListModel>
+                ) {
+                    if (response.isSuccessful) {
+                        aDialog.dismiss()
+                        bottomSheetAddressDialog.dismiss()
+                        checkAddressExist()
+
+                        Toast.makeText(this@MainActivity, response.body()!!.msg, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+
+                override fun onFailure(call: Call<AddressListModel>, t: Throwable) {
+                }
+            })
     }
 
     private fun placeOrderApi(
         addressId: String,
-        encodedImage: String,
         bottomSheetDialog: BottomSheetDialog
     ) {
         val jsonObject = JsonObject()
 
-        jsonObject.addProperty(Constant.data, encodedImage)
+        jsonObject.addProperty(Constant.data, virtualCaptureImge)
         jsonObject.addProperty(Constant.addressId, addressId)
         jsonObject.addProperty(Constant.format, Constant.jpg)
 
         viewModel.placeVirtualOrderRequest(app.user.getUserDetails()?.userId, jsonObject)
-            .observe(this,
-                Observer {
-                    Log.e("TAG", "placeOrderApi: " + it)
-
-                    if (it.status) {
-                        bottomSheetDialog.dismiss()
-                        virtualCameraAlertDialog?.dismiss()
-                    }
-                })
+            .observe(
+                this
+            ) {
+                if (it.status) {
+                    bottomSheetDialog.dismiss()
+                    bottomSheetAddressDialog.dismiss()
+                    virtualCameraAlertDialog?.dismiss()
+                    Toast.makeText(
+                        this@MainActivity,
+                        resources.getString(R.string.order_placed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    this.addressId = ""
+                    this.virtualCaptureImge = ""
+                }
+            }
 
         /*if (audioType.equals(ApiConstants.mp3, ignoreCase = true)) {
             jsonObject.put(ApiConstants.format, ApiConstants.mp3)
@@ -426,10 +559,4 @@ open class MainActivity : AppCompatActivity(), OnitemClickListener {
         }*/
     }
 
-
-    override fun onclick(position: Int, data: String) {
-        /* if(data=="CLOSE"){
-
-         }*/
-    }
 }

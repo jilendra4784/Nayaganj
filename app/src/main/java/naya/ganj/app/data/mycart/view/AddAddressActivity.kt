@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.JsonObject
 import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.AddAddressViewModel
@@ -13,7 +14,6 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
 import naya.ganj.app.utility.Utility
-import com.google.gson.JsonObject
 
 class AddAddressActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddAddressBinding
@@ -58,8 +58,7 @@ class AddAddressActivity : AppCompatActivity() {
         ).get(AddAddressViewModel::class.java)
 
         binding.include2.ivBackArrow.setOnClickListener { finish() }
-
-
+        
         val addressList =
             listOf("Home(7 AM - 9 PM delivery)", "Office/Commercial(10 AM - 6 PM delivery)")
         val addressAdapter =
