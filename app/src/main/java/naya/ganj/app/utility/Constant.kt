@@ -51,9 +51,12 @@ object Constant {
     const val REMOVE = "remove"
 
 
+    const val Mp3="mp3"
     const val jpg="jpg"
     const val format="format"
     const val data="data"
+
+    var ADDRESS_RADIO_SELECTION=0
 
 
 }

@@ -1,17 +1,26 @@
 package naya.ganj.app
 
 
+import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -39,6 +48,7 @@ import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.*
 import naya.ganj.app.databinding.ActivityMainBinding
+import naya.ganj.app.databinding.BottomAudioDialogBinding
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -46,9 +56,9 @@ import naya.ganj.app.utility.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
+import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 open class MainActivity : AppCompatActivity() {
@@ -63,15 +73,41 @@ open class MainActivity : AppCompatActivity() {
     var addressId = ""
     private var virtualCaptureImge = ""
     private var virtualCameraAlertDialog: AlertDialog? = null
+    var bottomSheetAddressDialog: BottomSheetDialog? = null
 
-    lateinit var bottomSheetAddressDialog: BottomSheetDialog
+    // AudioRecording
+    var bottomSheetAudioRecorder: BottomSheetDialog? = null
+    lateinit var aBinding: BottomAudioDialogBinding
+    lateinit var countDownTimer: CountDownTimer
 
+    lateinit var mediaRecorder: MediaRecorder
+    var mediaPlayer: MediaPlayer? = null
+    var second = -1
+    var minute: Int = 0
+    var hour: Int = 0
+    var filePath: String? = null
+    var audioFile: String? = null
+    var isImageOrderRequest = false
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         app = applicationContext as Nayaganj
+
+        if (app.user.getLoginSession()) {
+            try {
+                val dateFormat = SimpleDateFormat("mmddyyyyhhmmss", Locale.US)
+                val date: String = dateFormat.format(Date())
+                audioFile = "REC$date"
+                filePath = "${externalCacheDir?.absolutePath}/" + audioFile
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
 
         viewModel = ViewModelProvider(
             this,
@@ -154,6 +190,12 @@ open class MainActivity : AppCompatActivity() {
             true
         }
 
+        if (app.user.getLoginSession()) {
+            binding.include14.ivCameraIcon.visibility = View.VISIBLE
+        } else {
+            binding.include14.ivCameraIcon.visibility = View.GONE
+        }
+
         // Todo Hide Side Menu Item
         binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
@@ -196,6 +238,7 @@ open class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun moveToDashboard() {
         if (navController.currentDestination?.id != R.id.navigation_dashboard) {
@@ -290,27 +333,227 @@ open class MainActivity : AppCompatActivity() {
             ivClose.setOnClickListener { virtualCameraAlertDialog?.dismiss() }
             tvCameraRequest.setOnClickListener {
                 //openCamera()
-                if (Utility().checkPermission(
-                        this@MainActivity,
-                        android.Manifest.permission.CAMERA
-                    )
-                ) {
+                if (Utility().checkPermission(this@MainActivity)) {
                     takePictureFromCamera()
                 }
             }
-            /* tvVoiceRequest.setOnClickListener {//open Voice Recorder
-                 if (Utility().checkPermission(
-                         this@MainActivity,
-                         android.Manifest.permission.RECORD_AUDIO
-                     )
-                 ) {
-                     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                     resultLauncher.launch(cameraIntent)
-                 }
-             }*/
+            tvVoiceRequest.setOnClickListener {//open Voice Recorder
+                if (Utility().checkPermission(this@MainActivity)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        showAudioDialog()
+                    }
+                }
+            }
             virtualCameraAlertDialog = dialogBuilder.create()
             virtualCameraAlertDialog!!.show()
         }
+        binding.include14.ivUserImageview.setOnClickListener {
+            if (app.user.getLoginSession()) {
+                startActivity(Intent(this@MainActivity, MyAccountActivity::class.java))
+            } else {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun showAudioDialog() {
+        bottomSheetAudioRecorder = BottomSheetDialog(this, R.style.BottomSheetDialog)
+        aBinding = BottomAudioDialogBinding.inflate(layoutInflater)
+        bottomSheetAudioRecorder?.setContentView(aBinding.root)
+        bottomSheetAudioRecorder?.show()
+
+        aBinding.ivClose.setOnClickListener {
+            bottomSheetAudioRecorder?.dismiss()
+            try {
+                countDownTimer.cancel()
+                mediaRecorder.release()
+                aBinding.tvAudioTimer.text = "00:00:00"
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        aBinding.ivStartRecording.setOnClickListener {
+            aBinding.ivStartRecording.visibility = View.GONE
+            aBinding.ivPlayRecording.visibility = View.GONE
+            aBinding.ivPauseRecording.visibility = View.VISIBLE
+            aBinding.tvRecordtitle.text = "Pause"
+
+            startRecording()
+        }
+
+        aBinding.ivPauseRecording.setOnClickListener {
+            aBinding.ivPauseRecording.visibility = View.GONE
+            aBinding.ivPlayRecording.visibility = View.VISIBLE
+            aBinding.tvRecordtitle.text = "Play"
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                pauseRecording()
+            }
+        }
+
+        aBinding.ivPlayRecording.setOnClickListener {
+            aBinding.ivPlayRecording.visibility = View.GONE
+            aBinding.ivPauseRecording.visibility = View.VISIBLE
+            aBinding.tvRecordtitle.text = "Pause"
+            mediaRecorder.resume()
+
+            countDownTimer.start()
+        }
+
+        aBinding.ivStop.setOnClickListener {
+            aBinding.ivPlayRecording.visibility = View.GONE
+            aBinding.ivPauseRecording.visibility = View.GONE
+            aBinding.ivStartRecording.visibility = View.VISIBLE
+            aBinding.tvRecordtitle.text = "Record Audio"
+
+            stopRecording()
+            playRecording()
+        }
+
+        aBinding.ivProceed.setOnClickListener {
+            isImageOrderRequest = false
+            stopRecording()
+            val videoBytes: ByteArray
+            try {
+                val baos = ByteArrayOutputStream()
+                val fis = FileInputStream(File(filePath))
+                val buf = ByteArray(1024)
+                while (-1 != fis.read(buf)) {
+                    baos.write(buf)
+                }
+                videoBytes = baos.toByteArray()
+                virtualCaptureImge = Base64.encodeToString(videoBytes, Base64.DEFAULT)
+                Log.d("capturedImage", "" + virtualCaptureImge)
+
+            } catch (e: java.lang.Exception) {
+            }
+            isImageOrderRequest = false
+            checkAddressExist()
+
+        }
+    }
+
+    private fun startRecording() {
+        countDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.e(TAG, "timer running ")
+                second++
+                aBinding.tvAudioTimer.text = recorderTime()
+            }
+
+            override fun onFinish() {
+
+            }
+        }
+        countDownTimer.start()
+
+        initializeMediaRecorder()
+
+    }
+
+
+    private fun initializeMediaRecorder() {
+        Log.e("TAG", "initializeMediaRecorder: " + filePath)
+        mediaRecorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFile(filePath)
+            try {
+                prepare()
+            } catch (e: IOException) {
+                Log.e("", "prepare() failed")
+            }
+            start()
+
+        }
+    }
+
+    private fun releaseMediaRecorder() {
+        try {
+            mediaRecorder.apply {
+                stop()
+                release()
+            }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun pauseRecording() {
+        countDownTimer.cancel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mediaRecorder.pause()
+        }
+    }
+
+    private fun playRecording() {
+        try {
+            mediaPlayer = MediaPlayer()
+            mediaPlayer?.setDataSource(filePath)
+            mediaPlayer?.setOnCompletionListener({ stopPlaying() })
+            mediaPlayer?.prepare()
+            mediaPlayer?.start()
+        } catch (e: IOException) {
+            Log.e(
+                "" + ":playRecording()",
+                "prepare() failed"
+            )
+        }
+
+    }
+
+    private fun stopPlaying() {
+        if (mediaPlayer != null) {
+            mediaPlayer!!.release()
+            mediaPlayer = null
+        }
+    }
+
+    private fun stopRecording() {
+        countDownTimer.cancel()
+        second = -1
+        minute = 0
+        hour = 0
+
+        try {
+            countDownTimer.cancel()
+            second = -1
+            minute = 0
+            hour = 0
+            aBinding.tvAudioTimer.text = "00:00:00"
+
+            //creating content resolver and put the values
+            val values = ContentValues()
+            values.put(MediaStore.Audio.Media.DATA, filePath)
+            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp")
+            values.put(MediaStore.Audio.Media.TITLE, audioFile)
+            //store audio recorder file in the external content uri
+            contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
+
+            releaseMediaRecorder()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+    }
+
+
+    fun recorderTime(): String {
+        if (second == 60) {
+            minute++
+            second = 0
+        }
+        if (minute == 60) {
+            hour++
+            minute = 0
+        }
+        return String.format("%02d:%02d:%02d", hour, minute, second)
     }
 
 
@@ -345,6 +588,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     var cameraResult = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+
         val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
         val selectedImage = BitmapFactory.decodeStream(imageStream)
         val converetdImage = selectedImage?.let { getResizedBitmap(it, 500) }
@@ -352,6 +596,8 @@ open class MainActivity : AppCompatActivity() {
         converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
         val imageByteArray2 = baos1.toByteArray()
         virtualCaptureImge = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
+
+        isImageOrderRequest = true
         checkAddressExist()
     }
 
@@ -393,30 +639,30 @@ open class MainActivity : AppCompatActivity() {
     private fun showBottomSheetDialog() {
 
         bottomSheetAddressDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
-        bottomSheetAddressDialog.setContentView(R.layout.bottom_sheet_address)
-        val dismissBottom = bottomSheetAddressDialog.findViewById<ImageView>(R.id.iv_close)
-        val btnAddAddress = bottomSheetAddressDialog.findViewById<Button>(R.id.btn_add_address)
-        val btnPlaceOrder = bottomSheetAddressDialog.findViewById<Button>(R.id.btn_place_order)
+        bottomSheetAddressDialog?.setContentView(R.layout.bottom_sheet_address)
+        val dismissBottom = bottomSheetAddressDialog?.findViewById<ImageView>(R.id.iv_close)
+        val btnAddAddress = bottomSheetAddressDialog?.findViewById<Button>(R.id.btn_add_address)
+        val btnPlaceOrder = bottomSheetAddressDialog?.findViewById<Button>(R.id.btn_place_order)
 
-        rvAddressList = bottomSheetAddressDialog.findViewById<RecyclerView>(R.id.rv_address_list)!!
+        rvAddressList = bottomSheetAddressDialog?.findViewById<RecyclerView>(R.id.rv_address_list)!!
         rvAddressList.layoutManager = LinearLayoutManager(this@MainActivity)
 
-        bottomSheetAddressDialog.setCancelable(false)
-        bottomSheetAddressDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        dismissBottom?.setOnClickListener { bottomSheetAddressDialog.dismiss() }
+        bottomSheetAddressDialog?.setCancelable(false)
+        bottomSheetAddressDialog?.behavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        dismissBottom?.setOnClickListener { bottomSheetAddressDialog?.dismiss() }
         btnAddAddress?.setOnClickListener {
             // Add Address Dialog
             showAddAddressDialog()
         }
         btnPlaceOrder!!.setOnClickListener {
             if (!addressId.equals("")) {
-                placeOrderApi(addressId, bottomSheetAddressDialog)
+                placeOrderApi(addressId, bottomSheetAddressDialog!!)
             } else {
                 Toast.makeText(this, "Please select address", Toast.LENGTH_SHORT).show()
             }
         }
 
-        bottomSheetAddressDialog.show()
+        bottomSheetAddressDialog?.show()
     }
 
     private fun showAddAddressDialog() {
@@ -511,7 +757,7 @@ open class MainActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         aDialog.dismiss()
-                        bottomSheetAddressDialog.dismiss()
+                        bottomSheetAddressDialog?.dismiss()
                         checkAddressExist()
 
                         Toast.makeText(this@MainActivity, response.body()!!.msg, Toast.LENGTH_SHORT)
@@ -528,35 +774,40 @@ open class MainActivity : AppCompatActivity() {
         addressId: String,
         bottomSheetDialog: BottomSheetDialog
     ) {
-        val jsonObject = JsonObject()
 
+        val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.data, virtualCaptureImge)
         jsonObject.addProperty(Constant.addressId, addressId)
-        jsonObject.addProperty(Constant.format, Constant.jpg)
+
+        if (isImageOrderRequest) {
+            jsonObject.addProperty(Constant.format, Constant.jpg)
+        } else {
+            jsonObject.addProperty(Constant.format, Constant.Mp3)
+        }
 
         viewModel.placeVirtualOrderRequest(app.user.getUserDetails()?.userId, jsonObject)
             .observe(
                 this
             ) {
                 if (it.status) {
-                    bottomSheetDialog.dismiss()
-                    bottomSheetAddressDialog.dismiss()
-                    virtualCameraAlertDialog?.dismiss()
+                    try {
+                        bottomSheetDialog.dismiss()
+                        bottomSheetAddressDialog?.dismiss()
+                        bottomSheetAudioRecorder?.dismiss()
+                        virtualCameraAlertDialog?.dismiss()
+                    } catch (e: Exception) {
+                        this.addressId = ""
+                        this.virtualCaptureImge = ""
+                        e.printStackTrace()
+                    }
                     Toast.makeText(
                         this@MainActivity,
                         resources.getString(R.string.order_placed),
                         Toast.LENGTH_SHORT
                     ).show()
-                    this.addressId = ""
-                    this.virtualCaptureImge = ""
+
                 }
             }
-
-        /*if (audioType.equals(ApiConstants.mp3, ignoreCase = true)) {
-            jsonObject.put(ApiConstants.format, ApiConstants.mp3)
-        } else {
-            jsonObject.put(ApiConstants.format, ApiConstants.jpg)
-        }*/
     }
 
 }

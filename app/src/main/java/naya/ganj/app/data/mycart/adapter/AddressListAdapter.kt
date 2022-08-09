@@ -10,6 +10,7 @@ import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.view.AddAddressActivity
 import naya.ganj.app.databinding.AdapterAddressListRowBinding
 import naya.ganj.app.interfaces.OnitemClickListener
+import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
 
 class AddressListAdapter(
     private val addressList: MutableList<AddressListModel.Address>,
@@ -18,7 +19,7 @@ class AddressListAdapter(
     var addressId: String
 ) :
     RecyclerView.Adapter<AddressListAdapter.MyViewHolder>() {
-    var radioSelection = 0
+
 
     class MyViewHolder(val binding: AdapterAddressListRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,7 +41,9 @@ class AddressListAdapter(
             m.address.houseNo + m.address.apartName + m.address.street + m.address.city + m.address.pincode
         holder.binding.tvMobile.text = m.address.contactNumber
 
-        holder.binding.radioButton2.isChecked = m.id == addressId
+        holder.binding.radioButton2.isChecked = ADDRESS_RADIO_SELECTION==position
+
+        //holder.binding.radioButton2.isChecked = m.id == addressId
 
         holder.binding.ivDelete.setOnClickListener {
             showDialog(holder.adapterPosition, m)
@@ -64,8 +67,8 @@ class AddressListAdapter(
         }
         holder.binding.radioButton2.setOnCheckedChangeListener { p0, p1 ->
             if (p1) {
+                ADDRESS_RADIO_SELECTION = holder.adapterPosition
                 addressId = m.id
-                notifyDataSetChanged()
                 onitemClickListener.onclick(holder.adapterPosition, m.id + "@SET_ADDRESS")
             }
         }

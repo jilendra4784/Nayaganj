@@ -38,4 +38,5 @@
     <string name="search">Search</string>
     <string name="categories">Categories</string>
     <string name="make_order_by_taking_image_or_voice">Make Order by Taking Image or Voice</string>
+    <string name="stop_amp_play"><![CDATA[Stop & play]]></string>
 </resources>

@@ -101,13 +101,14 @@ class Utility {
         AppDataBase.getInstance(paymentOptionActivity).productDao().deleteAllProduct()
     }
 
-    fun checkPermission(context: Context, permission: String): Boolean {
+    fun checkPermission(context: Context): Boolean {
         var isPermissionGranted = false
         Dexter.withContext(context)
             .withPermissions(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
 

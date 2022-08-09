@@ -25,6 +25,7 @@ import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.databinding.ActivityOtpactivityBinding
+import naya.ganj.app.deliverymodule.DeliveryBoyDashboardActivity
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.utility.Constant
@@ -98,8 +99,12 @@ class OTPVerifyActivity : AppCompatActivity() {
                     app.user.setLoginSession(true)
                 } else {
                     if (it.userDetails.role.equals("deliveryBoy")) {
-                        // Open Deliver Boy Module
-                        //TODO need to Implement Delivery Boy Module
+                        app.user.setLoginSession(true)
+                        app.user.saveUserDetail(it.userDetails)
+                        val intent =
+                            Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                        startActivity(intent)
+                        finish()
                         Toast.makeText(
                             this@OTPVerifyActivity,
                             it.msg,

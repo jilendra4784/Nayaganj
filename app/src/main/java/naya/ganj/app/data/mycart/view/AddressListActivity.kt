@@ -2,6 +2,8 @@ package naya.ganj.app.data.mycart.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,7 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var addressList: MutableList<AddressListModel.Address>
     var addressId = ""
     lateinit var app: Nayaganj
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -78,5 +81,10 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
                 finish()
             }
         }
+
+        Handler(Looper.getMainLooper()).postDelayed(
+            Runnable { addresListAdapter.notifyDataSetChanged() },
+            200
+        )
     }
 }

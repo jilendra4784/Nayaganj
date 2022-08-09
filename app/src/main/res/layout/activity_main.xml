@@ -31,9 +31,11 @@
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:labelVisibilityMode="labeled"
             app:itemBackground="@color/white"
+            app:itemIconSize="@dimen/_22sdp"
+            app:itemTextColor="@drawable/bottom_navigation_selector"
             app:itemIconTint="@drawable/bottom_navigation_selector"
-            app:itemTextColor="@color/red"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu" />

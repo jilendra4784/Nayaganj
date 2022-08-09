@@ -24,6 +24,7 @@ import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
 import naya.ganj.app.utility.Utility
 
 class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
@@ -32,22 +33,23 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     lateinit var binding: ActivityMyCartBinding
     lateinit var myCartModel: MyCartModel
     private var addressId: String? = null
-    var orderId:String?=null
+    var orderId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ADDRESS_RADIO_SELECTION = 0
 
         myCartViewModel = ViewModelProvider(this).get(MyCartViewModel::class.java)
         app = applicationContext as Nayaganj
-        orderId=intent.getStringExtra(Constant.orderId)
+        orderId = intent.getStringExtra(Constant.orderId)
         binding.includeToolbar.ivBackArrow.setOnClickListener { finish() }
         binding.includeToolbar.toolbarTitle.text = "My Cart"
 
-        Log.e("TAG", "onCreate: Login Session " + app.user.getLoginSession())
         binding.btnChangeAddress.setOnClickListener {
+
             val intent = Intent(this@MyCartActivity, AddressListActivity::class.java)
             intent.putExtra("ADDRESS_ID", addressId)
             startActivity(intent)

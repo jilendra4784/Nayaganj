@@ -8,9 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -44,6 +43,9 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
     var current: TextView? = null
     var total: TextView? = null
     private lateinit var handler: Handler
+
+    private var scaleGestureDetector: ScaleGestureDetector? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,9 +97,12 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
         val factory = LayoutInflater.from(this)
         val deleteDialogView: View = factory.inflate(R.layout.layout_fullscreen, null)
         val ivClose = deleteDialogView.findViewById(R.id.iv_close) as ImageView
-        val clientImage = deleteDialogView.findViewById(R.id.iv_dealer_image) as ImageView
+        val zoomableImageView = deleteDialogView.findViewById(R.id.iv_dealer_image) as ImageView
 
-        Glide.with(applicationContext).load(data).error(R.drawable.user).into(clientImage)
+
+        Glide.with(applicationContext).load(data).error(R.drawable.user).into(zoomableImageView)
+        scaleGestureDetector = ScaleGestureDetector(this, ScaleListener(zoomableImageView))
+
 
         val dialog = AlertDialog.Builder(this).create()
         val window = dialog.window
@@ -108,13 +113,30 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         dialog.setView(deleteDialogView)
-        clientImage.setOnClickListener { dialog.dismiss() }
+        // clientImage.setOnClickListener { dialog.dismiss() }
         dialog.show()
 
         ivClose.setOnClickListener { dialog.dismiss() }
 
 
     }
+
+    override fun onTouchEvent(motionEvent: MotionEvent?): Boolean {
+        scaleGestureDetector?.onTouchEvent(motionEvent)
+        return true
+    }
+
+    class ScaleListener(val zoomableImageView: ImageView) : SimpleOnScaleGestureListener() {
+        private var mScaleFactor = 1.0f
+        override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
+            mScaleFactor *= scaleGestureDetector.scaleFactor
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f))
+            zoomableImageView.setScaleX(mScaleFactor)
+            zoomableImageView.setScaleY(mScaleFactor)
+            return true
+        }
+    }
+
 
     private fun playAudioPlayerDialog(data: String) {
         val view = LayoutInflater.from(this)

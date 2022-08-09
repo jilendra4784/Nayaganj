@@ -16,6 +16,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
+import naya.ganj.app.deliverymodule.DeliveryBoyDashboardActivity
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
@@ -95,12 +96,13 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.getAutoLoginResponse(userId, jsonObject).observe(this) {
             if (it.status) {
-                if (it.userDetails.role.equals("deliveryBoy")) {
-                    /*val intent = Intent(applicationContext, Delivery Dashoard::class.java)
-                    startActivity(intent)
-                    finish()*/
+                if (it.userDetails.role == "deliveryBoy") {
                     app.user.setLoginSession(true)
                     app.user.saveUserDetail(it.userDetails)
+                    val intent =
+                        Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                     app.user.setLoginSession(true)

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ordersFragment"
+        android:enabled="true"
+        android:icon="@drawable/my_order"
+        android:title="Orders" />
+
+    <item
+        android:id="@+id/orderHistory"
+        android:enabled="true"
+        android:icon="@drawable/my_order"
+        android:title="Orders History" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:enabled="true"
+        android:icon="@drawable/profile_icon"
+        android:title="Profile" />
+
+</menu>
