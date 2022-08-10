@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/ordersFragment"
-        android:name="naya.ganj.app.deliverymodule.view.DeliveryOrdersFragment"
+        android:name="naya.ganj.app.deliverymodule.view.OrdersFragment"
         android:label="fragment_orders"
         tools:layout="@layout/fragment_orders" />
     <fragment
         android:id="@+id/orderHistory"
-        android:name="naya.ganj.app.deliverymodule.view.RetunrOrdersFragment"
+        android:name="naya.ganj.app.deliverymodule.view.OrdersHistoryFragment"
         android:label="fragment_order_history"
         tools:layout="@layout/fragment_order_history" />
     <fragment
@@ -20,14 +20,5 @@
         android:name="naya.ganj.app.deliverymodule.view.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/deliveredOrdersFragment"
-        android:name="naya.ganj.app.DeliveredOrdersFragment"
-        android:label="fragment_delivered_orders"
-        tools:layout="@layout/fragment_delivered_orders" />
-    <fragment
-        android:id="@+id/returnedOrdersFragment"
-        android:name="naya.ganj.app.ReturnedOrdersFragment"
-        android:label="fragment_returned_orders"
-        tools:layout="@layout/fragment_returned_orders" />
+
 </navigation>
