@@ -96,7 +96,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
 
         binding.arrowIcon.setOnClickListener {
-            Log.e("TAG", "onCreate: " + "")
             finish()
         }
 
@@ -112,6 +111,8 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         json.addProperty(Constant.TEXT, text)
         json.addProperty(Constant.pageIndex, "0")
 
+        binding.progressBar.visibility=View.VISIBLE
+        binding.productList.visibility=View.GONE
         viewModel.getProductList(userId, Constant.DEVICE_TYPE, json)
             .observe(this) {
                 if (it.productList.isNotEmpty()) {
@@ -139,6 +140,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                         }
                                     }
                                 }
+
                             }
                         }
                     }
@@ -153,7 +155,9 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.productList.adapter = adapter
                     binding.tvNoProduct.visibility = View.GONE
                     binding.productList.visibility = View.VISIBLE
-                    binding.llCartLayout.visibility = View.VISIBLE
+
+                    binding.progressBar.visibility=View.GONE
+                    binding.productList.visibility=View.VISIBLE
 
                 } else {
                     binding.tvNoProduct.visibility = View.VISIBLE

@@ -56,7 +56,8 @@ object Constant {
     const val format="format"
     const val data="data"
 
-    var ADDRESS_RADIO_SELECTION=0
+    var ADDRESS_RADIO_SELECTION = 0
+    var IS_FROM_MYCART = false
 
 
 }

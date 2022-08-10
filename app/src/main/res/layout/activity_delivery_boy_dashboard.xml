@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".deliverymodule.DeliveryBoyDashboardActivity">
+    tools:context=".deliverymodule.view.DeliveryBoyDashboardActivity">
+
+    <include
+        android:id="@+id/include15"
+        layout="@layout/delivery_toolbar" />
 
     <fragment
         android:id="@+id/delivery_host_fragment"
@@ -15,7 +19,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include15"
         app:navGraph="@navigation/delivery_navigation_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

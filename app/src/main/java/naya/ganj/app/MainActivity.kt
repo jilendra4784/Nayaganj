@@ -96,19 +96,6 @@ open class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         app = applicationContext as Nayaganj
 
-        if (app.user.getLoginSession()) {
-            try {
-                val dateFormat = SimpleDateFormat("mmddyyyyhhmmss", Locale.US)
-                val date: String = dateFormat.format(Date())
-                audioFile = "REC$date"
-                filePath = "${externalCacheDir?.absolutePath}/" + audioFile
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-        }
-
         viewModel = ViewModelProvider(
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
@@ -163,12 +150,12 @@ open class MainActivity : AppCompatActivity() {
                     showMessage(item.title.toString())
                 }
                 R.id.share_App -> {
-                    /* val sendIntent = Intent()
+                     val sendIntent = Intent()
                      sendIntent.action = Intent.ACTION_SEND
                      sendIntent.putExtra(Intent.EXTRA_TEXT,
                          "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
                      sendIntent.type = "text/plain"
-                     startActivity(sendIntent)*/
+                    startActivity(sendIntent)
                 }
                 R.id.refer_earn -> {
                     showMessage(item.title.toString())
@@ -190,12 +177,6 @@ open class MainActivity : AppCompatActivity() {
             true
         }
 
-        if (app.user.getLoginSession()) {
-            binding.include14.ivCameraIcon.visibility = View.VISIBLE
-        } else {
-            binding.include14.ivCameraIcon.visibility = View.GONE
-        }
-
         // Todo Hide Side Menu Item
         binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
@@ -203,29 +184,6 @@ open class MainActivity : AppCompatActivity() {
             app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
-
-
-        val userName =
-            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
-        val mobileNo =
-            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_mobile) as TextView
-        val llLoginSignUp = binding.sideNavigation.getHeaderView(0)
-            .findViewById(R.id.ll_login_signup_layout) as LinearLayout
-        val llUserInfoLayout = binding.sideNavigation.getHeaderView(0)
-            .findViewById(R.id.ll_user_info_layout) as LinearLayout
-
-
-        if (app.user.getLoginSession()) {
-            if (app.user.getUserDetails()?.name.equals("")) {
-                userName.text = resources.getString(R.string.user_name)
-            } else {
-                userName.text = app.user.getUserDetails()?.name
-            }
-            mobileNo.text = app.user.getUserDetails()?.mNumber
-            llUserInfoLayout.visibility = View.VISIBLE
-        } else {
-            llLoginSignUp.visibility = View.VISIBLE
-        }
 
         binding.sideNavigation.getHeaderView(0).setOnClickListener {
             if (!app.user.getLoginSession()) {
@@ -236,6 +194,46 @@ open class MainActivity : AppCompatActivity() {
                     )
                 )
             }
+        }
+        setUIDataForLoginUser()
+
+    }
+
+    private fun setUIDataForLoginUser() {
+
+        val userName =
+            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
+        val mobileNo =
+            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_mobile) as TextView
+        val llLoginSignUp = binding.sideNavigation.getHeaderView(0)
+            .findViewById(R.id.ll_login_signup_layout) as LinearLayout
+        val llUserInfoLayout = binding.sideNavigation.getHeaderView(0)
+            .findViewById(R.id.ll_user_info_layout) as LinearLayout
+
+        if (app.user.getLoginSession()) {
+            if (app.user.getUserDetails()?.name.equals("")) {
+                userName.text = resources.getString(R.string.user_name)
+            } else {
+                userName.text = app.user.getUserDetails()?.name
+            }
+            mobileNo.text = app.user.getUserDetails()?.mNumber
+            llUserInfoLayout.visibility = View.VISIBLE
+
+            // Creating File for Capture Order Request
+
+            binding.include14.ivCameraIcon.visibility = View.VISIBLE
+            try {
+                val dateFormat = SimpleDateFormat("mmddyyyyhhmmss", Locale.US)
+                val date: String = dateFormat.format(Date())
+                audioFile = "REC$date"
+                filePath = "${externalCacheDir?.absolutePath}/" + audioFile
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            llLoginSignUp.visibility = View.VISIBLE
+            binding.include14.ivCameraIcon.visibility = View.GONE
         }
     }
 
@@ -588,17 +586,23 @@ open class MainActivity : AppCompatActivity() {
     }
 
     var cameraResult = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+        if (it) {
+            val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
+            val selectedImage = BitmapFactory.decodeStream(imageStream)
+            val converetdImage = selectedImage?.let { getResizedBitmap(it, 500) }
+            val baos1 = ByteArrayOutputStream()
+            converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
+            val imageByteArray2 = baos1.toByteArray()
+            virtualCaptureImge = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
 
-        val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
-        val selectedImage = BitmapFactory.decodeStream(imageStream)
-        val converetdImage = selectedImage?.let { getResizedBitmap(it, 500) }
-        val baos1 = ByteArrayOutputStream()
-        converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
-        val imageByteArray2 = baos1.toByteArray()
-        virtualCaptureImge = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
+            isImageOrderRequest = true
+            checkAddressExist()
+        } else {
+            Log.e("TAG", ": " + it)
+            virtualCameraAlertDialog?.dismiss()
+            Toast.makeText(this@MainActivity, "Image is not Captured!", Toast.LENGTH_SHORT).show()
+        }
 
-        isImageOrderRequest = true
-        checkAddressExist()
     }
 
     private fun checkAddressExist() {

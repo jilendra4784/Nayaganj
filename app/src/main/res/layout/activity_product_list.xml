@@ -46,6 +46,9 @@
                 android:hint="Search 100+ product"
                 android:paddingStart="@dimen/_10sdp"
                 android:textSize="@dimen/_10sdp"
+                android:drawableLeft="@drawable/search"
+                android:drawablePadding="@dimen/_10sdp"
+                android:drawableTint="@color/gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -76,6 +79,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_no_product"
         app:layout_constraintVertical_bias="0.96" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 
     <LinearLayout

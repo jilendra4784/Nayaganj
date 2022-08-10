@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".data.category.view.CategoryFragment">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ExpandableListView
         android:id="@+id/expandablelist"
         android:layout_width="match_parent"
@@ -14,6 +23,7 @@
         android:groupIndicator="@null"
         android:divider="@null"
         android:childDivider="@null"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

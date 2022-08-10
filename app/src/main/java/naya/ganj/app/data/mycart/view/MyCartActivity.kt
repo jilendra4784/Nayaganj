@@ -25,6 +25,7 @@ import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
+import naya.ganj.app.utility.Constant.IS_FROM_MYCART
 import naya.ganj.app.utility.Utility
 
 class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
@@ -83,6 +84,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
             } else {
                 startActivity(Intent(this@MyCartActivity, LoginActivity::class.java))
+                IS_FROM_MYCART=true
             }
         }
 

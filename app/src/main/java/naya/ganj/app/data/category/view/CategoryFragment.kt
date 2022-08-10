@@ -64,11 +64,16 @@ class CategoryFragment : Fragment() {
     }
 
     private fun getCategoryData() {
+        binding.expandablelist.visibility = View.VISIBLE
         categoryViewModel?.getCategoryData()?.observe(requireActivity(), Observer {
             if (it != null) {
                 cateModel = it
                 adapter = ExpandableListAdapter(it)
                 binding.expandablelist.setAdapter(adapter)
+                binding.progressBar.visibility = View.GONE
+                binding.expandablelist.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.VISIBLE
             }
         })
     }

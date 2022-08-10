@@ -4,11 +4,7 @@
     android:padding="10dp">
 
     <solid android:color="#FFFFFF" />
-    <corners
-        android:bottomRightRadius="@dimen/_5sdp"
-        android:bottomLeftRadius="@dimen/_5sdp"
-        android:topLeftRadius="@dimen/_5sdp"
-        android:topRightRadius="@dimen/_5sdp" />
+    <corners android:radius="@dimen/_5sdp"/>
     <stroke android:width="@dimen/_2sdp"
-        android:color="@color/red"/>
+        android:color="@color/gray"/>
 </shape>

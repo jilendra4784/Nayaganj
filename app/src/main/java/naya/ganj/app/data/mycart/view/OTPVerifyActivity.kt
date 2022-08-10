@@ -25,10 +25,11 @@ import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.databinding.ActivityOtpactivityBinding
-import naya.ganj.app.deliverymodule.DeliveryBoyDashboardActivity
+import naya.ganj.app.deliverymodule.view.DeliveryBoyDashboardActivity
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.Constant.IS_FROM_MYCART
 import naya.ganj.app.utility.MyViewModelFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -113,11 +114,16 @@ class OTPVerifyActivity : AppCompatActivity() {
                     } else {
                         app.user.saveUserDetail(it.userDetails)
                         app.user.setLoginSession(true)
-                        val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
+
+                        if(IS_FROM_MYCART){
+                         finish()
+                        }else{
+                            val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }
                     }
                 }
             }

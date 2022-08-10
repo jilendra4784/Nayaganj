@@ -16,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
-import naya.ganj.app.deliverymodule.DeliveryBoyDashboardActivity
+import naya.ganj.app.deliverymodule.view.DeliveryBoyDashboardActivity
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory

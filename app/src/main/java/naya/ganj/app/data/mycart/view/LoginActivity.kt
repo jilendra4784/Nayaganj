@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.include6.ivBackArrow.setOnClickListener { finish() }
         binding.include6.toolbarTitle.text = "Login/SignUp"
-
+        
         viewModel = ViewModelProvider(
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))

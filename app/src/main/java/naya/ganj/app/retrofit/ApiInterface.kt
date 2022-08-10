@@ -2,6 +2,7 @@ package naya.ganj.app.retrofit
 
 import com.google.gson.JsonObject
 import naya.ganj.app.data.category.model.*
+import naya.ganj.app.data.home.model.BannerModel
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
@@ -247,7 +248,11 @@ interface ApiInterface {
     ): Response<ProductListModel>
 
 
-
+    @GET(URLConstant.URL_HOME_BANNER_URL)
+   suspend fun getBannerData(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+    ): Response<BannerModel>
 
 
 }

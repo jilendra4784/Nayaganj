@@ -1,4 +1,4 @@
-package naya.ganj.app.deliverymodule
+package naya.ganj.app.deliverymodule.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
