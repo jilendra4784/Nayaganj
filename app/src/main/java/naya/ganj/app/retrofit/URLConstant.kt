@@ -32,4 +32,9 @@ object URLConstant {
     const val URL_PLACE_VIRTUAL_ORDER_URL = "virtualOrders"
     const val URL_HOME_BANNER_URL = "getpromoBanner"
 
+    // Delivery Orders
+    const val URL_DELIVERY_ORDERS_URL = "deliveryOrderList"
+    const val URL_DELIVERED_ORDERS_URL = "deliveryOrderHistoryList"
+
+
 }

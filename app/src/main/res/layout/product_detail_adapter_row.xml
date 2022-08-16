@@ -97,16 +97,11 @@
                     <TextView
                         android:id="@+id/tv_unit"
                         android:layout_width="@dimen/_40sdp"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/_25sdp"
                         android:gravity="center"
                         android:text="2 kg"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_10sdp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_down_arrow" />
 
 
                 </LinearLayout>

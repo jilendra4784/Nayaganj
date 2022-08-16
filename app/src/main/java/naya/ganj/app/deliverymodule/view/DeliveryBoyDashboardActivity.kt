@@ -17,6 +17,5 @@ class DeliveryBoyDashboardActivity : AppCompatActivity() {
         val navController = Navigation.findNavController(this, R.id.delivery_host_fragment)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
-
     }
 }

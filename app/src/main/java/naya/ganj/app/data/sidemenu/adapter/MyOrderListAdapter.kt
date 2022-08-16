@@ -78,12 +78,7 @@ class MyOrderListAdapter(val context: Context, val orederList: List<MyOrderListM
 
             } else {
                 holder.binding.tvOrderStatus.text = orderStatus[0]
-                holder.binding.tvOrderStatus.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.white
-                    )
-                )
+                holder.binding.tvOrderStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
                 holder.binding.tvOrderStatus.setBackgroundColor(Color.parseColor(orderStatus[1]))
             }
         } catch (e: Exception) {

@@ -39,4 +39,5 @@
     <string name="categories">Categories</string>
     <string name="make_order_by_taking_image_or_voice">Make Order by Taking Image or Voice</string>
     <string name="stop_amp_play"><![CDATA[Stop & play]]></string>
+    <string name="check_internet">Please check your connection status\nand try again!</string>
 </resources>

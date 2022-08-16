@@ -2,8 +2,15 @@ package naya.ganj.app.utility
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
@@ -12,6 +19,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
@@ -22,6 +30,8 @@ import retrofit2.Response
 
 
 class Utility {
+
+    lateinit var dialog: Dialog
 
     //Common Function to add or Remove Item
     fun addRemoveItem(
@@ -132,6 +142,72 @@ class Utility {
                 }
             }).check()
         return isPermissionGranted
+    }
+
+     fun isNetworkConnected(context: Context): Boolean {
+
+        // register activity with the connectivity manager service
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // if the android version is equal to M
+        // or greater we need to use the
+        // NetworkCapabilities to check what type of
+        // network has the internet connection
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            // Returns a Network object corresponding to
+            // the currently active default data network.
+            val network = connectivityManager.activeNetwork ?: return false
+
+            // Representation of the capabilities of an active network.
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+            return when {
+                // Indicates this network uses a Wi-Fi transport,
+                // or WiFi has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+
+                // Indicates this network uses a Cellular transport. or
+                // Cellular has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
+                // else return false
+                else -> false
+            }
+        } else {
+            // if the android version is below M
+            @Suppress("DEPRECATION") val networkInfo =
+                connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
+        }
+    }
+
+    fun isAppOnLine(context: Context) : Boolean{
+        var isInternetAvailable=false
+         if(isNetworkConnected(context)){
+             isInternetAvailable=true
+          return  isInternetAvailable
+        }else{
+            dialog= Dialog(context)
+            dialog.setContentView(R.layout.no_internet_connection_dialog)
+            dialog.setCancelable(false)
+            dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent);
+            val button=dialog.findViewById<Button>(R.id.retry_button)
+            button.setOnClickListener{
+                if(isNetworkConnected(context)){
+                    dialog.dismiss()
+                    isInternetAvailable= true
+                }
+            }
+             try {
+                 dialog.show()
+             }catch (e:Exception){e.printStackTrace()}
+
+           return isInternetAvailable
+        }
     }
 
 }

@@ -24,6 +24,7 @@
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/bottom_navigation_selector.xml" value="0.151" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/btn_background_tint.xml" value="0.1665" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/chat_message_icon.xml" value="0.1795" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/dialog_bg.xml" value="0.1935" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/dipatched_background.xml" value="0.1655" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/edittext_round_corner.xml" value="0.2095" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/drawable/green_background.xml" value="0.2105" />
@@ -65,6 +66,7 @@
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_my_orddr.xml" value="0.13489583333333333" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_my_orders_details.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_my_virtual.xml" value="0.20416666666666666" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_order_detail.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_otpactivity.xml" value="0.19010416666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_payment_option.xml" value="0.25" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_privacy_policy.xml" value="0.18" />
@@ -77,11 +79,15 @@
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_splash.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/activity_update_profile.xml" value="0.25" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_address_list_row.xml" value="0.33" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_delivered_orders_layout.xml" value="0.33" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_delivery_orders_layout.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_home_layout.xml" value="0.22" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_local_mycart_layout.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_myorderlist.xml" value="0.33" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_order_detal_layout.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adapter_virtual_adapter_layout.xml" value="0.25" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/address_vrtual_adapter.xml" value="0.33" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/adpater_order_detail_layout.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/audio_dialog.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/auto_list_item.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/bottom_audio_dialog.xml" value="0.25" />
@@ -103,7 +109,7 @@
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_order_history.xml" value="0.25" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_orders.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_product_list.xml" value="0.1" />
-        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_profile.xml" value="0.15677083333333333" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_returned_orders.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/fragment_search.xml" value="0.22" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/header_layout.xml" value="0.5841584158415841" />
@@ -114,6 +120,7 @@
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/list_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/main_toolbar.xml" value="0.67" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/mycart_adapter_layout.xml" value="0.33" />
+        <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/no_internet_connection_dialog.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/order_placed_dialog.xml" value="0.20416666666666666" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/product_detail_adapter_row.xml" value="0.33" />
         <entry key="..\:/Stick Pool Projects/Nayaganj/app/src/main/res/layout/product_list_fragment.xml" value="0.1875" />

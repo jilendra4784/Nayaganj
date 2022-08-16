@@ -1,5 +1,7 @@
 package naya.ganj.app.utility
 
+import java.lang.reflect.Type
+
 object Constant {
     const val pageIndex = "pageIndex"
     const val PRODUCT_ID = "productId"
@@ -59,5 +61,9 @@ object Constant {
     var ADDRESS_RADIO_SELECTION = 0
     var IS_FROM_MYCART = false
 
+    // Delivery module
+    const val DeliveryOrderStatus="orderStatus"
+    const val RETURNVERIFIED="RETURNVERIFIED"
+    const val Type="type"
 
 }
