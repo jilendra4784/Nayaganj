@@ -3,7 +3,7 @@ package naya.ganj.app.deliverymodule.model
 
 import com.google.gson.annotations.SerializedName
 
-data class OrderDetailModel(
+data class DeliveryOrderDetailModel(
     @SerializedName("msg")
     val msg: String,
     @SerializedName("orderDetails")
@@ -41,7 +41,7 @@ data class OrderDetailModel(
         @SerializedName("paymentOrderId")
         val paymentOrderId: String,
         @SerializedName("paymentRecieveByDelBoy")
-        val paymentRecieveByDelBoy: Int,
+        val paymentRecieveByDelBoy: Double,
         @SerializedName("paymentStatus")
         val paymentStatus: String,
         @SerializedName("products")

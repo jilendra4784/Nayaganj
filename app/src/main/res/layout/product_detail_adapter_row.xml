@@ -6,9 +6,10 @@
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="@dimen/_10sdp"
-    app:cardElevation="@dimen/_2sdp"
-    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="@dimen/_10sdp"
+    android:layout_margin="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
-            android:paddingTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:text="product name"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintBottom_toTopOf="@+id/tv_product_description"
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:textSize="@dimen/_8sdp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -62,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="127dp" />
+            app:layout_constraintGuide_begin="119dp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -97,7 +98,7 @@
                     <TextView
                         android:id="@+id/tv_unit"
                         android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="@dimen/_15sdp"
                         android:gravity="center"
                         android:text="2 kg"
                         android:textColor="@color/black"

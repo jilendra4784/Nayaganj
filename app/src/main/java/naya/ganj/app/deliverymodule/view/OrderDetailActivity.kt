@@ -43,7 +43,7 @@ class OrderDetailActivity : AppCompatActivity() {
         }
 
         binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
-        binding.rvProductList.isNestedScrollingEnabled = false
+        binding.rvProductList.isNestedScrollingEnabled = true
         getOrderDetail(orderId, orderType)
     }
 

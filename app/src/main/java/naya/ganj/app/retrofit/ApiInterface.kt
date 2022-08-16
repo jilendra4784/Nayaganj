@@ -5,11 +5,14 @@ import naya.ganj.app.data.category.model.*
 import naya.ganj.app.data.home.model.BannerModel
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
+import naya.ganj.app.data.sidemenu.model.OrderDetailModel
+
 
 import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
+import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
-import naya.ganj.app.deliverymodule.model.OrderDetailModel
+
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
@@ -276,12 +279,12 @@ interface ApiInterface {
     ): Response<DeliveredOrdersModel>
 
     @Headers("Content-Type: application/json")
-    @POST(URLConstant.URL_DELIVERED_ORDERS_URL)
+    @POST(URLConstant.URL_DELIVERED_ORDERS_DETAIL_URL)
     suspend fun getOrderDetail(
         @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
-    ): Response<OrderDetailModel>
+    ): Response<DeliveryOrderDetailModel>
 
 
 

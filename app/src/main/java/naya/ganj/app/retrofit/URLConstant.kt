@@ -35,6 +35,7 @@ object URLConstant {
     // Delivery Orders
     const val URL_DELIVERY_ORDERS_URL = "deliveryOrderList"
     const val URL_DELIVERED_ORDERS_URL = "deliveryOrderHistoryList"
+    const val URL_DELIVERED_ORDERS_DETAIL_URL = "deliveryOrderDetails"
 
 
 }
