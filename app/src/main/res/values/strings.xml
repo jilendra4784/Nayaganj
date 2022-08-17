@@ -40,4 +40,6 @@
     <string name="make_order_by_taking_image_or_voice">Make Order by Taking Image or Voice</string>
     <string name="stop_amp_play"><![CDATA[Stop & play]]></string>
     <string name="check_internet">Please check your connection status\nand try again!</string>
+    <string name="payment_received">Payment Received:</string>
+    <string name="refunded_amount">Refunded amount:</string>
 </resources>

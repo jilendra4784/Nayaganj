@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true">
+    android:layout_margin="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="@dimen/_5sdp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,10 +23,9 @@
             android:id="@+id/textView39"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/roboto_bold"
             android:text="Order Id: "
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,10 +42,10 @@
             android:id="@+id/tv_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="TextView"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
             app:layout_constraintEnd_toStartOf="@+id/tv_amount"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +58,7 @@
             android:fontFamily="@font/poppins_regular"
             android:text="TextView"
             android:textSize="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_order_id" />
@@ -63,11 +67,10 @@
             android:id="@+id/textView45"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="Order On: "
+            android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_items" />
 
@@ -76,7 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-
+            android:layout_marginTop="@dimen/_5sdp"
+            android:paddingStart="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="@+id/textView45"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -87,10 +91,10 @@
             android:id="@+id/textView49"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="Payment Status"
+            android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
@@ -98,21 +102,23 @@
             android:id="@+id/tv_Address_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_5sdp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="@+id/textView51"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textView51"
-            app:layout_constraintTop_toTopOf="@+id/textView51" />
+            app:layout_constraintTop_toTopOf="@+id/textView51"
+            app:layout_constraintVertical_bias="0.18" />
 
         <TextView
             android:id="@+id/textView51"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="Address Type"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView49" />
 
@@ -120,48 +126,67 @@
             android:id="@+id/tv_delivery_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
             android:text="TextView"
+            android:paddingStart="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="@+id/textView53"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.01"
             app:layout_constraintStart_toEndOf="@+id/textView53"
-            app:layout_constraintTop_toBottomOf="@+id/textView51"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/textView53"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView53"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="Delivery Address"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView51" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_amount" />
 
         <TextView
             android:id="@+id/tv_payment_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_5sdp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="@+id/textView49"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textView49"
-            app:layout_constraintTop_toTopOf="@+id/textView49" />
+            app:layout_constraintTop_toTopOf="@+id/textView49"
+            app:layout_constraintVertical_bias="0.31" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_status_button_cardview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:cardCornerRadius="@dimen/_5sdp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView53"
+            app:strokeWidth="0dp">
+
+            <TextView
+                android:id="@+id/tv_order_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="TextView" />
+
+        </com.google.android.material.card.MaterialCardView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

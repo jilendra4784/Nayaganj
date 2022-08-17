@@ -99,11 +99,11 @@ class OTPVerifyActivity : AppCompatActivity() {
                     app.user.saveUserDetail(it.userDetails)
                     app.user.setLoginSession(true)
                 } else {
-                    if (it.userDetails.role.equals("deliveryBoy")) {
+                    if (it.userDetails.role == "deliveryBoy") {
                         app.user.setLoginSession(true)
                         app.user.saveUserDetail(it.userDetails)
-                        val intent =
-                            Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                        val intent = Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()
                         Toast.makeText(
@@ -119,8 +119,7 @@ class OTPVerifyActivity : AppCompatActivity() {
                          finish()
                         }else{
                             val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                             finish()
                         }

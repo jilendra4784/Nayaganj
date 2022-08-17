@@ -47,7 +47,9 @@ data class DeliveryOrderDetailModel(
         @SerializedName("products")
         val products: List<Product>,
         @SerializedName("totalAmount")
-        val totalAmount: Double
+        val totalAmount: Double,
+        @SerializedName("refundedAmount")
+       val refundedAmount: Double
     ) {
         data class Address(
             @SerializedName("ApartName")

@@ -16,14 +16,14 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
     val deliveredOrdersData = MutableLiveData<DeliveredOrdersModel>()
     val orderDetailLiveData = MutableLiveData<DeliveryOrderDetailModel>()
 
-    fun getDeliveryOrdersData(userId:String?,jsonObject: JsonObject): LiveData<DeliveryOrdersModel> {
+    /*fun getDeliveryOrdersData(userId:String?,jsonObject: JsonObject): LiveData<DeliveryOrdersModel> {
         viewModelScope.launch {
             val result=repositry.getDeliveryOrdersRequest(userId,jsonObject)
             mutableLiveData.value=result.body()
         }
 
         return mutableLiveData
-    }
+    }*/
 
     fun getDeliveredOrdersData(userId:String?,jsonObject: JsonObject): LiveData<DeliveredOrdersModel> {
         viewModelScope.launch {

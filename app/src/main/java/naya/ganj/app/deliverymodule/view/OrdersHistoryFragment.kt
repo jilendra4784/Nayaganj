@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
@@ -28,6 +29,13 @@ class OrdersHistoryFragment : Fragment() {
     lateinit var viewModel: DeliveryModuleViewModel
     private var orderType = "delivery"
     lateinit var app: Nayaganj
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

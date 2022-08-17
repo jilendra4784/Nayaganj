@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.MaterialFadeThrough
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.FragmentProfileBinding
@@ -16,6 +17,12 @@ class ProfileFragment : Fragment() {
 
     lateinit var binding: FragmentProfileBinding
     lateinit var app: Nayaganj
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

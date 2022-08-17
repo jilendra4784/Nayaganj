@@ -25,7 +25,7 @@ data class DeliveryOrdersModel(
         @SerializedName("paymentStatus")
         val paymentStatus: String,
         @SerializedName("totalAmount")
-        val totalAmount: Int,
+        val totalAmount: Double,
         @SerializedName("totalItems")
         val totalItems: Int
     ) {

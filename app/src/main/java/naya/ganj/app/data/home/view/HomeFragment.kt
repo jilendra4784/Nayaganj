@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.transition.MaterialFadeThrough
 import com.smarteist.autoimageslider.SliderView
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.category.view.ProductListActivity
@@ -27,18 +28,24 @@ class HomeFragment : Fragment() {
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        homeViewModel = ViewModelProvider(this,HomePageDataFactory(HomeRepositry(RetrofitClient.instance)))[HomeViewModel::class.java]
+        homeViewModel = ViewModelProvider(requireActivity(),HomePageDataFactory(HomeRepositry(RetrofitClient.instance)))[HomeViewModel::class.java]
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         app = requireActivity().applicationContext as Nayaganj
 
         getBannerList()
-        setStaticData()
+       setStaticData()
         return binding.root
     }
 

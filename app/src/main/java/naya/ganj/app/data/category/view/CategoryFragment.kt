@@ -9,6 +9,7 @@ import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.transition.MaterialFadeThrough
 import naya.ganj.app.data.category.adapter.ExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
@@ -22,6 +23,12 @@ class CategoryFragment : Fragment() {
     var categoryViewModel: CategoryViewModel? = null
     lateinit var adapter: ExpandableListAdapter
     lateinit var cateModel: CategoryDataModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

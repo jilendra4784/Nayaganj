@@ -29,6 +29,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:itemTextColor="@drawable/bottom_navigation_selector"
+        app:itemIconTint="@drawable/bottom_navigation_selector"
         app:menu="@menu/delivery_menu" />
 
 

@@ -262,13 +262,22 @@ interface ApiInterface {
 
    // Delivery Module
 
-   @Headers("Content-Type: application/json")
+ /*  @Headers("Content-Type: application/json")
    @POST(URLConstant.URL_DELIVERY_ORDERS_URL)
    suspend fun getDeliveryOrders(
        @Header("userid") userid: String?,
        @Header("devicetype") d: String,
        @Body jsonObject: JsonObject
-   ): Response<DeliveryOrdersModel>
+   ): Response<DeliveryOrdersModel>*/
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_DELIVERY_ORDERS_URL)
+     fun getDeliveryOrders(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Call<DeliveryOrdersModel>
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELIVERED_ORDERS_URL)
@@ -285,8 +294,5 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<DeliveryOrderDetailModel>
-
-
-
 
 }
