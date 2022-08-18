@@ -32,6 +32,8 @@ object Constant {
     const val promoCodeId = "promoCodeId"
     const val cashBackAmount = "cashBackAmount"
     const val orderId = "orderId"
+    const val paymentMode="paymentMode"
+    const val amount="amount"
     const val orderStatus = "orderStatus"
     const val totalItems = "totalItems"
     const val MobileNumber = "mobileNumber"
@@ -64,6 +66,11 @@ object Constant {
     // Delivery module
     const val DeliveryOrderStatus="orderStatus"
     const val RETURNVERIFIED="RETURNVERIFIED"
+    const val DISPATCHED="DISPATCHED"
+    const val COLLECTED="COLLECTED"
+    const val DELIVERED="DELIVERED"
+    const val RETURNSUCCESS="RETURNSUCCESS"
     const val Type="type"
+    const val FragmetType="ORDERS"
 
 }

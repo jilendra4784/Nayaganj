@@ -14,12 +14,12 @@ import naya.ganj.app.deliverymodule.view.OrderDetailActivity
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
 
-class DeliveredOrdersAdapter(
+class OrdersHistoryAdapter(
     val context: Context,
     val type: String,
     val list: List<DeliveredOrdersModel.Orders>
 ) :
-    RecyclerView.Adapter<DeliveredOrdersAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<OrdersHistoryAdapter.MyViewHolder>() {
 
     override fun getItemCount(): Int {
         return list.size
@@ -61,6 +61,7 @@ class DeliveredOrdersAdapter(
             val intent = Intent(context, OrderDetailActivity::class.java)
             intent.putExtra(Constant.ORDER_ID, orders.orderId)
             intent.putExtra(Constant.Type, type)
+            intent.putExtra(Constant.FragmetType, "HISTORY")
             context.startActivity(intent)
         }
     }

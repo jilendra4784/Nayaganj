@@ -40,7 +40,7 @@ class ProfileFragment : Fragment() {
         binding.tvMobile.text = app.user.getUserDetails()?.mNumber
 
         binding.tvLogout.setOnClickListener {
-            if (Utility().isAppOnLine(requireActivity()))
+            if (Utility.isAppOnLine(requireActivity()))
                 showLogoutDialog()
         }
     }

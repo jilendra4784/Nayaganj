@@ -1,8 +1,10 @@
 package naya.ganj.app.deliverymodule.view
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -25,11 +27,17 @@ class OrderDetailActivity : AppCompatActivity() {
     lateinit var binding: ActivityOrderDetailBinding
     lateinit var viewModel: DeliveryModuleViewModel
     lateinit var app: Nayaganj
-    var orderType = ""
+    private var orderType = ""
+    private var FragmentType = ""
+    private var changeOrderStatus=""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOrderDetailBinding.inflate(layoutInflater)
+        binding.include16.ivBackArrow.setOnClickListener { finish() }
+        binding.include16.tvToolbarTitle.text = "Orders Detail"
+
         viewModel = ViewModelProvider(
             this@OrderDetailActivity,
             DeliveryModuleFactory(DeliveryModuleRepositry(RetrofitClient.instance))
@@ -40,6 +48,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
         val orderId = intent.getStringExtra(Constant.ORDER_ID)
         val type = intent.getStringExtra(Constant.Type)
+        FragmentType = intent.getStringExtra(Constant.FragmetType).toString()
 
         orderType = if (type.equals("delivery")) {
             "deliveryOrder"
@@ -48,10 +57,11 @@ class OrderDetailActivity : AppCompatActivity() {
         }
 
         getOrderDetail(orderId, orderType)
+
     }
 
     private fun getOrderDetail(orderId: String?, type: String?) {
-        if (Utility().isAppOnLine(this@OrderDetailActivity)) {
+        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.orderId, orderId)
             jsonObject.addProperty(Constant.Type, orderType)
@@ -85,18 +95,63 @@ class OrderDetailActivity : AppCompatActivity() {
             binding.tvOrderStatus.setBackgroundColor(Color.parseColor("#20BA44"))
             binding.tvOrderStatus.text=it.orderDetails.orderStatus
 
-            if(orderType == "deliveryOrder"){
-                binding.tvRefundAmount.visibility= View.GONE
-            }else{
-                if( it.orderDetails.refundedAmount>0){
-                    binding.tvRefundAmount.visibility= View.VISIBLE
-                }else {
+            if (orderType == "deliveryOrder") {
+                binding.tvRefundAmount.visibility = View.GONE
+            } else {
+                if (it.orderDetails.refundedAmount > 0) {
+                    binding.tvRefundAmount.visibility = View.VISIBLE
+                } else {
                     binding.tvRefundAmount.visibility = View.GONE
                 }
             }
-
-            binding.rvProductList.layoutManager=LinearLayoutManager(this@OrderDetailActivity)
+            if (FragmentType == "ORDERS") {
+                binding.tvPaymentReceived.visibility = View.GONE
+                binding.tvRefundAmount.visibility = View.GONE
+                binding.cvCardview.visibility = View.GONE
+                binding.ivPhone.visibility = View.VISIBLE
+                binding.tvContactNumber.visibility = View.VISIBLE
+                binding.tvContactNumber.text = it.orderDetails.address.contactNumber
+                binding.ivLocation.visibility = View.VISIBLE
+                if(orderType == "returnOrder"){
+                    binding.tvRefundAmount.visibility=View.VISIBLE
+                }
+            } else if (FragmentType == "HISTORY") {
+                binding.tvPaymentReceived.visibility = View.VISIBLE
+                binding.tvRefundAmount.visibility = View.VISIBLE
+                binding.cvCardview.visibility = View.VISIBLE
+            }
+            binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
             binding.rvProductList.adapter = DeliveredOrderDetailAdapter(it.orderDetails.products)
+
+              changeOrderStatus=""
+
+            // Reschudule Status
+
+            val rescheduleStatus= it.orderDetails.buttonIndex.split('|')[0]
+            val rescheduleStatusAfterSplit= rescheduleStatus.split(',')
+
+            // OrderStatus button status
+            val orderStatusValue= it.orderDetails.buttonIndex.split('|')[1]
+            val orderStatusValueAfterSplit= orderStatusValue.split(',')
+
+
+
+            // Refund Status
+            val refundValue= it.orderDetails.buttonIndex.split('|')[2]
+            val refundAfterSplit= refundValue.split(',')
+
+            if(refundAfterSplit[3].toInt()==1)
+            {
+                binding.statusButton.visibility=View.VISIBLE
+                binding.statusButton.text = refundAfterSplit[1]
+                binding.statusButton.setBackgroundColor(Color.parseColor(refundAfterSplit[2]))
+            }
+            else
+            {
+                binding.statusButton.visibility=View.GONE
+            }
         }
     }
+
+
 }

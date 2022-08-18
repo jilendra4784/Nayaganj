@@ -44,6 +44,8 @@ data class DeliveryOrderDetailModel(
         val paymentRecieveByDelBoy: Double,
         @SerializedName("paymentStatus")
         val paymentStatus: String,
+        @SerializedName("buttonIndex")
+        val buttonIndex: String,
         @SerializedName("products")
         val products: List<Product>,
         @SerializedName("totalAmount")

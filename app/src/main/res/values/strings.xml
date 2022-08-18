@@ -42,4 +42,10 @@
     <string name="check_internet">Please check your connection status\nand try again!</string>
     <string name="payment_received">Payment Received:</string>
     <string name="refunded_amount">Refunded amount:</string>
+    <string name="server_error_message">We will resolve issue soon,\nPlease keep  patience.</string>
+
+    <string name="collect_order">Collect Order</string>
+    <string name="dispatch_order">Dispatch Order</string>
+    <string name="deliver_order">Deliver Order</string>
+    <string name="return_products">Return Product</string>
 </resources>

@@ -1,13 +1,13 @@
 package naya.ganj.app.deliverymodule.view
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialFadeThrough
@@ -15,7 +15,7 @@ import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.databinding.FragmentOrderHistoryBinding
-import naya.ganj.app.deliverymodule.adapter.DeliveredOrdersAdapter
+import naya.ganj.app.deliverymodule.adapter.OrdersHistoryAdapter
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
@@ -59,22 +59,35 @@ class OrdersHistoryFragment : Fragment() {
         setUpUI()
 
         binding.btnDeliveryOrder.setOnClickListener {
+            binding.rvDeliveredOrderList.visibility = View.GONE
+            binding.rvReturnedOrderList.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+
             binding.btnDeliveryOrder.background.setTint(ContextCompat.getColor(requireActivity(), R.color.purple_500))
             binding.btnDeliveryOrder.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
             binding.btnReturnOrder.background.setTint(ContextCompat.getColor(requireActivity(), R.color.white))
             binding.btnReturnOrder.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red_color))
             orderType = "delivery"
-            getOrderHistory(orderType)
+
+            Handler(Looper.getMainLooper()).postDelayed({getOrderHistory(orderType)},300)
+
 
         }
-        binding.btnReturnOrder.setOnClickListener { binding.btnReturnOrder.background.setTint(ContextCompat.getColor(requireActivity(), R.color.purple_500))
+        binding.btnReturnOrder.setOnClickListener {
+
+            binding.rvDeliveredOrderList.visibility = View.GONE
+            binding.rvReturnedOrderList.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+
+            binding.btnReturnOrder.background.setTint(ContextCompat.getColor(requireActivity(), R.color.purple_500))
             binding.btnReturnOrder.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
             binding.btnDeliveryOrder.background.setTint(ContextCompat.getColor(requireActivity(), R.color.white))
             binding.btnDeliveryOrder.setTextColor(ContextCompat.getColor(requireActivity(), R.color.red_color))
 
             orderType="return"
-            getOrderHistory(orderType)
+            Handler(Looper.getMainLooper()).postDelayed({getOrderHistory(orderType)},300)
         }
+
         getOrderHistory(orderType)
     }
 
@@ -88,8 +101,8 @@ class OrdersHistoryFragment : Fragment() {
 
     private fun getOrderHistory(orderType:String) {
 
-        if(Utility().isAppOnLine(requireActivity())){
-            binding.progressBar.visibility = View.VISIBLE
+        if(Utility.isAppOnLine(requireActivity())){
+
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.Type, orderType)
             viewModel.getDeliveredOrdersData(app.user.getUserDetails()?.userId, jsonObject)
@@ -98,16 +111,14 @@ class OrdersHistoryFragment : Fragment() {
                         if (isAdded) {
                             if (orderType.equals("delivery")) {
                                 binding.rvDeliveredOrderList.adapter =
-                                    DeliveredOrdersAdapter(requireActivity(), orderType,it.ordersList)
+                                    OrdersHistoryAdapter(requireActivity(), orderType,it.ordersList)
                                 binding.rvDeliveredOrderList.visibility = View.VISIBLE
-                                binding.rvReturnedOrderList.visibility = View.GONE
                                 binding.progressBar.visibility = View.GONE
 
                             } else {
                                 binding.rvReturnedOrderList.adapter =
-                                    DeliveredOrdersAdapter(requireActivity(),orderType ,it.ordersList)
+                                    OrdersHistoryAdapter(requireActivity(),orderType ,it.ordersList)
                                 binding.rvReturnedOrderList.visibility = View.VISIBLE
-                                binding.rvDeliveredOrderList.visibility = View.GONE
                                 binding.progressBar.visibility = View.GONE
                             }
                         }

@@ -36,6 +36,8 @@ object URLConstant {
     const val URL_DELIVERY_ORDERS_URL = "deliveryOrderList"
     const val URL_DELIVERED_ORDERS_URL = "deliveryOrderHistoryList"
     const val URL_DELIVERED_ORDERS_DETAIL_URL = "deliveryOrderDetails"
+    const val URL_DELIVERED_ORDERS_PAYMENT_REQUEST_URL = "paymentRecieveFromDeliveryBoy"
+    const val URL_CHANGE_ORDER_STATUS_URL = "changeOrderStatus"
 
 
 }
