@@ -14,6 +14,7 @@ object Constant {
     const val TEXT = "text"
     const val ORDER_ID = "orderId"
     const val DEVICE_TYPE = "Android"
+    var IS_OTP_VERIFIED= false
 
     const val firstName = "firstName"
     const val LastName = "lastName"
@@ -72,5 +73,14 @@ object Constant {
     const val RETURNSUCCESS="RETURNSUCCESS"
     const val Type="type"
     const val FragmetType="ORDERS"
+    const val RETURNCOLLECTED="RETURNCOLLECTED"
+    const val RETURNCOLLECTEDORRETURNPARTIALCOLLECTED="RETURNCOLLECTEDORRETURNPARTIALCOLLECTED"
+    const val RETURNPARTIALSUCCESS="RETURNPARTIALSUCCESS"
+    const val productsArr="productsArr"
+
+    const val productId="productId"
+    const val variantId="variantId"
+    const val quantity="quantity"
+
 
 }

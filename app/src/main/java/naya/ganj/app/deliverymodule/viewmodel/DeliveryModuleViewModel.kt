@@ -11,20 +11,14 @@ import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
+import okhttp3.RequestBody
 
 class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel() {
     val mutableLiveData = MutableLiveData<ApiResponseModel>()
     val changeOrderStatusAPI = MutableLiveData<ApiResponseModel>()
-    val deliveredOrdersData = MutableLiveData<DeliveredOrdersModel>()
-    val orderDetailLiveData = MutableLiveData<DeliveryOrderDetailModel>()
+    val refundMutableData = MutableLiveData<ApiResponseModel>()
 
-    fun getDeliveredOrdersData(userId:String?,jsonObject: JsonObject): LiveData<DeliveredOrdersModel> {
-        viewModelScope.launch {
-            val result=repositry.getDeliveredOrdersRequest(userId,jsonObject)
-            deliveredOrdersData.value=result.body()
-        }
-        return deliveredOrdersData
-    }
+    val orderDetailLiveData = MutableLiveData<DeliveryOrderDetailModel>()
 
 
     fun getOrderDetail(userId:String?,jsonObject: JsonObject): LiveData<DeliveryOrderDetailModel> {
@@ -54,6 +48,32 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
         return changeOrderStatusAPI
     }
 
+    fun refundRequest(userId:String?,jsonObject: RequestBody): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result=repositry.refundRequest(userId,jsonObject)
+            refundMutableData.value=result.body()
+        }
+
+        return refundMutableData
+    }
+
+    fun returnProducApiRequest(userId:String?,jsonObject: JsonObject): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result=repositry.returnProducApiRequest(userId,jsonObject)
+            refundMutableData.value=result.body()
+        }
+
+        return refundMutableData
+    }
+
+    fun setDeliveryBoyLocationRequest(userId:String?,jsonObject: JsonObject): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result=repositry.setDeliveryBoyLocationRequest(userId,jsonObject)
+            refundMutableData.value=result.body()
+        }
+
+        return refundMutableData
+    }
 
 
 

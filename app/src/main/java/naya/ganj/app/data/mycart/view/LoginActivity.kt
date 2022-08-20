@@ -12,6 +12,8 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant.MobileNumber
 import naya.ganj.app.utility.MyViewModelFactory
 import com.google.gson.JsonObject
+import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.Utility
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
@@ -21,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Constant.IS_OTP_VERIFIED=false
 
         binding.include6.ivBackArrow.setOnClickListener { finish() }
         binding.include6.toolbarTitle.text = "Login/SignUp"
@@ -31,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
         )[OTPViewModel::class.java]
 
         binding.btnNextButton.setOnClickListener {
+
             val mobileNumber: String = binding.textInputLayout.editText?.text.toString()
             if (mobileNumber.length < 10 || mobileNumber.startsWith("0")) {
                 Toast.makeText(this, "Please Enter Valid Number", Toast.LENGTH_SHORT).show()
@@ -41,17 +45,30 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginRequest(mobileNumber: String) {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty(MobileNumber, mobileNumber)
 
-        viewModel.getOTPRequest(jsonObject).observe(this) {
-            if (it.status) {
-                val intent = Intent(this@LoginActivity, OTPVerifyActivity::class.java)
-                intent.putExtra(MobileNumber, mobileNumber)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this@LoginActivity, it.msg, Toast.LENGTH_LONG).show()
+        if(Utility.isAppOnLine(this@LoginActivity)){
+            binding.btnNextButton.isEnabled=false
+            val jsonObject = JsonObject()
+            jsonObject.addProperty(MobileNumber, mobileNumber)
+
+            viewModel.getOTPRequest(jsonObject).observe(this) {
+                if (it.status) {
+                    binding.btnNextButton.isEnabled=true
+                    val intent = Intent(this@LoginActivity, OTPVerifyActivity::class.java)
+                    intent.putExtra(MobileNumber, mobileNumber)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this@LoginActivity, it.msg, Toast.LENGTH_LONG).show()
+                }
             }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(Constant.IS_OTP_VERIFIED){
+            finish()
         }
     }
 }

@@ -177,14 +177,6 @@ open class MainActivity : AppCompatActivity() {
             true
         }
 
-        // Todo Hide Side Menu Item
-        binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
-        binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
-        binding.sideNavigation.menu.findItem(R.id.myvirtualorder).isVisible =
-            app.user.getLoginSession()
-        binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
-        binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
-
         binding.sideNavigation.getHeaderView(0).setOnClickListener {
             if (!app.user.getLoginSession()) {
                 startActivity(
@@ -195,14 +187,25 @@ open class MainActivity : AppCompatActivity() {
                 )
             }
         }
-        setUIDataForLoginUser()
+
 
     }
 
-    private fun setUIDataForLoginUser() {
+    override fun onResume() {
+        super.onResume()
 
-        val userName =
-            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
+        setUIDataForLoginUser()
+    }
+
+    private fun setUIDataForLoginUser() {
+        // Todo Hide Side Menu Item
+        binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.myvirtualorder).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
+
+        val userName = binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
         val mobileNo =
             binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_mobile) as TextView
         val llLoginSignUp = binding.sideNavigation.getHeaderView(0)
@@ -218,6 +221,7 @@ open class MainActivity : AppCompatActivity() {
             }
             mobileNo.text = app.user.getUserDetails()?.mNumber
             llUserInfoLayout.visibility = View.VISIBLE
+            llLoginSignUp.visibility = View.GONE
 
             // Creating File for Capture Order Request
 

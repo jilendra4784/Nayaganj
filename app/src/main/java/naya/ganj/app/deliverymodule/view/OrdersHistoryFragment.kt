@@ -16,12 +16,16 @@ import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.databinding.FragmentOrderHistoryBinding
 import naya.ganj.app.deliverymodule.adapter.OrdersHistoryAdapter
+import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class OrdersHistoryFragment : Fragment() {
 
@@ -56,8 +60,6 @@ class OrdersHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpUI()
-
         binding.btnDeliveryOrder.setOnClickListener {
             binding.rvDeliveredOrderList.visibility = View.GONE
             binding.rvReturnedOrderList.visibility = View.GONE
@@ -88,6 +90,7 @@ class OrdersHistoryFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({getOrderHistory(orderType)},300)
         }
 
+        setUpUI()
         getOrderHistory(orderType)
     }
 
@@ -105,25 +108,34 @@ class OrdersHistoryFragment : Fragment() {
 
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.Type, orderType)
-            viewModel.getDeliveredOrdersData(app.user.getUserDetails()?.userId, jsonObject)
-                .observe(requireActivity()) {
-                    if (it != null) {
+
+            RetrofitClient.instance.getDeliveredOrdersData(app.user.getUserDetails()?.userId,Constant.DEVICE_TYPE ,jsonObject)
+                .enqueue(object : Callback<DeliveredOrdersModel>{
+                    override fun onResponse(
+                        call: Call<DeliveredOrdersModel>,
+                        response: Response<DeliveredOrdersModel>
+                    ) {
                         if (isAdded) {
-                            if (orderType.equals("delivery")) {
+                            if (orderType == "delivery") {
                                 binding.rvDeliveredOrderList.adapter =
-                                    OrdersHistoryAdapter(requireActivity(), orderType,it.ordersList)
+                                    OrdersHistoryAdapter(requireActivity(), orderType,response.body()!!.ordersList)
                                 binding.rvDeliveredOrderList.visibility = View.VISIBLE
                                 binding.progressBar.visibility = View.GONE
 
                             } else {
                                 binding.rvReturnedOrderList.adapter =
-                                    OrdersHistoryAdapter(requireActivity(),orderType ,it.ordersList)
+                                    OrdersHistoryAdapter(requireActivity(),orderType ,response.body()!!.ordersList)
                                 binding.rvReturnedOrderList.visibility = View.VISIBLE
                                 binding.progressBar.visibility = View.GONE
                             }
                         }
                     }
-                }
+
+                    override fun onFailure(call: Call<DeliveredOrdersModel>, t: Throwable) {
+                        Utility.serverNotResponding(requireActivity())
+                    }
+                })
+
         }
     }
 }

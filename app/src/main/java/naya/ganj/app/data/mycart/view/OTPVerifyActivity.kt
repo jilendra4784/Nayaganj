@@ -50,10 +50,15 @@ class OTPVerifyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOtpactivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.includeLayout.ivBackArrow.setOnClickListener{finish()}
+        binding.includeLayout.toolbarTitle.text="OTP Verify"
+
         FirebaseApp.initializeApp(this)
         getToken()
         getDeviceId()
         app = applicationContext as Nayaganj
+
 
         viewModel = ViewModelProvider(
             this,
@@ -114,9 +119,9 @@ class OTPVerifyActivity : AppCompatActivity() {
                     } else {
                         app.user.saveUserDetail(it.userDetails)
                         app.user.setLoginSession(true)
-
                         if(IS_FROM_MYCART){
-                         finish()
+                            Constant.IS_OTP_VERIFIED=true
+                            finish()
                         }else{
                             val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -160,11 +165,6 @@ class OTPVerifyActivity : AppCompatActivity() {
                             }
                         }
                 }
-            } else {
-                val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
             }
         }
     }
@@ -228,4 +228,5 @@ class OTPVerifyActivity : AppCompatActivity() {
             Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
         }
     }
+
 }

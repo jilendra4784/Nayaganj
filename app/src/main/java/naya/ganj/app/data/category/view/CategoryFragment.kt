@@ -24,11 +24,6 @@ class CategoryFragment : Fragment() {
     lateinit var adapter: ExpandableListAdapter
     lateinit var cateModel: CategoryDataModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

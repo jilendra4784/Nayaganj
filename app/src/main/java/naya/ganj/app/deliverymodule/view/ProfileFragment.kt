@@ -53,11 +53,11 @@ class ProfileFragment : Fragment() {
             .setPositiveButton(
                 "YES"
             ) { dialogInterface, i ->
+                dialogInterface.dismiss()
                 app.user.clearSharedPreference()
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                dialogInterface.dismiss()
                 requireActivity().finish()
             }
             .setNegativeButton(

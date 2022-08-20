@@ -270,13 +270,21 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Call<DeliveryOrdersModel>
 
-    @Headers("Content-Type: application/json")
+    /*@Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELIVERED_ORDERS_URL)
     suspend fun getDeliveredOrders(
         @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
-    ): Response<DeliveredOrdersModel>
+    ): Response<DeliveredOrdersModel>*/
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_DELIVERED_ORDERS_URL)
+     fun getDeliveredOrdersData(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Call<DeliveredOrdersModel>
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELIVERED_ORDERS_DETAIL_URL)
@@ -302,7 +310,29 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>
 
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_REFUND_ORDER_URL)
+    suspend fun refundRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: RequestBody
+    ): Response<ApiResponseModel>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_RETURN_PRODUCT_URL)
+    suspend fun returnProducApiRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
 
 
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_SET_DELIVERY_BOY_LOCATION_URL)
+    suspend fun setDeliveryBoyLocationRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
 
 }

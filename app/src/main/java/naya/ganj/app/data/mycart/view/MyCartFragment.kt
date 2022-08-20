@@ -42,7 +42,10 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findNavController().navigate(MyCartFragmentDirections.actionNavigationMycartToNavigationHome2())
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            findNavController().navigate(MyCartFragmentDirections.actionNavigationMycartToNavigationHome2())
+        },300)
     }
 
     override fun onCreateView(

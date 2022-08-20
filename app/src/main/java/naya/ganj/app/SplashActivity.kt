@@ -97,10 +97,15 @@ class SplashActivity : AppCompatActivity() {
         viewModel.getAutoLoginResponse(userId, jsonObject).observe(this) {
             if (it.status) {
                 if (it.userDetails.role == "deliveryBoy") {
+                    Toast.makeText(
+                        this@SplashActivity,
+                        it.msg,
+                        Toast.LENGTH_SHORT
+                    ).show()
                     app.user.setLoginSession(true)
                     app.user.saveUserDetail(it.userDetails)
-                    val intent =
-                        Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                    val intent = Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
                 } else {

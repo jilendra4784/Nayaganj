@@ -7,6 +7,7 @@
     <string name="open_string">Open Drawer</string>
     <string name="close_string">Close Drawer</string>
     <string name="home">Home</string>
+    <string name="api_key">AIzaSyDfIa5Kw9H2eES-BTnYjSTgJiV54l6sDUU</string>
     <string name="my_account">My Account</string>
     <string name="shop_by_category">Shop by Category</string>
     <string name="my_orders">My Orders</string>
@@ -48,4 +49,9 @@
     <string name="dispatch_order">Dispatch Order</string>
     <string name="deliver_order">Deliver Order</string>
     <string name="return_products">Return Product</string>
+    <string name="a_4_ground_floor_mohan_co_operative_industrial_new_delhi">A-4, Ground Floor, Mohan Co-Operative Industrial,New Delhi.</string>
+    <string name="deliver_now">Deliver Now</string>
+    <string name="enable_gps">Enable Gps</string>
+    <string name="required_for_this_app">Required for this app</string>
+    <string name="enable_now">Enable Now</string>
 </resources>

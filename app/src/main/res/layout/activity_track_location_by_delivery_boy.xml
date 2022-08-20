@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/current_address"
+        tools:context=".MapsActivity" />
+
+    <LinearLayout
+        android:id="@+id/back_button"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp">
+
+        <ImageView
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:src="@drawable/back_arrow"
+            app:tint="@color/white">
+
+        </ImageView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/current_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:padding="@dimen/_5sdp"
+        android:background="@color/white"
+        android:visibility="visible">
+
+
+        <TextView
+            android:id="@+id/customer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center_vertical"
+            android:text="Jilendra Singh"
+            android:textColor="@color/purple_500"
+            android:textSize="@dimen/_18sdp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/customer_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/customer_name"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="@string/a_4_ground_floor_mohan_co_operative_industrial_new_delhi"
+            android:textSize="@dimen/_12sdp">
+
+        </TextView>
+
+
+        <ImageView
+            android:id="@+id/phone_call"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/login_phone_icon"
+            app:tint="@color/black">
+
+        </ImageView>
+
+        <RelativeLayout
+            android:id="@+id/time_and_distance_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/customer_address">
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/_12sdp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/_12sdp"
+                android:visibility="visible" />
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/time_and_distance_layout"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/deliver_now"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@color/red"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/deliver_now"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp">
+
+            </TextView>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -115,6 +115,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                         response: Response<DeliveryOrdersModel>
                     ) {
                         binding.progressBar.visibility = View.GONE
+                        binding.llEmptyStockLayout.visibility=View.GONE
                         if (response.isSuccessful) {
                             val result = response.body()
                             if (orderStatus == "") {
@@ -128,6 +129,8 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                                         orderType,
                                         this@OrdersFragment
                                     )
+                                }else{
+                                    binding.llEmptyStockLayout.visibility=View.VISIBLE
                                 }
                             } else {
                                 if (result != null && result.ordersList.isNotEmpty()) {
@@ -140,6 +143,8 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                                         orderType,
                                         this@OrdersFragment
                                     )
+                                }else{
+                                    binding.llEmptyStockLayout.visibility=View.VISIBLE
                                 }
                             }
                         }

@@ -28,11 +28,6 @@ class HomeFragment : Fragment() {
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,14 +45,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun getBannerList() {
+
         homeViewModel.getBannerList(app.user.getUserDetails()?.userId).observe(requireActivity()) {
-            Log.e("TAG", "getBannerList: " + it)
-            val adapter = SliderAdapter(requireActivity(), it.promoBannerList)
-            binding.slider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-            binding.slider.setSliderAdapter(adapter)
-            binding.slider.scrollTimeInSec = 3
-            binding.slider.isAutoCycle = true
-            binding.slider.startAutoCycle()
+
+            if(isAdded){
+                val adapter = SliderAdapter(requireActivity(), it.promoBannerList)
+                binding.slider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+                binding.slider.setSliderAdapter(adapter)
+                binding.slider.scrollTimeInSec = 3
+                binding.slider.isAutoCycle = true
+                binding.slider.startAutoCycle()
+
+            }
         }
     }
 

@@ -1,10 +1,11 @@
 package naya.ganj.app.deliverymodule.view
 
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,10 @@ import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
 
 class OrderDetailActivity : AppCompatActivity() {
 
@@ -29,7 +34,13 @@ class OrderDetailActivity : AppCompatActivity() {
     lateinit var app: Nayaganj
     private var orderType = ""
     private var FragmentType = ""
-    private var changeOrderStatus=""
+    private var changeOrderStatus = ""
+    lateinit var refundJsonArray: JSONArray
+    private var orderId = ""
+    private var lat=""
+    private var long=""
+    private var paymentMode=""
+    private var orderStatus=""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +48,7 @@ class OrderDetailActivity : AppCompatActivity() {
         binding = ActivityOrderDetailBinding.inflate(layoutInflater)
         binding.include16.ivBackArrow.setOnClickListener { finish() }
         binding.include16.tvToolbarTitle.text = "Orders Detail"
+        refundJsonArray = JSONArray()
 
         viewModel = ViewModelProvider(
             this@OrderDetailActivity,
@@ -46,7 +58,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        val orderId = intent.getStringExtra(Constant.ORDER_ID)
+        orderId = intent.getStringExtra(Constant.ORDER_ID).toString()
         val type = intent.getStringExtra(Constant.Type)
         FragmentType = intent.getStringExtra(Constant.FragmetType).toString()
 
@@ -54,6 +66,21 @@ class OrderDetailActivity : AppCompatActivity() {
             "deliveryOrder"
         } else {
             "returnOrder"
+        }
+
+        binding.ivLocation.setOnClickListener{
+
+            val intent=Intent(this,TrackLocationByDeliveryBoy::class.java)
+            intent.putExtra("name",binding.tvName.text.toString())
+            intent.putExtra("address",binding.tvAddress.text.toString())
+            intent.putExtra("mobileNumber",binding.tvContactNumber.text.toString())
+            intent.putExtra(Constant.orderId,orderId)
+            intent.putExtra(Constant.lat,lat)
+            intent.putExtra(Constant.long,long)
+            intent.putExtra(Constant.orderStatus,orderStatus)
+            intent.putExtra("paymentMode",paymentMode)
+            startActivity(intent)
+
         }
 
         getOrderDetail(orderId, orderType)
@@ -115,6 +142,65 @@ class OrderDetailActivity : AppCompatActivity() {
                 if(orderType == "returnOrder"){
                     binding.tvRefundAmount.visibility=View.VISIBLE
                 }
+
+
+                changeOrderStatus = ""
+
+                // OrderStatus button status
+                try {
+                    val orderStatusValue = it.orderDetails.buttonIndex.split('|')[1]
+                    val orderStatusValueAfterSplit = orderStatusValue.split(',')
+
+                    if (orderStatusValueAfterSplit[3].toInt() == 1) {
+                        binding.statusButton.visibility = View.VISIBLE
+                        binding.statusButton.text = orderStatusValueAfterSplit[1]
+                        changeOrderStatus = orderStatusValueAfterSplit[0]
+                        binding.statusButton.setBackgroundColor(
+                            Color.parseColor(
+                                orderStatusValueAfterSplit[2]
+                            )
+                        )
+                    } else {
+                        binding.statusButton.visibility = View.GONE
+                    }
+
+                    // For ReSchedule Order
+                    val rescheduleStatus = it.orderDetails.buttonIndex.split('|')[0]
+                    val rescheduleStatusAfterSplit = rescheduleStatus.split(',')
+
+                    if (rescheduleStatusAfterSplit[3].toInt() == 1) {
+                        binding.reschedule.visibility = View.VISIBLE
+                        binding.reschedule.setBackgroundColor(
+                            Color.parseColor(
+                                rescheduleStatusAfterSplit[2]
+                            )
+                        )
+                        binding.reschedule.setText(rescheduleStatusAfterSplit[1])
+                    } else {
+                        binding.reschedule.visibility = View.GONE
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                // Refund Status
+                try {
+                    val refundValue = it.orderDetails.buttonIndex.split('|')[2]
+                    val refundAfterSplit = refundValue.split(',')
+
+                    if (refundAfterSplit[3].toInt() == 1) {
+                        binding.statusButton.visibility = View.VISIBLE
+                        binding.statusButton.text = refundAfterSplit[1]
+                        binding.statusButton.setBackgroundColor(Color.parseColor(refundAfterSplit[2]))
+                    } else {
+                        binding.statusButton.visibility = View.GONE
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
             } else if (FragmentType == "HISTORY") {
                 binding.tvPaymentReceived.visibility = View.VISIBLE
                 binding.tvRefundAmount.visibility = View.VISIBLE
@@ -122,36 +208,182 @@ class OrderDetailActivity : AppCompatActivity() {
             }
             binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
             binding.rvProductList.adapter = DeliveredOrderDetailAdapter(it.orderDetails.products)
+            binding.statusButton.setOnClickListener {
 
-              changeOrderStatus=""
+                val builder = AlertDialog.Builder(this@OrderDetailActivity)
+                builder.setIcon(ContextCompat.getDrawable(this, R.drawable.my_order))
 
-            // Reschudule Status
+                if (changeOrderStatus.equals(
+                        Constant.RETURNCOLLECTED,
+                        ignoreCase = true
+                    ) || changeOrderStatus.equals(
+                        Constant.RETURNCOLLECTEDORRETURNPARTIALCOLLECTED,
+                        true
+                    )
+                ) {
+                    builder.setTitle("Collect Product")
+                    builder.setMessage("Have you reached customer location & ready to collect product.")
+                    builder.setPositiveButton("Collect")
+                    { dialogInterface, which ->
+                        returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
+                    }
 
-            val rescheduleStatus= it.orderDetails.buttonIndex.split('|')[0]
-            val rescheduleStatusAfterSplit= rescheduleStatus.split(',')
+                    // builder.setNegativeButton("Modify") { dialogInterface, which ->showProductBottomSheetDialog() }
+                    builder.setNeutralButton("No") { dialogInterface, which -> }
 
-            // OrderStatus button status
-            val orderStatusValue= it.orderDetails.buttonIndex.split('|')[1]
-            val orderStatusValueAfterSplit= orderStatusValue.split(',')
+                    /*  if (totalProductQty > 1) {
+                          builder.setNegativeButton("Modify") { dialogInterface, which -> showProductBottomSheetDialog() }
+                      }*/
+
+                    val alertDialog: AlertDialog = builder.create()
+                    alertDialog.setCancelable(true)
+                    alertDialog.show()
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        .setTextColor(resources.getColor(R.color.red_color))
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setTextColor(resources.getColor(R.color.dark_gray))
+                    alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+                        .setTextColor(resources.getColor(R.color.gray))
 
 
+                } else if (changeOrderStatus.equals(
+                        Constant.RETURNSUCCESS,
+                        ignoreCase = true
+                    ) || changeOrderStatus.equals(Constant.RETURNPARTIALSUCCESS, true)
+                ) {
+                    builder.setTitle("Return Product")
+                    builder.setMessage("Have you collected product from the customer & ready to return product.")
+                    builder.setPositiveButton("Yes")
+                    { dialogInterface, which ->
 
-            // Refund Status
-            val refundValue= it.orderDetails.buttonIndex.split('|')[2]
-            val refundAfterSplit= refundValue.split(',')
+                        returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
+                        // showProductBottomSheetDialog()
+                    }
 
-            if(refundAfterSplit[3].toInt()==1)
-            {
-                binding.statusButton.visibility=View.VISIBLE
-                binding.statusButton.text = refundAfterSplit[1]
-                binding.statusButton.setBackgroundColor(Color.parseColor(refundAfterSplit[2]))
+                    builder.setNegativeButton("No") { dialogInterface, which -> }
+                    val alertDialog: AlertDialog = builder.create()
+                    alertDialog.setCancelable(true)
+                    alertDialog.show()
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        .setTextColor(resources.getColor(R.color.gray))
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setTextColor(resources.getColor(R.color.dark_gray))
+                } else {
+                    if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+                        refundApi(app.user.getUserDetails()?.userId)
+                    }
+                }
             }
-            else
+
+            for (item in it.orderDetails.products) {
+                val postedJSON = JSONObject()
+                postedJSON.put(Constant.productId, item.productId)
+                postedJSON.put(Constant.variantId, item.variantId)
+                postedJSON.put(Constant.quantity, item.quantity)
+                refundJsonArray.put(postedJSON)
+            }
+
+            try {
+                if(it.orderDetails.loc.coordinates.isNotEmpty())
+                {
+                    lat= it.orderDetails.loc.coordinates[1].toString()
+                    long= it.orderDetails.loc.coordinates[0].toString()
+                }
+            }
+            catch (e:Exception)
             {
-                binding.statusButton.visibility=View.GONE
+                e.printStackTrace()
+            }
+
+            orderStatus=it.orderDetails.orderStatus
+        }
+    }
+
+    private fun returnproductApi(userId: String?, changeOrderStatus: String) {
+        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty(Constant.orderId, orderId)
+            jsonObject.addProperty(Constant.orderStatus, changeOrderStatus)
+
+            viewModel.returnProducApiRequest(userId, jsonObject).observe(this) {
+                if (it.status) {
+                    if (changeOrderStatus.equals(
+                            Constant.RETURNCOLLECTED,
+                            ignoreCase = true
+                        ) || changeOrderStatus.equals(
+                            Constant.RETURNCOLLECTEDORRETURNPARTIALCOLLECTED,
+                            ignoreCase = true
+                        )
+                    ) {
+                        Toast.makeText(
+                            this@OrderDetailActivity,
+                            "You have collected product from the customer successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(
+                            this@OrderDetailActivity,
+                            DeliveryBoyDashboardActivity::class.java
+                        )
+                        startActivity(intent)
+                        finish()
+                    } else if (changeOrderStatus.equals(
+                            Constant.RETURNSUCCESS,
+                            ignoreCase = true
+                        ) || changeOrderStatus.equals(
+                            Constant.RETURNPARTIALSUCCESS,
+                            ignoreCase = true
+                        )
+                    ) {
+                        Toast.makeText(
+                            this@OrderDetailActivity,
+                            "You have returned product successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(
+                            this@OrderDetailActivity,
+                            DeliveryBoyDashboardActivity::class.java
+                        )
+                        startActivity(intent)
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(this@OrderDetailActivity, it.msg, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
+    private fun refundApi(userId: String?) {
+
+        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+            val jsonObject = JSONObject()
+            jsonObject.put(Constant.orderId, orderId)
+            jsonObject.put(Constant.productsArr, refundJsonArray)
+
+            val myreqbody = JSONObject(jsonObject.toString()).toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+            viewModel.refundRequest(userId, myreqbody).observe(this@OrderDetailActivity) {
+                if (it.status) {
+                    Toast.makeText(
+                        this@OrderDetailActivity,
+                        "You have refunded successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val intent =
+                        Intent(this@OrderDetailActivity, DeliveryBoyDashboardActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@OrderDetailActivity,
+                        "Something went wrong",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        }
+    }
 
 }
