@@ -2,6 +2,7 @@ package naya.ganj.app.data.category.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.transition.MaterialFadeThrough
 import naya.ganj.app.data.category.adapter.ExpandableListAdapter
+import naya.ganj.app.data.category.adapter.NewExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
 import naya.ganj.app.databinding.FragmentDashboardBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
+import kotlin.math.log
 
 class CategoryFragment : Fragment() {
 
@@ -47,19 +50,19 @@ class CategoryFragment : Fragment() {
             getCategoryData()
         }
 
-        var previousOpenGroup = -1
-        binding.expandablelist.setOnGroupExpandListener({
+       /* var previousOpenGroup = -1
+        binding.expandablelist.setOnGroupExpandListener {
             if (it != previousOpenGroup) {
                 binding.expandablelist.collapseGroup(previousOpenGroup)
             }
             previousOpenGroup = it
-        })
+        }*/
 
         binding.expandablelist.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
             val intent = Intent(requireActivity(), ProductListActivity::class.java)
             intent.putExtra(
                 Constant.CATEGORY_ID,
-                cateModel.categoryList.get(groupPosition).subCategoryList.get(childPosition).id
+                cateModel.categoryList[groupPosition].subCategoryList[childPosition].id
             )
             startActivity(intent)
             true
@@ -73,7 +76,26 @@ class CategoryFragment : Fragment() {
             if (it != null) {
                 cateModel = it
                 adapter = ExpandableListAdapter(it)
-                binding.expandablelist.setAdapter(adapter)
+
+                val listOfTitle=ArrayList<String>()
+                val listOfDataItems=HashMap<String,List<String>>()
+
+
+                for((i,item) in it.categoryList.withIndex()){
+                    listOfTitle.add(item.category)
+
+                    val listOfChildItem=ArrayList<String>()
+                    for(childItem in item.subCategoryList)
+                    {
+                        listOfChildItem.add(childItem.category)
+                    }
+
+                    listOfDataItems.put(item.category,listOfChildItem)
+                }
+
+                binding.expandablelist.setAdapter(NewExpandableListAdapter(requireActivity(),listOfTitle,listOfDataItems))
+
+                //binding.expandablelist.setAdapter(adapter)
                 binding.progressBar.visibility = View.GONE
                 binding.expandablelist.visibility = View.VISIBLE
             } else {

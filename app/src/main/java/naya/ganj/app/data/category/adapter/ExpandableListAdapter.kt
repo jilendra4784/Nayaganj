@@ -1,5 +1,6 @@
 package naya.ganj.app.data.category.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ class ExpandableListAdapter internal constructor(
     }
 
     override fun getChild(p0: Int, p1: Int): Any {
+
         return categoryData.categoryList[p0].subCategoryList[p1].category
     }
 
@@ -54,13 +56,12 @@ class ExpandableListAdapter internal constructor(
             val textView = convertView!!.findViewById(R.id.listTitle) as TextView
             textView.text = list[0]
         }
-        val indicatorImageView = convertView.findViewById(R.id.iv_arrow) as ImageView
-
+        /*val indicatorImageView = convertView.findViewById(R.id.iv_arrow) as ImageView
         if (p1) {
             indicatorImageView.setImageResource(R.drawable.ic_down_arrow)
         } else {
             indicatorImageView.setImageResource(R.drawable.ic_right_arrow)
-        }
+        }*/
 
         return convertView
     }
@@ -73,6 +74,7 @@ class ExpandableListAdapter internal constructor(
             convertView = LayoutInflater.from(p4?.context).inflate(R.layout.list_item, p4, false)
             val textView = convertView!!.findViewById(R.id.expandedListItem) as TextView
             textView.text = list[0]
+            //Log.e("TAG", "getChildView: "+list )
         }
         return convertView
     }

@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_40sdp"
-    android:layout_marginTop="@dimen/_10sdp">
+    android:layout_height="wrap_content"
+    app:cardElevation="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
+
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/_5sdp">
+        android:layout_height="match_parent">
+
 
         <TextView
             android:id="@+id/listTitle"
-            android:layout_width="290dp"
-            android:layout_height="51dp"
-            android:layout_marginBottom="6dp"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins__medium"
             android:gravity="center|start"
             android:paddingLeft="@dimen/_10sdp"
             android:text="Jilendra Singh"
-            android:textSize="@dimen/_15sdp"
+            android:textSize="@dimen/_12sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_arrow"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.444" />
+            app:layout_constraintStart_toEndOf="@+id/imageView18"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -41,15 +43,24 @@
             android:id="@+id/iv_arrow"
             android:layout_width="57dp"
             android:layout_height="53dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_right_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/listTitle"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+           android:src="@drawable/splash_logo" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

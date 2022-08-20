@@ -57,6 +57,7 @@ class SplashActivity : AppCompatActivity() {
                         R.drawable.front_logo
                     )
                 )
+
                 ima.setImageDrawable(decodedAnimation)
                 (decodedAnimation as? AnimatedImageDrawable)?.start()
             }.start()
