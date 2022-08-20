@@ -11,6 +11,7 @@ import com.google.android.material.transition.MaterialFadeThrough
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.FragmentProfileBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.utility.Utility
 
 class ProfileFragment : Fragment() {
@@ -40,7 +41,11 @@ class ProfileFragment : Fragment() {
         binding.tvMobile.text = app.user.getUserDetails()?.mNumber
 
         binding.tvLogout.setOnClickListener {
-            if (Utility.isAppOnLine(requireActivity()))
+            if (Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        showLogoutDialog()
+                    }
+                }))
                 showLogoutDialog()
         }
     }

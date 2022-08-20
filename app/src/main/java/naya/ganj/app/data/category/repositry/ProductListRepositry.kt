@@ -1,5 +1,6 @@
 package naya.ganj.app.data.category.repositry
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.category.model.ProductListModel
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,6 +20,7 @@ class ProductListRepositry {
     private var addremoveStatus = MutableLiveData<AddRemoveModel>()
 
     fun getProductList(
+        context: Context,
         userid: String?,
         d: String,
         jsonObject: JsonObject
@@ -32,7 +35,7 @@ class ProductListRepositry {
                 }
 
                 override fun onFailure(call: Call<ProductListModel>, t: Throwable) {
-                    Log.e("TAG", "onFailure: " + t.message)
+                    Utility.serverNotResponding(context,t.message.toString())
                 }
             })
 

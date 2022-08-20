@@ -20,6 +20,7 @@ import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
@@ -104,7 +105,11 @@ class OrdersHistoryFragment : Fragment() {
 
     private fun getOrderHistory(orderType:String) {
 
-        if(Utility.isAppOnLine(requireActivity())){
+        if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getOrderHistory(orderType)
+                }
+            })){
 
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.Type, orderType)
@@ -132,7 +137,7 @@ class OrdersHistoryFragment : Fragment() {
                     }
 
                     override fun onFailure(call: Call<DeliveredOrdersModel>, t: Throwable) {
-                        Utility.serverNotResponding(requireActivity())
+                        Utility.serverNotResponding(requireActivity(),"")
                     }
                 })
 

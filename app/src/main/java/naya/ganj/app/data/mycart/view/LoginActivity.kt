@@ -12,7 +12,9 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant.MobileNumber
 import naya.ganj.app.utility.MyViewModelFactory
 import com.google.gson.JsonObject
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.NetworkResult
 import naya.ganj.app.utility.Utility
 
 class LoginActivity : AppCompatActivity() {
@@ -39,29 +41,45 @@ class LoginActivity : AppCompatActivity() {
             if (mobileNumber.length < 10 || mobileNumber.startsWith("0")) {
                 Toast.makeText(this, "Please Enter Valid Number", Toast.LENGTH_SHORT).show()
             } else {
+                if(Utility.isAppOnLine(this@LoginActivity,object : OnInternetCheckListener {
+                        override fun onInternetAvailable() {
+                            loginRequest(mobileNumber)
+                        }
+                    }))
                 loginRequest(mobileNumber)
             }
         }
     }
 
     private fun loginRequest(mobileNumber: String) {
-
-        if(Utility.isAppOnLine(this@LoginActivity)){
             binding.btnNextButton.isEnabled=false
             val jsonObject = JsonObject()
             jsonObject.addProperty(MobileNumber, mobileNumber)
 
-            viewModel.getOTPRequest(jsonObject).observe(this) {
-                if (it.status) {
-                    binding.btnNextButton.isEnabled=true
-                    val intent = Intent(this@LoginActivity, OTPVerifyActivity::class.java)
-                    intent.putExtra(MobileNumber, mobileNumber)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this@LoginActivity, it.msg, Toast.LENGTH_LONG).show()
+            viewModel.getOTPRequest(jsonObject).observe(this) { response->
+
+                when(response){
+                    is NetworkResult.Success ->
+                    {
+                        if (response.data!!.status) {
+                            binding.btnNextButton.isEnabled=true
+                            val intent = Intent(this@LoginActivity, OTPVerifyActivity::class.java)
+                            intent.putExtra(MobileNumber, mobileNumber)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this@LoginActivity, response.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                    is NetworkResult.Error ->
+                    {
+                        Utility.serverNotResponding(this@LoginActivity,response.message.toString())
+                    }
                 }
+
+
             }
-        }
+
 
     }
 

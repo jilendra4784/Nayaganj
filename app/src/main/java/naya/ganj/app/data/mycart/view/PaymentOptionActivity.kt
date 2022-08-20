@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,9 +20,11 @@ import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.PaymentOptionsViewModel
 import naya.ganj.app.data.sidemenu.view.MyOrderActivity
 import naya.ganj.app.databinding.ActivityPaymentOptionBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
+import naya.ganj.app.utility.NetworkResult
 import naya.ganj.app.utility.Utility
 
 class PaymentOptionActivity : AppCompatActivity() {
@@ -80,7 +81,13 @@ class PaymentOptionActivity : AppCompatActivity() {
         }
 
         binding.finalSubmitButton.setOnClickListener {
-            placeOrderRequest(0, "COD")
+
+            if (Utility.isAppOnLine(this@PaymentOptionActivity, object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        placeOrderRequest(0, "COD")
+                    }
+                }))
+                placeOrderRequest(0, "COD")
         }
     }
 
@@ -93,20 +100,24 @@ class PaymentOptionActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.promoCodeId, "")
         jsonObject.addProperty(Constant.cashBackAmount, 0)
 
-        viewmodel.orderPlaceRequest(app.user.getUserDetails()?.userId, jsonObject).observe(this) {
-            Log.e("TAG", "placeOrderRequest: $it")
-            it.let {
-                if (it.status) {
-                    if (paymentMode == 0) {
-                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                            orderPlacedDialog()
-                        }, 1000)
-                    } else {
-                        // For Paytm Transaction
+        viewmodel.orderPlaceRequest(app.user.getUserDetails()?.userId, jsonObject)
+            .observe(this) { response ->
+
+                when (response) {
+
+                    is NetworkResult.Success -> {
+                        val it = response.data!!
+                        if (it.status) { if (paymentMode == 0) { Handler(Looper.getMainLooper()).postDelayed(Runnable { orderPlacedDialog() }, 1000)
+                            } else {
+                                // For Paytm Transaction
+                            }
+                        }
                     }
+
+                    is NetworkResult.Error -> { Utility.serverNotResponding(this@PaymentOptionActivity, response.message.toString()) }
+
                 }
             }
-        }
     }
 
     private fun orderPlacedDialog() {

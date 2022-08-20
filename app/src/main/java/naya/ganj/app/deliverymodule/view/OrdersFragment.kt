@@ -24,6 +24,7 @@ import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
@@ -98,13 +99,18 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
         binding.rvReturnOrdersList.isNestedScrollingEnabled = false
 
         binding.progressBar.visibility = View.VISIBLE
+
         getOrderList(app.user.getUserDetails()?.userId, "")
 
     }
 
 
     private fun getOrderList(userId: String?, orderStatus: String) {
-        if (Utility.isAppOnLine(requireActivity())) {
+        if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getOrderList(app.user.getUserDetails()?.userId, "")
+                }
+            })){
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.DeliveryOrderStatus, orderStatus);
 
@@ -152,11 +158,12 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
 
                     override fun onFailure(call: Call<DeliveryOrdersModel>, t: Throwable) {
                         binding.progressBar.visibility = View.GONE
-                        Utility.serverNotResponding(requireActivity())
+                        Utility.serverNotResponding(requireActivity(),"")
                     }
                 })
         }
-    }
+        }
+
 
     override fun orderIdOrderStatus(
         orderId: String,
@@ -217,6 +224,12 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                 Utility().showToast(requireActivity(), "Please Select Payment Mode")
             } else {
                 dialog.dismiss()
+
+                if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+                        override fun onInternetAvailable() {
+                            deliveryOrderPaymentApi(orderId, amount, paymentModeStatus)
+                        }
+                    }))
                 deliveryOrderPaymentApi(orderId, amount, paymentModeStatus)
             }
         }
@@ -229,7 +242,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
         amount: String,
         paymentModeStatus: String
     ) {
-        if (Utility.isAppOnLine(requireActivity())) {
+
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.orderId, orderId)
             jsonObject.addProperty(Constant.paymentMode, paymentModeStatus)
@@ -253,7 +266,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                     }
                 }
         }
-    }
+
 
     private fun orderStatusDialog(
         orderId: String,
@@ -280,9 +293,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
         builder.setPositiveButton("Yes")
         { _, _ ->
             alertDialog?.dismiss()
-            if(Utility.isAppOnLine(requireActivity())){
                 ChangeStatusApi(orderId, orderStatus, orderStatusTextView)
-            }
         }
         builder.setNegativeButton("No") { dialogInterface, which -> }
         alertDialog = builder.create()

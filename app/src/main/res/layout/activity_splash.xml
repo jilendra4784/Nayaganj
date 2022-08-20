@@ -8,11 +8,14 @@
     android:background="@drawable/login_background">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_100sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/splash_logo"/>
+        android:visibility="visible"
+        android:src="@drawable/front_logo"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,7 @@ import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
@@ -83,12 +84,17 @@ class OrderDetailActivity : AppCompatActivity() {
 
         }
 
+        if(Utility.isAppOnLine(this@OrderDetailActivity,object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getOrderDetail(orderId, orderType)
+                }
+            }))
         getOrderDetail(orderId, orderType)
 
     }
 
     private fun getOrderDetail(orderId: String?, type: String?) {
-        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.orderId, orderId)
             jsonObject.addProperty(Constant.Type, orderType)
@@ -99,7 +105,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     }
                 }
         }
-    }
+
 
     private fun setUIData(it: DeliveryOrderDetailModel) {
         if (it.orderDetails.products.isNotEmpty()) {
@@ -225,7 +231,13 @@ class OrderDetailActivity : AppCompatActivity() {
                     builder.setMessage("Have you reached customer location & ready to collect product.")
                     builder.setPositiveButton("Collect")
                     { dialogInterface, which ->
-                        returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
+                        if(Utility.isAppOnLine(this@OrderDetailActivity,object : OnInternetCheckListener {
+                                override fun onInternetAvailable() {
+                                    returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
+                                }
+                            }))
+
+                            returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
                     }
 
                     // builder.setNegativeButton("Modify") { dialogInterface, which ->showProductBottomSheetDialog() }
@@ -269,7 +281,11 @@ class OrderDetailActivity : AppCompatActivity() {
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
                         .setTextColor(resources.getColor(R.color.dark_gray))
                 } else {
-                    if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+                    if (Utility.isAppOnLine(this@OrderDetailActivity,object : OnInternetCheckListener {
+                            override fun onInternetAvailable() {
+                                refundApi(app.user.getUserDetails()?.userId)
+                            }
+                        })) {
                         refundApi(app.user.getUserDetails()?.userId)
                     }
                 }
@@ -300,7 +316,7 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun returnproductApi(userId: String?, changeOrderStatus: String) {
-        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
+
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.orderId, orderId)
             jsonObject.addProperty(Constant.orderStatus, changeOrderStatus)
@@ -351,11 +367,10 @@ class OrderDetailActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+
 
     private fun refundApi(userId: String?) {
 
-        if (Utility.isAppOnLine(this@OrderDetailActivity)) {
             val jsonObject = JSONObject()
             jsonObject.put(Constant.orderId, orderId)
             jsonObject.put(Constant.productsArr, refundJsonArray)
@@ -384,6 +399,6 @@ class OrderDetailActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+
 
 }

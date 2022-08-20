@@ -10,6 +10,7 @@ import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.AddAddressViewModel
 import naya.ganj.app.databinding.ActivityAddAddressBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
@@ -111,7 +112,14 @@ class AddAddressActivity : AppCompatActivity() {
                 Utility().showToast(this@AddAddressActivity, "Please select address type")
             } else {
                 binding.btnAddAddress.isEnabled = false
-                addAddressRequest()
+
+
+                if(Utility.isAppOnLine(this@AddAddressActivity,object : OnInternetCheckListener {
+                        override fun onInternetAvailable() {
+                            addAddressRequest()
+                        }
+                    }))
+                    addAddressRequest()
             }
         }
     }

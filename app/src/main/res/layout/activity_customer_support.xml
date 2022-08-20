@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/_30sdp"
-        android:src="@drawable/splash_logo">
+        android:src="@drawable/front_logo">
 
     </ImageView>
 

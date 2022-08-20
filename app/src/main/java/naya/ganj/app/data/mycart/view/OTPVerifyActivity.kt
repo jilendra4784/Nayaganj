@@ -26,11 +26,14 @@ import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.databinding.ActivityOtpactivityBinding
 import naya.ganj.app.deliverymodule.view.DeliveryBoyDashboardActivity
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.IS_FROM_MYCART
 import naya.ganj.app.utility.MyViewModelFactory
+import naya.ganj.app.utility.NetworkResult
+import naya.ganj.app.utility.Utility
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
@@ -79,6 +82,11 @@ class OTPVerifyActivity : AppCompatActivity() {
         }
 
         binding.verifyOtp.setOnClickListener {
+            if(Utility.isAppOnLine(this@OTPVerifyActivity,object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        verifyOTPRequest(mobileNumber)
+                    }
+                }))
             verifyOTPRequest(mobileNumber)
         }
 
@@ -95,40 +103,51 @@ class OTPVerifyActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.deviceToken, deviceToken)
         jsonObject.addProperty(Constant.OTP, binding.otpViewEdittext.otp.toString())
 
-        viewModel.getLoginResponse("", jsonObject).observe(this) {
-            if (it.status) {
-                syncCartData()
-                if (it.isNewUser) {
-                    Toast.makeText(this@OTPVerifyActivity, it.msg, Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@OTPVerifyActivity, SignUpActivity::class.java))
-                    app.user.saveUserDetail(it.userDetails)
-                    app.user.setLoginSession(true)
-                } else {
-                    if (it.userDetails.role == "deliveryBoy") {
-                        app.user.setLoginSession(true)
-                        app.user.saveUserDetail(it.userDetails)
-                        val intent = Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-                        Toast.makeText(
-                            this@OTPVerifyActivity,
-                            it.msg,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        app.user.saveUserDetail(it.userDetails)
-                        app.user.setLoginSession(true)
-                        if(IS_FROM_MYCART){
-                            Constant.IS_OTP_VERIFIED=true
-                            finish()
-                        }else{
-                            val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                            finish()
+        viewModel.getLoginResponse("", jsonObject).observe(this) {response->
+
+            when(response){
+
+                is NetworkResult.Success->{
+                   val it=response.data!!
+                    if (it.status) {
+                        syncCartData()
+                        if (it.isNewUser) {
+                            Toast.makeText(this@OTPVerifyActivity, it.msg, Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@OTPVerifyActivity, SignUpActivity::class.java))
+                            app.user.saveUserDetail(it.userDetails)
+                            app.user.setLoginSession(true)
+                        } else {
+                            if (it.userDetails.role == "deliveryBoy") {
+                                app.user.setLoginSession(true)
+                                app.user.saveUserDetail(it.userDetails)
+                                val intent = Intent(applicationContext, DeliveryBoyDashboardActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                                Toast.makeText(
+                                    this@OTPVerifyActivity,
+                                    it.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                app.user.saveUserDetail(it.userDetails)
+                                app.user.setLoginSession(true)
+                                if(IS_FROM_MYCART){
+                                    Constant.IS_OTP_VERIFIED=true
+                                    finish()
+                                }else{
+                                    val intent = Intent(this@OTPVerifyActivity, MainActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            }
                         }
                     }
+                }
+
+                is NetworkResult.Error->{
+                    Utility.serverNotResponding(this@OTPVerifyActivity,response.message.toString())
                 }
             }
         }
@@ -156,11 +175,19 @@ class OTPVerifyActivity : AppCompatActivity() {
                         .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
                     viewModel.synchDataRequest(app.user.getUserDetails()!!.userId, myreqbody)
-                        .observe(this@OTPVerifyActivity) {
-                            if (it.status) {
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    AppDataBase.getInstance(this@OTPVerifyActivity).productDao()
-                                        .deleteAllProduct()
+                        .observe(this@OTPVerifyActivity) {response ->
+                            when(response){
+                                is NetworkResult.Success ->{
+                                    val it=response.data!!
+                                    if (it.status) {
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@OTPVerifyActivity).productDao()
+                                                .deleteAllProduct()
+                                        }
+                                    }
+                                }
+                                is NetworkResult.Error ->{
+                                    Utility.serverNotResponding(this@OTPVerifyActivity,response.message.toString())
                                 }
                             }
                         }

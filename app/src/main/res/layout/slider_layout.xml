@@ -11,6 +11,6 @@
         android:layout_height="@dimen/_150sdp"
         android:scaleType="fitXY"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/splash_logo"/>
+        android:src="@drawable/front_logo"/>
 
 </RelativeLayout>

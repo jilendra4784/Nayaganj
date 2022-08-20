@@ -49,6 +49,7 @@ import naya.ganj.app.databinding.ActivityTrackLocationByDeliveryBoyBinding
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.PermissionUtils
@@ -258,6 +259,13 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
                 Utility().showToast(this@TrackLocationByDeliveryBoy, "Please Select Payment Mode")
             } else {
                 dialog.dismiss()
+
+                if(Utility.isAppOnLine(this@TrackLocationByDeliveryBoy,object :
+                        OnInternetCheckListener {
+                        override fun onInternetAvailable() {
+                            deliveryOrderPaymentApi(orderId, amount, paymentModeStatus)
+                        }
+                    }))
                 deliveryOrderPaymentApi(orderId, amount, paymentModeStatus)
             }
         }
@@ -270,7 +278,7 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
         amount: String,
         paymentModeStatus: String
     ) {
-        if (Utility.isAppOnLine(this@TrackLocationByDeliveryBoy)) {
+
             val jsonObject = JsonObject()
             jsonObject.addProperty(Constant.orderId, orderId)
             jsonObject.addProperty(Constant.paymentMode, paymentModeStatus)
@@ -300,7 +308,7 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
                         ).show()
                     }
                 }
-        }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

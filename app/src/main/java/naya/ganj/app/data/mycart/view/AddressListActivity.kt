@@ -14,10 +14,12 @@ import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.AddressListViewModel
 import naya.ganj.app.databinding.ActivityAddressListBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.MyViewModelFactory
+import naya.ganj.app.utility.Utility
 
 class AddressListActivity : AppCompatActivity(), OnitemClickListener {
     lateinit var binding: ActivityAddressListBinding
@@ -45,7 +47,7 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         viewModel = ViewModelProvider(
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
-        ).get(AddressListViewModel::class.java)
+        )[AddressListViewModel::class.java]
         binding.btnAddAddress.setOnClickListener {
             startActivity(Intent(this, AddAddressActivity::class.java))
         }
@@ -53,19 +55,13 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAddressList(app.user.getUserDetails()?.userId).observe(this) {
-            it.let {
-                addressList = it.addressList
-                addresListAdapter = AddressListAdapter(
-                    it.addressList,
-                    this@AddressListActivity,
-                    this@AddressListActivity,
-                    addressId
-                )
-                binding.rvAddressList.layoutManager = LinearLayoutManager(this)
-                binding.rvAddressList.adapter = addresListAdapter
-            }
-        }
+        if(Utility.isAppOnLine(this@AddressListActivity,object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getAddressListRequestData()
+                }
+            }))
+        getAddressListRequestData()
+
     }
 
     override fun onclick(position: Int, data: String) {
@@ -86,5 +82,21 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
             Runnable { addresListAdapter.notifyDataSetChanged() },
             200
         )
+    }
+
+    private fun getAddressListRequestData(){
+        viewModel.getAddressList(app.user.getUserDetails()?.userId).observe(this) {
+            it.let {
+                addressList = it.addressList
+                addresListAdapter = AddressListAdapter(
+                    it.addressList,
+                    this@AddressListActivity,
+                    this@AddressListActivity,
+                    addressId
+                )
+                binding.rvAddressList.layoutManager = LinearLayoutManager(this)
+                binding.rvAddressList.adapter = addresListAdapter
+            }
+        }
     }
 }

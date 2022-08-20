@@ -21,6 +21,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -148,7 +149,7 @@ class Utility {
 
     companion object {
 
-        fun serverNotResponding(context: Context) {
+        fun serverNotResponding(context: Context,errorMessage:String) {
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.server_error_dialog)
             dialog.setCancelable(false)
@@ -158,6 +159,8 @@ class Utility {
             )
             dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
             val got_it: TextView = dialog.findViewById(R.id.btn_got_it)
+            val errorTitle: TextView = dialog.findViewById(R.id.error_title)
+            errorTitle.text=errorMessage
 
             got_it.setOnClickListener {
                 dialog.dismiss()
@@ -166,7 +169,7 @@ class Utility {
             dialog.show()
         }
 
-        fun isAppOnLine(context: Context): Boolean {
+        fun isAppOnLine(context: Context , internetCheckListener: OnInternetCheckListener): Boolean {
             var isInternetAvailable = false
             if (isNetworkConnected(context)) {
                 isInternetAvailable = true
@@ -185,6 +188,8 @@ class Utility {
                     if (isNetworkConnected(context)) {
                         dialog.dismiss()
                         isInternetAvailable = true
+                        internetCheckListener.onInternetAvailable()
+                        return@setOnClickListener
                     }
                 }
                 try {

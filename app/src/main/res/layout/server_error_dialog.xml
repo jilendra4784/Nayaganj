@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+   >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/_20sdp">
 
             <ImageView
                 android:layout_width="@dimen/_35sdp"
@@ -28,20 +30,22 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:src="@drawable/server_error"
-                app:tint="@color/dark_gray">
+                app:tint="@color/dark_gray"
+                >
 
             </ImageView>
 
             <TextView
-                android:id="@+id/p_name"
+                android:id="@+id/error_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/red"
                 android:text="SERVER ERROR"
-                android:textSize="@dimen/_12sdp">
+                android:textSize="@dimen/_15sdp">
 
             </TextView>
 
@@ -50,27 +54,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="@string/server_error_message"
                 android:textSize="@dimen/_12sdp">
 
             </TextView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_got_it"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:visibility="visible"
+                app:cornerRadius="@dimen/_5sdp"
+                android:layout_gravity="center"
+
+                android:backgroundTint="@color/red"
+                >
+
+            </com.google.android.material.button.MaterialButton>
+
+
         </LinearLayout>
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_got_it"
-            android:layout_width="@dimen/_150sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_height="wrap_content"
-            android:text="GOT IT"
-            app:cornerRadius="@dimen/_5sdp"
-            android:layout_gravity="center"
-
-            android:backgroundTint="@color/red"
-            >
-
-        </com.google.android.material.button.MaterialButton>
 
     </LinearLayout>
 

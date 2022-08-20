@@ -14,7 +14,9 @@ import naya.ganj.app.data.category.adapter.ExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
 import naya.ganj.app.databinding.FragmentDashboardBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.Utility
 
 class CategoryFragment : Fragment() {
 
@@ -23,7 +25,6 @@ class CategoryFragment : Fragment() {
     var categoryViewModel: CategoryViewModel? = null
     lateinit var adapter: ExpandableListAdapter
     lateinit var cateModel: CategoryDataModel
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,10 +38,17 @@ class CategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getCategoryData()
+
+        if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener{
+                override fun onInternetAvailable() {
+                    getCategoryData()
+                }
+            })){
+            getCategoryData()
+        }
 
         var previousOpenGroup = -1
-        binding.expandablelist.setOnGroupExpandListener(ExpandableListView.OnGroupExpandListener {
+        binding.expandablelist.setOnGroupExpandListener({
             if (it != previousOpenGroup) {
                 binding.expandablelist.collapseGroup(previousOpenGroup)
             }
@@ -48,13 +56,6 @@ class CategoryFragment : Fragment() {
         })
 
         binding.expandablelist.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-            /*val bundle = Bundle()
-            bundle.putString(
-                Constant.CATEGORY_ID,
-                cateModel.categoryList.get(groupPosition).subCategoryList.get(childPosition).id
-            )
-            findNavController().navigate(R.id.productListFragment, bundle)
-*/
             val intent = Intent(requireActivity(), ProductListActivity::class.java)
             intent.putExtra(
                 Constant.CATEGORY_ID,
@@ -66,8 +67,9 @@ class CategoryFragment : Fragment() {
     }
 
     private fun getCategoryData() {
+
         binding.expandablelist.visibility = View.VISIBLE
-        categoryViewModel?.getCategoryData()?.observe(requireActivity(), Observer {
+        categoryViewModel?.getCategoryData(requireActivity())?.observe(requireActivity()) {
             if (it != null) {
                 cateModel = it
                 adapter = ExpandableListAdapter(it)
@@ -77,7 +79,7 @@ class CategoryFragment : Fragment() {
             } else {
                 binding.progressBar.visibility = View.VISIBLE
             }
-        })
+        }
     }
 
 }

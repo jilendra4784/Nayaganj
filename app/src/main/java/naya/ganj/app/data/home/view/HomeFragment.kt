@@ -2,14 +2,12 @@ package naya.ganj.app.data.home.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.MaterialFadeThrough
 import com.smarteist.autoimageslider.SliderView
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.category.view.ProductListActivity
@@ -19,7 +17,10 @@ import naya.ganj.app.data.home.repositry.HomePageDataFactory
 import naya.ganj.app.data.home.repositry.HomeRepositry
 import naya.ganj.app.data.home.viewmodel.HomeViewModel
 import naya.ganj.app.databinding.FragmentHomeBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.utility.NetworkResult
+import naya.ganj.app.utility.Utility
 
 
 class HomeFragment : Fragment() {
@@ -39,25 +40,47 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         app = requireActivity().applicationContext as Nayaganj
 
+        if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getBannerList()
+                }
+            }))
         getBannerList()
-       setStaticData()
+        setStaticData()
         return binding.root
     }
 
     private fun getBannerList() {
+            homeViewModel.getBannerList(app.user.getUserDetails()?.userId)
+                .observe(requireActivity()) { response ->
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (isAdded) {
+                                val adapter =
+                                    SliderAdapter(
+                                        requireActivity(),
+                                        response.data!!.promoBannerList
+                                    )
+                                binding.slider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+                                binding.slider.setSliderAdapter(adapter)
+                                binding.slider.scrollTimeInSec = 3
+                                binding.slider.isAutoCycle = true
+                                binding.slider.startAutoCycle()
 
-        homeViewModel.getBannerList(app.user.getUserDetails()?.userId).observe(requireActivity()) {
+                            }
+                        }
 
-            if(isAdded){
-                val adapter = SliderAdapter(requireActivity(), it.promoBannerList)
-                binding.slider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-                binding.slider.setSliderAdapter(adapter)
-                binding.slider.scrollTimeInSec = 3
-                binding.slider.isAutoCycle = true
-                binding.slider.startAutoCycle()
+                        is NetworkResult.Error -> {
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
+                        }
 
-            }
-        }
+                    }
+
+
+                }
     }
 
     private fun setStaticData() {

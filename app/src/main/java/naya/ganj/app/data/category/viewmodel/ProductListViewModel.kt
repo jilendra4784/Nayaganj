@@ -1,5 +1,6 @@
 package naya.ganj.app.data.category.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import naya.ganj.app.data.category.model.AddRemoveModel
@@ -12,15 +13,12 @@ class ProductListViewModel : ViewModel() {
     var repositry = ProductListRepositry()
 
     fun getProductList(
+        context: Context,
         userId: String?,
         deviceType: String,
         jsonObject: JsonObject
     ): LiveData<ProductListModel> {
-        return repositry.getProductList(userId, deviceType, jsonObject)
-    }
-
-    fun addremoveItemRequest(jsonObject: JsonObject):LiveData<AddRemoveModel> {
-       return repositry.addremoveItemRequest(jsonObject)
+        return repositry.getProductList(context,userId, deviceType, jsonObject)
     }
 
 }

@@ -22,6 +22,7 @@ import naya.ganj.app.data.category.adapter.ProductListAdapter
 import naya.ganj.app.data.category.viewmodel.ProductListViewModel
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.databinding.ActivityProductListBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -106,66 +107,14 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         userId: String?,
         cateId: String?,
     ) {
-        val json = JsonObject()
-        json.addProperty(Constant.CATEGORY_ID, cateId)
-        json.addProperty(Constant.TEXT, text)
-        json.addProperty(Constant.pageIndex, "0")
 
-        binding.progressBar.visibility=View.VISIBLE
-        binding.productList.visibility=View.GONE
-        viewModel.getProductList(userId, Constant.DEVICE_TYPE, json)
-            .observe(this) {
-                if (it.productList.isNotEmpty()) {
-                    for (product in it.productList) {
-                        for ((i, variant) in product.variant.withIndex()) {
-                            if (variant.vQuantityInCart > 0) {
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    val isProductExist = async {
-                                        AppDataBase.getInstance(this@ProductListActivity)
-                                            .productDao().isProductExist(product.id, variant.vId)
-                                    }.await()
-                                    if (isProductExist) {
-                                        val singleProduct = async {
-                                            AppDataBase.getInstance(this@ProductListActivity)
-                                                .productDao()
-                                                .getSingleProduct(product.id, variant.vId)
-                                        }.await()
-                                        if (variant.vQuantityInCart > singleProduct.itemQuantity) {
-                                            AppDataBase.getInstance(this@ProductListActivity)
-                                                .productDao().updateProduct(
-                                                    variant.vQuantityInCart,
-                                                    product.id,
-                                                    variant.vId
-                                                )
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                    adapter = ProductListAdapter(
-                        this@ProductListActivity,
-                        this@ProductListActivity,
-                        it.productList, this@ProductListActivity, app
-                    )
-                    binding.productList.layoutManager =
-                        LinearLayoutManager(this@ProductListActivity)
-                    binding.productList.isNestedScrollingEnabled = false
-                    binding.productList.adapter = adapter
-                    binding.tvNoProduct.visibility = View.GONE
-                    binding.productList.visibility = View.VISIBLE
-
-                    binding.progressBar.visibility=View.GONE
-                    binding.productList.visibility=View.VISIBLE
-
-                } else {
-                    binding.tvNoProduct.visibility = View.VISIBLE
-                    binding.productList.visibility = View.GONE
-                    binding.llCartLayout.visibility = View.GONE
+        if(Utility.isAppOnLine(this@ProductListActivity,object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getProductListRequestData(text,userId,cateId)
                 }
-            }
-
+            })){
+            getProductListRequestData(text,userId,cateId)
+        }
     }
 
 
@@ -270,5 +219,68 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
         }.start()
+    }
+
+    fun getProductListRequestData(text: String, userId: String?, cateId: String?) {
+        val json = JsonObject()
+        json.addProperty(Constant.CATEGORY_ID, cateId)
+        json.addProperty(Constant.TEXT, text)
+        json.addProperty(Constant.pageIndex, "0")
+
+        binding.progressBar.visibility = View.VISIBLE
+        binding.productList.visibility = View.GONE
+        viewModel.getProductList(this@ProductListActivity, userId, Constant.DEVICE_TYPE, json)
+            .observe(this) {
+                if (it.productList.isNotEmpty()) {
+                    for (product in it.productList) {
+                        for ((i, variant) in product.variant.withIndex()) {
+                            if (variant.vQuantityInCart > 0) {
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    val isProductExist = async {
+                                        AppDataBase.getInstance(this@ProductListActivity)
+                                            .productDao()
+                                            .isProductExist(product.id, variant.vId)
+                                    }.await()
+                                    if (isProductExist) {
+                                        val singleProduct = async {
+                                            AppDataBase.getInstance(this@ProductListActivity)
+                                                .productDao()
+                                                .getSingleProduct(product.id, variant.vId)
+                                        }.await()
+                                        if (variant.vQuantityInCart > singleProduct.itemQuantity) {
+                                            AppDataBase.getInstance(this@ProductListActivity)
+                                                .productDao().updateProduct(
+                                                    variant.vQuantityInCart,
+                                                    product.id,
+                                                    variant.vId
+                                                )
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    adapter = ProductListAdapter(
+                        this@ProductListActivity,
+                        this@ProductListActivity,
+                        it.productList, this@ProductListActivity, app
+                    )
+                    binding.productList.layoutManager =
+                        LinearLayoutManager(this@ProductListActivity)
+                    binding.productList.isNestedScrollingEnabled = false
+                    binding.productList.adapter = adapter
+                    binding.tvNoProduct.visibility = View.GONE
+                    binding.productList.visibility = View.VISIBLE
+
+                    binding.progressBar.visibility = View.GONE
+                    binding.productList.visibility = View.VISIBLE
+
+                } else {
+                    binding.tvNoProduct.visibility = View.VISIBLE
+                    binding.productList.visibility = View.GONE
+                    binding.llCartLayout.visibility = View.GONE
+                }
+            }
     }
 }

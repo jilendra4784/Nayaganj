@@ -20,6 +20,7 @@ import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
 import naya.ganj.app.databinding.ActivityMyCartBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -200,43 +201,28 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         action: String,
         productDetail: ProductDetail
     ) {
-        when (action) {
-            Constant.INSERT -> {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().insertProduct(this@MyCartActivity, productDetail)
+        if(Utility.isAppOnLine(this@MyCartActivity,
+                object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        // Call API Again if Internet is available
+                    }
+                })){
+            when (action) {
+                Constant.INSERT -> {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utility().insertProduct(this@MyCartActivity, productDetail)
+                    }
+                    if (app.user.getLoginSession()) {
+                        Utility().addRemoveItem(
+                            app.user.getUserDetails()?.userId,
+                            "add",
+                            productDetail.productId,
+                            productDetail.variantId,
+                            ""
+                        )
+                    }
                 }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        "add",
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
-                    )
-                }
-            }
-            Constant.ADD -> {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().updateProduct(
-                        this@MyCartActivity,
-                        productDetail.productId,
-                        productDetail.variantId,
-                        productDetail.itemQuantity
-                    )
-                }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        Constant.ADD,
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
-                    )
-                }
-
-            }
-            Constant.REMOVE -> {
-                if (productDetail.itemQuantity > 0) {
+                Constant.ADD -> {
                     lifecycleScope.launch(Dispatchers.IO) {
                         Utility().updateProduct(
                             this@MyCartActivity,
@@ -245,31 +231,52 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                             productDetail.itemQuantity
                         )
                     }
-                } else {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().deleteProduct(
-                            this@MyCartActivity,
+                    if (app.user.getLoginSession()) {
+                        Utility().addRemoveItem(
+                            app.user.getUserDetails()?.userId,
+                            Constant.ADD,
                             productDetail.productId,
-                            productDetail.variantId
+                            productDetail.variantId,
+                            ""
+                        )
+                    }
+
+                }
+                Constant.REMOVE -> {
+                    if (productDetail.itemQuantity > 0) {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            Utility().updateProduct(
+                                this@MyCartActivity,
+                                productDetail.productId,
+                                productDetail.variantId,
+                                productDetail.itemQuantity
+                            )
+                        }
+                    } else {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            Utility().deleteProduct(
+                                this@MyCartActivity,
+                                productDetail.productId,
+                                productDetail.variantId
+                            )
+                        }
+                    }
+
+
+                    if (app.user.getLoginSession()) {
+                        Utility().addRemoveItem(
+                            app.user.getUserDetails()?.userId,
+                            "remove",
+                            productDetail.productId,
+                            productDetail.variantId,
+                            ""
                         )
                     }
                 }
-
-
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        "remove",
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
-                    )
-                }
             }
+            Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+            Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
         }
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
-
     }
 
     private fun calculateAmount() {
