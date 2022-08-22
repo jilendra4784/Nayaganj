@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import naya.ganj.app.data.mycart.model.AddressResponseModel
-import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
+import naya.ganj.app.data.mycart.model.AddressResponseModel
+import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 
 class AddAddressViewModel(var repositry: AddressListRespositry) : ViewModel() {
 

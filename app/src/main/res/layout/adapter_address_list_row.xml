@@ -5,9 +5,10 @@
     android:layout_height="wrap_content"
     android:checkable="true"
     android:clickable="true"
-    android:elevation="@dimen/_10sdp"
+    app:cardElevation="@dimen/_5sdp"
     android:focusable="true"
     app:cardCornerRadius="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
     app:cardUseCompatPadding="true"
     app:strokeWidth="1dp">
 

@@ -130,7 +130,7 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener {
         binding.mainConstraintLayout.visibility = View.GONE
         val jsonObject = JsonObject()
         jsonObject.addProperty(ORDER_ID, orderId)
-        myCartViewModel.getMyCartData(userId, jsonObject).observe(requireActivity()) {
+        myCartViewModel.getMyCartData(requireActivity(),userId, jsonObject).observe(requireActivity()) {
             if (isAdded) {
                 myCartModel = it
                 setListData(it)

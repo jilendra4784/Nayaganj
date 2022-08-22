@@ -57,8 +57,12 @@ class MyCartAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList.get(position)
         if (cart.discountPrice.toDouble() > 0) {
-            holder.binding.tvSaveAmount.text =
-                "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
+            if(app.user.getAppLanguage()==1){
+                holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
+            }else{
+                holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
+            }
+
             holder.binding.tvSaveAmount.visibility = View.VISIBLE
             setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
         } else {
@@ -78,10 +82,13 @@ class MyCartAdapter(
             holder.binding.tvDiscountPrice.text =
                 Utility().formatTotalAmount(discountAmount).toString()
             val itemSavedAmount = (priceAmount - discountAmount)
-            holder.binding.tvSaveAmount.text =
-                "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(
-                    itemSavedAmount
-                ).toString()
+
+            if(app.user.getAppLanguage()==1){
+                holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+            }else{
+                holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+            }
+
             Thread {
                 AppDataBase.getInstance(context).productDao()
                     .updateSavedAmount(cart.productId, cart.variantId.toInt(), itemSavedAmount)
@@ -139,15 +146,16 @@ class MyCartAdapter(
                 holder.binding.tvQuantity.text = quantity.toString()
                 val priceAmount = (cart.price / cart.quantity) * quantity
                 val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
-                holder.binding.tvPrice.text =
-                    Utility().formatTotalAmount(priceAmount.toDouble()).toString()
+                holder.binding.tvPrice.text = Utility().formatTotalAmount(priceAmount.toDouble()).toString()
                 holder.binding.tvDiscountPrice.text =
                     Utility().formatTotalAmount(discountAmount).toString()
                 val itemSavedAmount = (priceAmount - discountAmount)
-                holder.binding.tvSaveAmount.text =
-                    "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(
-                        itemSavedAmount
-                    ).toString()
+
+                if(app.user.getAppLanguage()==1){
+                    holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                }else{
+                    holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                }
 
                 Thread {
                     AppDataBase.getInstance(context).productDao()
@@ -215,12 +223,16 @@ class MyCartAdapter(
     ) {
 
         Picasso.get().load(cart.img).into(holder.ivImagview)
-        val productName = cart.productName.split("$")
-        holder.tvProductTitle.text = productName[0]
+        holder.tvProductTitle.text = Utility.convertLanguage(cart.productName,app)
         holder.tvPrice.text = cart.price.toString()
         holder.tvDiscountPrice.text = cart.actualPrice
         holder.tvUnit.text = cart.variantUnitQuantity.toString() + cart.variantUnit
         holder.tvQuantity.text = cart.quantity.toString()
+
+        if(app.user.getAppLanguage()==1){
+            holder.tvNetWet.text=context.resources.getString(R.string.net_weight_h)
+        }
+
         val discountPrice: Int =
             ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
 

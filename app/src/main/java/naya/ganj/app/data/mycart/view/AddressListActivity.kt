@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.mycart.adapter.AddressListAdapter
 import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
@@ -38,7 +39,7 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         app = applicationContext as Nayaganj
 
         binding.include.ivBackArrow.setOnClickListener { finish() }
-        binding.include.toolbarTitle.setText("Address List")
+        binding.include.toolbarTitle.text = "Address List"
 
         if (intent.extras != null) {
             addressId = intent.getStringExtra("ADDRESS_ID").toString()
@@ -48,6 +49,11 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
         )[AddressListViewModel::class.java]
+
+        if(app.user.getAppLanguage()==1){
+            binding.btnAddAddress.text=resources.getString(R.string.add_new_address_h)
+        }
+
         binding.btnAddAddress.setOnClickListener {
             startActivity(Intent(this, AddAddressActivity::class.java))
         }

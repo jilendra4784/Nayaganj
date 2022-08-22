@@ -83,7 +83,7 @@
     <string name="delivery_address_h">डिलीवरी एड्रेस </string>
     <string name="change_h">चेंज</string>
     <string name="payment_options_h">पेमेंट ऑप्शन्स </string>
-    <string name="add_new_address_h">+ ऐड न्यू एड्रेस </string>
+    <string name="add_new_address_h"> ऐड न्यू एड्रेस </string>
     <string name="re_order_h">री-आर्डर </string>
     <string name="empty_cart_h">आपका कार्ट खाली हैं !</string>
     <string name="add_new_address_h2"> ऐड न्यू एड्रेस</string>
@@ -120,7 +120,7 @@
     <string name="personal_details_h">पर्सनल डिटेल्स </string>
     <string name="address_details_h">एड्रेस डिटेल्स </string>
     <string name="total_amount_h1">कुल राशि:</string>
-    <string name="total_amount_h">कुल राशि: ₹</string>
+    <string name="total_amount_h">कुल राशि:</string>
 
     <string name="cart_amount_h">कार्ट राशि:</string>
     <string name="delivery_charge_h">डिलीवरी राशि: </string>
@@ -166,6 +166,16 @@
     <string name="edit_number_h">नंबर बदलें</string>
     <string name="verifyOtp">OTP जांच करें </string>
     <string name="about_us_text_h">NayaGanj भारत का ऑनलाइन मसाला और किराना स्टोर है। प्रत्येक श्रेणी में विकल्पों की एक विस्तृत श्रृंखला में से चुनें, विशेष रूप से सबसे कम कीमतों पर उपलब्ध सर्वोत्तम गुणवत्ता खोजने में आपकी सहायता के लिए चुना गया है। डिलीवरी के लिए एक समय स्लॉट चुनें और आपका ऑर्डर कानपुर, लखनऊ और वाराणसी में कहीं भी आपके दरवाजे पर पहुंचा दिया जाएगा आप अपने डेबिट/क्रेडिट कार्ड का उपयोग करके या डिलीवरी पर नकद द्वारा ऑनलाइन भुगतान कर सकते हैं। हम समय पर डिलीवरी और सर्वोत्तम गुणवत्ता की गारंटी देते हैं।</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="enter_first_name">Enter First Name</string>
+    <string name="enter_last_name">Enter Last Name</string>
+    <string name="address_detail">Address Detail</string>
+    <string name="house_no">House No.</string>
+    <string name="street_details">Street Details</string>
+    <string name="enter_city">Enter city</string>
+    <string name="pin_code">Pin Code</string>
+    <string name="select_address_type">Select Address Type</string>
+    <string name="area_details">Area Details</string>
 
 
 </resources>

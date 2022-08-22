@@ -265,6 +265,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="@color/white"
                 app:cardElevation="@dimen/_5sdp"
                 app:layout_constraintBottom_toTopOf="@+id/rv_mycart_list"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"

@@ -1,11 +1,11 @@
 package naya.ganj.app.data.mycart.view
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.JsonObject
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.viewmodel.AddAddressViewModel
@@ -22,17 +22,38 @@ class AddAddressActivity : AppCompatActivity() {
     private var addressType = ""
     private var addressId = ""
     var isUpdateAddress = false
+    lateinit var app: Nayaganj
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddAddressBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        app = applicationContext as Nayaganj
+
+        if (app.user.getAppLanguage() == 1) {
+            binding.tvPersonelDetail.text = resources.getString(R.string.personal_details_h)
+            binding.textView9.text = resources.getString(R.string.address_details_h)
+            binding.tvFirstName.hint = resources.getString(R.string.enter_first_name_h)
+            binding.tvLastName.hint = resources.getString(R.string.enter_last_name_h)
+            binding.tvMobile.hint = resources.getString(R.string.mobile_number_h)
+            binding.tvHouse.hint = resources.getString(R.string.house_no_h)
+            binding.tvApart.hint = resources.getString(R.string.apart_name_h)
+            binding.tvStreet.hint = resources.getString(R.string.street_details_h)
+            binding.tvAddress.hint = resources.getString(R.string.area_details_h)
+            binding.tvCity.hint = resources.getString(R.string.city_h)
+            binding.tvPin.hint = resources.getString(R.string.pincode_h)
+            binding.tvSelectAddress.hint = resources.getString(R.string.select_address_type_h)
+        }
 
         if (intent.extras != null) {
             isUpdateAddress = true
-            binding.btnAddAddress.text = "Update Address"
-            binding.include2.toolbarTitle.text = "Edit Address"
+            if(app.user.getAppLanguage()==1){
+                binding.btnAddAddress.text = resources.getString(R.string.update_address_h)
+            }else{
+                binding.btnAddAddress.text = "Update Address"
+            }
 
+            binding.include2.toolbarTitle.text = "Edit Address"
 
             binding.tvFirstName.editText?.setText(intent.getStringExtra("firstName"))
             binding.tvLastName.editText?.setText(intent.getStringExtra("lastName"))
@@ -50,7 +71,11 @@ class AddAddressActivity : AppCompatActivity() {
 
         } else {
             binding.include2.toolbarTitle.text = "Add New Address"
-            binding.btnAddAddress.text = "Add Address"
+            if(app.user.getAppLanguage()==1){
+                binding.btnAddAddress.text =resources.getString(R.string.add_address_h)
+            }else{
+                binding.btnAddAddress.text = "Add Address"
+            }
         }
 
         viewModel = ViewModelProvider(
@@ -139,16 +164,13 @@ class AddAddressActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.lat, "")
         jsonObject.addProperty(Constant.long, "")
 
-        Log.e("TAG", "addAddressRequest: " + jsonObject)
-
-
         if (isUpdateAddress) {
             jsonObject.addProperty(Constant.addressId, addressId)
             viewModel.updateAddressRequest(jsonObject).observe(this) {
                 binding.btnAddAddress.isEnabled = true
                 it.let {
                     if (it.status) {
-                        Utility().showToast(
+                        Utility.showToast(
                             this@AddAddressActivity,
                             "Address update successfully..."
                         )

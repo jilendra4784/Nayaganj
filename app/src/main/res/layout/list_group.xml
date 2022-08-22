@@ -18,16 +18,16 @@ app:cardElevation="@dimen/_5sdp"
         <TextView
             android:id="@+id/listTitle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:paddingStart="@dimen/_20sdp"
             android:fontFamily="@font/poppins_regular"
             android:gravity="start|center"
-            android:paddingStart="@dimen/_20sdp"
             android:text="Jilendra Singh"
             android:textSize="@dimen/_14sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-
+            app:layout_constraintBottom_toTopOf="@+id/textView47"
             app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right"
-            app:layout_constraintStart_toEndOf="@+id/imageView18"
+            app:layout_constraintHorizontal_bias="0.33"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -47,9 +47,9 @@ app:cardElevation="@dimen/_5sdp"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginTop="12dp"
-            android:visibility="gone"
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_down_arrow"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,22 +58,33 @@ app:cardElevation="@dimen/_5sdp"
             android:id="@+id/imageView18"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/splash_logo"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-           android:src="@drawable/splash_logo" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView47"
             android:layout_width="0dp"
             android:layout_height="@dimen/_1sdp"
-            android:text="TextView"
             android:layout_marginStart="@dimen/_20sdp"
             android:background="@color/gray"
+            android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            app:tint="@color/dark_gray"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ctc_spicy_pouch" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

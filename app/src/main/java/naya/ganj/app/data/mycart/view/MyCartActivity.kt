@@ -16,6 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
@@ -37,18 +38,27 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     private var addressId: String? = null
     var orderId: String? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ADDRESS_RADIO_SELECTION = 0
 
-        myCartViewModel = ViewModelProvider(this).get(MyCartViewModel::class.java)
+        myCartViewModel = ViewModelProvider(this)[MyCartViewModel::class.java]
         app = applicationContext as Nayaganj
         orderId = intent.getStringExtra(Constant.orderId)
         binding.includeToolbar.ivBackArrow.setOnClickListener { finish() }
-        binding.includeToolbar.toolbarTitle.text = "My Cart"
+
+        if (app.user.getAppLanguage() == 1) {
+            binding.includeToolbar.toolbarTitle.text = resources.getString(R.string.my_cart_h)
+            binding.btnChangeAddress.text = resources.getString(R.string.change_h)
+            binding.tvAddress.text = resources.getString(R.string.delivery_address_h)
+            binding.textView22.text = resources.getString(R.string.cart_amount_h)
+            binding.textView24.text = resources.getString(R.string.delivery_charge_h)
+            binding.textView29.text = resources.getString(R.string.total_amount_h)
+        } else {
+            binding.includeToolbar.toolbarTitle.text = "My Cart"
+        }
 
         binding.btnChangeAddress.setOnClickListener {
 
@@ -58,7 +68,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
 
         binding.btnLoginButton.setOnClickListener {
-            if (binding.btnLoginButton.text.toString() == "Checkout") {
+            if (binding.btnLoginButton.text.toString() == "Checkout" || binding.btnLoginButton.text.toString() == resources.getString(R.string.checkout_h)) {
                 if (addressId == null) {
                     startActivity(Intent(this@MyCartActivity, AddAddressActivity::class.java))
                 } else {
@@ -103,9 +113,13 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }.start()
 
         if (app.user.getLoginSession()) {
-            binding.btnLoginButton.text = "Checkout"
-            if(orderId==null){
-                orderId=""
+            if(app.user.getAppLanguage()==1){
+                binding.btnLoginButton.text = resources.getString(R.string.checkout_h)
+            }else{
+                binding.btnLoginButton.text = "Checkout"
+            }
+            if (orderId == null) {
+                orderId = ""
             }
 
             getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
@@ -146,44 +160,46 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
     }
 
-
     private fun getMyCartData(userId: String, orderId: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.mainConstraintLayout.visibility = View.GONE
         val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.ORDER_ID, orderId)
-        myCartViewModel.getMyCartData(userId, jsonObject).observe(this@MyCartActivity) {
-            myCartModel = it
-            if (it.cartList.size > 0) {
-                val adapter = MyCartAdapter(
-                    this@MyCartActivity,
-                    it.cartList,
-                    this@MyCartActivity,
-                    this@MyCartActivity,
-                    app
-                )
-                binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
-                binding.nestedscrollview.isNestedScrollingEnabled = false
-                binding.rvMycartList.adapter = adapter
-                binding.progressBar.visibility = View.GONE
+        myCartViewModel.getMyCartData(this@MyCartActivity, userId, jsonObject)
+            .observe(this@MyCartActivity) {
+                myCartModel = it
+                if (it.cartList.size > 0) {
+                    val adapter = MyCartAdapter(
+                        this@MyCartActivity,
+                        it.cartList,
+                        this@MyCartActivity,
+                        this@MyCartActivity,
+                        app
+                    )
+                    binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
+                    binding.nestedscrollview.isNestedScrollingEnabled = false
+                    binding.rvMycartList.adapter = adapter
+                    binding.progressBar.visibility = View.GONE
 
-                binding.mainConstraintLayout.visibility = View.VISIBLE
+                    binding.mainConstraintLayout.visibility = View.VISIBLE
 
-                if (myCartModel.address != null) {
-                    setAddressDetail(myCartModel.address.address)
-                    binding.materialAddressCardview.visibility = View.VISIBLE
+                    if (myCartModel.address != null) {
+                        setAddressDetail(myCartModel.address.address)
+                        binding.materialAddressCardview.visibility = View.VISIBLE
+                    }
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    binding.emptyCartLayout.visibility = View.VISIBLE
+                    Thread {
+                        AppDataBase.getInstance(this@MyCartActivity).productDao()
+                            .deleteAllSavedAmount()
+                        AppDataBase.getInstance(this@MyCartActivity).productDao()
+                            .deleteAllCartData()
+                        AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+                    }.start()
                 }
-                Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-                Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
-            } else {
-                binding.progressBar.visibility = View.GONE
-                binding.emptyCartLayout.visibility = View.VISIBLE
-                Thread {
-                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
-                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
-                    AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
-                }.start()
-            }
         }
     }
 
@@ -331,7 +347,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                             totalAmount = cartAmount
                         } else {
                             totalAmount = cartAmount + myCartModel.deliveryCharges
-                            binding.tvDeliveryCharges.text = myCartModel.deliveryCharges.toString()
+                            binding.tvDeliveryCharges.text =resources.getString(R.string.Rs)+" "+ myCartModel.deliveryCharges.toString()
                         }
                         binding.deliveryCardLayout.visibility = View.VISIBLE
 
@@ -339,9 +355,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         totalAmount = cartAmount
                     }
 
-                    binding.tvCartAmount.text = cartAmount.toString()
-                    binding.tvTotalAmount.text = totalAmount.toString()
-                    binding.tvFinalAmount.text = Utility().formatTotalAmount(totalAmount).toString()
+                    binding.tvCartAmount.text =resources.getString(R.string.Rs)+" "+ cartAmount
+                    binding.tvTotalAmount.text =resources.getString(R.string.Rs)+" "+ totalAmount
+                    binding.tvFinalAmount.text =resources.getString(R.string.Rs)+" "+ Utility().formatTotalAmount(totalAmount)
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.finalCheckoutLayout.visibility = View.VISIBLE
