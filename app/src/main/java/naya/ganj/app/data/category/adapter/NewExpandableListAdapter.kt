@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import naya.ganj.app.R
 
@@ -34,7 +35,9 @@ class NewExpandableListAdapter(private var context: Context? = null,
             convertView = layoutInflater.inflate(R.layout.list_item, null)
         }
         val expandedListTextView = convertView?.findViewById(R.id.expandedListItem) as TextView
-        expandedListTextView.text = expandedListText
+        val title=expandedListText?.split("$")
+        expandedListTextView.text =title?.get(0) ?: ""
+
         return convertView
     }
 
@@ -64,8 +67,19 @@ class NewExpandableListAdapter(private var context: Context? = null,
             convertView=    LayoutInflater.from(parent?.context).inflate(R.layout.list_group, parent, false)
         }
         val listTitleTextView = convertView!!.findViewById(R.id.listTitle) as TextView
-        listTitleTextView.setTypeface(null, Typeface.BOLD)
-        listTitleTextView.text = listTitle
+
+        val title=listTitle?.split("$")
+        listTitleTextView.text = title?.get(0) ?: ""
+
+        val indicatorImageView = convertView.findViewById(R.id.iv_arrow_right) as ImageView
+        if (isExpanded) {
+            indicatorImageView.setImageResource(R.drawable.ic_down_arrow)
+            listTitleTextView.setTypeface(null, Typeface.BOLD)
+
+        } else {
+            indicatorImageView.setImageResource(R.drawable.ic_right_arrow)
+            listTitleTextView.setTypeface(null, Typeface.NORMAL)
+        }
         return convertView
     }
 
