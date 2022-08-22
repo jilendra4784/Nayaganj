@@ -20,7 +20,12 @@ class CategoryRepositry {
                 call: Call<CategoryDataModel>,
                 response: Response<CategoryDataModel>
             ) {
-                categoryData.postValue(response.body())
+                if(response.isSuccessful){
+                    categoryData.postValue(response.body())
+                }else{
+                    Utility.showToast(context,response.message())
+                }
+
             }
 
             override fun onFailure(call: Call<CategoryDataModel>, t: Throwable) {

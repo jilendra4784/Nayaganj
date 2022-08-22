@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.category.adapter.NewExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
@@ -20,7 +21,8 @@ class CategoryFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     var categoryViewModel: CategoryViewModel? = null
-   // lateinit var adapter: ExpandableListAdapter
+    lateinit var app :Nayaganj
+
     lateinit var adapter: NewExpandableListAdapter
     lateinit var cateModel: CategoryDataModel
 
@@ -31,6 +33,7 @@ class CategoryFragment : Fragment() {
     ): View {
         categoryViewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        app=requireActivity().applicationContext as Nayaganj
         return binding.root
     }
 
@@ -72,9 +75,6 @@ class CategoryFragment : Fragment() {
         categoryViewModel?.getCategoryData(requireActivity())?.observe(requireActivity()) {
             if (it != null) {
                 cateModel = it
-                //adapter = ExpandableListAdapter(it)
-
-
                 val listOfTitle=ArrayList<String>()
                 val listOfDataItems=HashMap<String,List<String>>()
 
@@ -92,11 +92,10 @@ class CategoryFragment : Fragment() {
                 }
 
                 if(isAdded){
-                    adapter=NewExpandableListAdapter(requireActivity(),listOfTitle,listOfDataItems)
+                    adapter=NewExpandableListAdapter(requireActivity(),listOfTitle,listOfDataItems,app)
                     binding.expandablelist.setAdapter(adapter)
                 }
 
-                //binding.expandablelist.setAdapter(adapter)
                 binding.progressBar.visibility = View.GONE
                 binding.expandablelist.visibility = View.VISIBLE
             } else {

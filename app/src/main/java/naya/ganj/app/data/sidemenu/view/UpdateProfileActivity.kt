@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
+import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.mycart.view.OTPVerifyActivity
 import naya.ganj.app.data.sidemenu.repositry.SideMenuDataRepositry
@@ -72,23 +73,39 @@ class UpdateProfileActivity : AppCompatActivity(), OnitemClickListener {
             showMaterialAlertDialog()
         }
 
+        if (app.user.getAppLanguage() == 1) {
+            binding.tvLang.text = "Hindi"
+        } else {
+            binding.tvLang.text = "English"
+        }
+
     }
 
     private fun showMaterialAlertDialog() {
-        lateinit var selectedFruits: String
-        var selectedFruitsIndex = 0
-        val fruits = arrayOf("English", "Hindi")
-
-        selectedFruits = fruits[selectedFruitsIndex]
+        lateinit var lang: String
+        var selectLanguage = app.user.getAppLanguage()
+        val language = arrayOf("English", "Hindi")
+        lang = language[selectLanguage]
         MaterialAlertDialogBuilder(this)
             .setTitle("Select Language")
-            .setSingleChoiceItems(fruits, selectedFruitsIndex) { dialog_, which ->
-                selectedFruitsIndex = which
-                selectedFruits = fruits[which]
+            .setSingleChoiceItems(language, selectLanguage) { _, which ->
+                selectLanguage = which
+                lang = language[which]
+
+                if (lang == "Hindi") {
+                    app.user.setAppLanguage(1)
+                    binding.tvLang.text = lang
+                } else {
+                    app.user.setAppLanguage(0)
+                    binding.tvLang.text = lang
+                }
             }
             .setPositiveButton("Ok") { dialog, which ->
-                Toast.makeText(this, "$selectedFruits Selected", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "$lang Changed Successfully", Toast.LENGTH_SHORT).show()
+
+                val intent=Intent(this@UpdateProfileActivity,MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
             }
             .setNegativeButton("Cancel") { dialog, which ->
                 dialog.dismiss()

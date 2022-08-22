@@ -71,9 +71,9 @@ class ProductListAdapter(
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
         Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
-        val list = product.productName.split("$")
-        holder.binding.tvProductTitle.text = list[0]
-        holder.binding.tvProductDetail.text = product.description
+
+        holder.binding.tvProductTitle.text = Utility.convertLanguage(product.productName,app)
+        holder.binding.tvProductDetail.text =  Utility.convertLanguage(product.description ,app)
 
         Thread {
             val listOfProduct =
@@ -88,8 +88,12 @@ class ProductListAdapter(
                     holder.binding.tvQuantity.text = listOfProduct[0].itemQuantity.toString()
                     holder.binding.tvUnitQuantity.text = listOfProduct[0].vUnitQuantity.toString()
                     holder.binding.tvUnit.text = listOfProduct[0].vUnit
-                    holder.binding.tvOff.text = listOfProduct[0].vDiscount.toString() + "% off"
 
+                    if(app.user.getAppLanguage()==1){
+                        holder.binding.tvOff.text =listOfProduct[0].vDiscount.toString() + "% "+ context.resources.getString(R.string.off_h)
+                    }else{
+                        holder.binding.tvOff.text = listOfProduct[0].vDiscount.toString() + "% off"
+                    }
                     holder.binding.addItem.visibility = View.GONE
                     holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
                 }
@@ -193,7 +197,13 @@ class ProductListAdapter(
                             holder.binding.tvPrice.visibility = View.INVISIBLE
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-                        holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% off"
+
+                        if(app.user.getAppLanguage()==1){
+                            holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                        }else{
+                            holder.binding.tvOff.text  = singleProduct.vDiscount.toString() + "% off"
+                        }
+
 
                     }
                 } else {
@@ -214,8 +224,12 @@ class ProductListAdapter(
                             holder.binding.tvPrice.visibility = View.INVISIBLE
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-                        holder.binding.tvOff.text =
-                            variant[vPosition].vDiscount.toString() + "% off"
+
+                        if(app.user.getAppLanguage()==1){
+                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                        }else{
+                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
+                        }
 
                         var vMaxQuantity = variant[vPosition].vQuantity
 
@@ -259,7 +273,15 @@ class ProductListAdapter(
                 holder.binding.tvPrice.visibility = View.INVISIBLE
             }
             holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
+
+            if(app.user.getAppLanguage()==1){
+                holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                holder.binding.tvNetWet.text=context.resources.getString(R.string.net_weight_h)
+                holder.binding.addItem.text=context.resources.getString(R.string.add_h)
+            }else{
+                holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
+            }
+
 
             var vMaxQuantity = variant[vPosition].vQuantity
         }
@@ -268,12 +290,6 @@ class ProductListAdapter(
 
     private fun showVariantDialog(product: ProductListModel.Product, holder: MyViewHolder) {
         var alertDialog: AlertDialog? = null
-        val productName = product.productName.let {
-            product.productName.split("$")
-        }
-        val productDetail = product.description.let {
-            product.description.split("$")
-        }
 
         val materialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
         val view = LayoutInflater.from(context).inflate(R.layout.custom_variant_dialog, null, false)
@@ -282,7 +298,7 @@ class ProductListAdapter(
         variantList.layoutManager = LinearLayoutManager(context)
 
         val customVariantAdapter =
-            CustomVariantAdapter(product.variant, object : OnitemClickListener {
+            CustomVariantAdapter(context,app,product.variant, object : OnitemClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onclick(vPos: Int, data: String) {
                     // Variant Click Handle
@@ -313,8 +329,13 @@ class ProductListAdapter(
 
                                     holder.binding.tvPrice.text = price.toString()
                                     holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-                                    holder.binding.tvOff.text =
-                                        singleProduct.vDiscount.toString() + "% off"
+
+                                    if(app.user.getAppLanguage()==1){
+                                        holder.binding.tvOff.text =singleProduct.vDiscount.toString()+"% "+ context.resources.getString(R.string.off_h)
+                                    }else{
+                                        holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% off"
+                                    }
+
                                     holder.binding.tvQuantity.text =
                                         singleProduct.itemQuantity.toString()
                                     holder.binding.tvUnitQuantity.text =
@@ -344,8 +365,9 @@ class ProductListAdapter(
         val title = view.findViewById(R.id.tv_title) as TextView
         val description = view.findViewById(R.id.tv_description) as TextView
         val ivClose = view.findViewById(R.id.ivclose) as ImageView
-        title.text = productName[0]
-        description.text = productDetail[0]
+
+        title.text = Utility.convertLanguage(product.productName,app)
+        description.text = Utility.convertLanguage(product.description,app)
 
         materialAlertDialogBuilder.setView(view)
         alertDialog = materialAlertDialogBuilder.create()

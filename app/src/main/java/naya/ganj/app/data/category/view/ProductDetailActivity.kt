@@ -109,10 +109,10 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
         Picasso.get().load(pModel.imgUrl[0]).into(binding.ivProductImage)
-        val titleArray = pModel.productName.split("$")
-        val titleDescriptionArray = pModel.description.split("$")
-        binding.tvProductName.text = titleArray[0]
-        binding.tvDescription.text = titleDescriptionArray[0]
+
+        binding.tvProductName.text = Utility.convertLanguage(pModel.productName,app)
+        binding.tvDescription.text = Utility.convertLanguage(pModel.description,app)
+
 
 
         Thread {
@@ -130,9 +130,18 @@ class ProductDetailActivity : AppCompatActivity() {
                         resources.getString(R.string.Rs) + vDiscountPrice.toString()
                     binding.tvQuantity.text = item.itemQuantity.toString()
                     binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
-                    binding.tvOff.text = item.vDiscount.toString() + "% off"
+
+                    if(app.user.getAppLanguage()==1){
+                        binding.tvOff.text = item.vDiscount.toString() + "% "+resources.getString(R.string.off_h)
+                        binding.addButton.text=resources.getString(R.string.add_h)
+                        binding.tvNetWet.text=resources.getString(R.string.net_weight_h)
+                    }else{
+                        binding.tvOff.text = item.vDiscount.toString() + "% off"
+                    }
+
                     binding.addButton.visibility = View.GONE
                     binding.llMinusPlusLayout.visibility = View.VISIBLE
+
 
                 }
             } else {
@@ -148,7 +157,14 @@ class ProductDetailActivity : AppCompatActivity() {
                                 resources.getString(R.string.Rs) + vDiscountPrice.toString()
                             binding.tvQuantity.text = item.vQuantityInCart.toString()
                             binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
-                            binding.tvOff.text = item.vDiscount.toString() + "% off"
+
+                            if(app.user.getAppLanguage()==1){
+                                binding.tvOff.text = item.vDiscount.toString() + "% "+resources.getString(R.string.off_h)
+                                binding.addButton.text=resources.getString(R.string.add_h)
+                                binding.tvNetWet.text=resources.getString(R.string.net_weight_h)
+                            }else{
+                                binding.tvOff.text = item.vDiscount.toString() + "% off"
+                            }
 
                             if (item.vQuantityInCart > 0) {
                                 binding.addButton.visibility = View.GONE
@@ -169,8 +185,6 @@ class ProductDetailActivity : AppCompatActivity() {
         productDetailModel: ProductDetailModel,
     ) {
         var alertDialog: AlertDialog? = null
-        val productName = productDetailModel.productDetails.productName.split("$")
-        val prductDescription = productDetailModel.productDetails.description.split("$")
 
         val materialAlertDialogBuilder = MaterialAlertDialogBuilder(this)
         val view = LayoutInflater.from(this).inflate(R.layout.custom_variant_dialog, null, false)
@@ -320,13 +334,13 @@ class ProductDetailActivity : AppCompatActivity() {
                         alertDialog?.dismiss()
                     }
                 }
-            })
+            },app,this@ProductDetailActivity)
         variantList.adapter = customVariantAdapter
         val title = view.findViewById(R.id.tv_title) as TextView
         val description = view.findViewById(R.id.tv_description) as TextView
         val ivClose = view.findViewById(R.id.ivclose) as ImageView
-        title.text = productName[0]
-        description.text = prductDescription[0]
+        title.text = Utility.convertLanguage(productDetailModel.productDetails.productName,app)
+        description.text = Utility.convertLanguage(productDetailModel.productDetails.description,app)
 
         materialAlertDialogBuilder.setView(view)
         alertDialog = materialAlertDialogBuilder.create()

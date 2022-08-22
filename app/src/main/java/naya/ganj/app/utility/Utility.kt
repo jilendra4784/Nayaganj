@@ -19,6 +19,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.interfaces.OnInternetCheckListener
@@ -146,10 +147,9 @@ class Utility {
     }
 
 
-
     companion object {
 
-        fun serverNotResponding(context: Context,errorMessage:String) {
+        fun serverNotResponding(context: Context, errorMessage: String) {
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.server_error_dialog)
             dialog.setCancelable(false)
@@ -160,7 +160,7 @@ class Utility {
             dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
             val got_it: TextView = dialog.findViewById(R.id.btn_got_it)
             val errorTitle: TextView = dialog.findViewById(R.id.error_title)
-            errorTitle.text=errorMessage
+            errorTitle.text = errorMessage
 
             got_it.setOnClickListener {
                 dialog.dismiss()
@@ -169,7 +169,7 @@ class Utility {
             dialog.show()
         }
 
-        fun isAppOnLine(context: Context , internetCheckListener: OnInternetCheckListener): Boolean {
+        fun isAppOnLine(context: Context, internetCheckListener: OnInternetCheckListener): Boolean {
             var isInternetAvailable = false
             if (isNetworkConnected(context)) {
                 isInternetAvailable = true
@@ -241,6 +241,21 @@ class Utility {
                 @Suppress("DEPRECATION")
                 return networkInfo.isConnected
             }
+        }
+
+        fun convertLanguage(mData: String?, app: Nayaganj): String? {
+            val languageValue = app.user.getAppLanguage()
+            return try {
+                mData?.split('$')?.get(languageValue)
+            } catch (e: Exception) {
+                mData.toString()
+            }
+        }
+
+
+        fun showToast(context: Context,message:String){
+            Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+
         }
 
 

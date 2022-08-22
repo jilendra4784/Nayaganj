@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
+import naya.ganj.app.utility.Utility
 
 
 class NewExpandableListAdapter(private var context: Context? = null,
         private var expandableListTitle: List<String>? = null,
-        private var expandableListDetail: HashMap<String, List<String>>? = null) : BaseExpandableListAdapter() {
+        private var expandableListDetail: HashMap<String, List<String>>? = null,val app: Nayaganj
+) : BaseExpandableListAdapter() {
 
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any? {
@@ -35,8 +38,9 @@ class NewExpandableListAdapter(private var context: Context? = null,
             convertView = layoutInflater.inflate(R.layout.list_item, null)
         }
         val expandedListTextView = convertView?.findViewById(R.id.expandedListItem) as TextView
-        val title=expandedListText?.split("$")
-        expandedListTextView.text =title?.get(0) ?: ""
+
+        val childTitle=Utility.convertLanguage(expandedListText,app)
+        expandedListTextView.text = childTitle
 
         return convertView
     }
@@ -68,8 +72,8 @@ class NewExpandableListAdapter(private var context: Context? = null,
         }
         val listTitleTextView = convertView!!.findViewById(R.id.listTitle) as TextView
 
-        val title=listTitle?.split("$")
-        listTitleTextView.text = title?.get(0) ?: ""
+        val title=Utility.convertLanguage(listTitle,app)
+        listTitleTextView.text = title
 
         val indicatorImageView = convertView.findViewById(R.id.iv_arrow_right) as ImageView
         if (isExpanded) {
