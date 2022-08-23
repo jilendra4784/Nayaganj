@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductListAdapter
 import naya.ganj.app.data.category.viewmodel.ProductListViewModel
 import naya.ganj.app.data.mycart.view.MyCartActivity
@@ -80,6 +81,12 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 }
             })
 
+            if(app.user.getAppLanguage()==1){
+                binding.editText.hint=resources.getString(R.string.search_here_h)
+            }else{
+                binding.editText.hint="Search 100+ product"
+            }
+
         } else {
             binding.include7.customToolbar.visibility = View.VISIBLE
             if (app.user.getLoginSession()) {
@@ -87,6 +94,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             } else {
                 getProductList("", "", categoryId)
             }
+
         }
 
         binding.llCartLayout.setOnClickListener {

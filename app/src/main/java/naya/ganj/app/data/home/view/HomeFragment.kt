@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.smarteist.autoimageslider.SliderView
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.category.view.ProductListActivity
 import naya.ganj.app.data.home.adapter.HomeAdapter
 import naya.ganj.app.data.home.adapter.SliderAdapter
@@ -47,6 +48,11 @@ class HomeFragment : Fragment() {
             }))
         getBannerList()
         setStaticData()
+
+        if(app.user.getAppLanguage()==1){
+            binding.searchEdittext.hint=requireActivity().resources.getString(R.string.search_here_h)
+        }
+
         return binding.root
     }
 

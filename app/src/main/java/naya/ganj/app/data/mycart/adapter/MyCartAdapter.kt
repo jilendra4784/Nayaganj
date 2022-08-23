@@ -2,6 +2,7 @@ package naya.ganj.app.data.mycart.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -224,6 +225,9 @@ class MyCartAdapter(
 
         Picasso.get().load(cart.img).into(holder.ivImagview)
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName,app)
+        if(app.user.getAppLanguage()==1){
+            holder.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets,"agrawide.ttf"))
+        }
         holder.tvPrice.text = cart.price.toString()
         holder.tvDiscountPrice.text = cart.actualPrice
         holder.tvUnit.text = cart.variantUnitQuantity.toString() + cart.variantUnit

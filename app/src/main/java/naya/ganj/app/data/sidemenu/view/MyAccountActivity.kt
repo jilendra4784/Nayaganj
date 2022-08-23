@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.mycart.view.AddressListActivity
 import naya.ganj.app.databinding.ActivityMyAccountBinding
 
@@ -21,7 +22,23 @@ class MyAccountActivity : AppCompatActivity() {
 
         app=applicationContext as Nayaganj
         binding.include10.ivBackArrow.setOnClickListener { finish() }
-        binding.include10.toolbarTitle.text = "My Account"
+
+        if(app.user.getAppLanguage()==1){
+            binding.tvMyOrder.text=resources.getString(R.string.myorders_h)
+            binding.tvMyVirtualOrder.text=resources.getString(R.string.my_virtual_order_hindi)
+            binding.tvMyaddress.text=resources.getString(R.string.my_addresses_h)
+            binding.tvWallet.text=resources.getString(R.string.my_wallet_h)
+            binding.tvBeRetailer.text=resources.getString(R.string.be_a_retailer_h)
+            binding.tvShare.text=resources.getString(R.string.share_h)
+            binding.tvCustomerSupport.text=resources.getString(R.string.csupport_h)
+            binding.tvAboutUs.text=resources.getString(R.string.about_us_h)
+            binding.tvLogout.text=resources.getString(R.string.logout_h)
+            binding.include10.toolbarTitle.text = resources.getString(R.string.my_account_h)
+        }else{
+            binding.include10.toolbarTitle.text = "My Account"
+        }
+
+
         binding.cvMyOrder.setOnClickListener { startActivity(Intent(this@MyAccountActivity, MyOrderActivity::class.java)) }
         binding.cvMyVirtualOrder.setOnClickListener{startActivity(Intent(this@MyAccountActivity, MyVirtualActivity::class.java))}
         binding.cvMyaddress.setOnClickListener{startActivity(Intent(this@MyAccountActivity, AddressListActivity::class.java))}

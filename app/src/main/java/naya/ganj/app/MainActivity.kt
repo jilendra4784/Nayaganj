@@ -61,7 +61,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-open class MainActivity : AppCompatActivity() {
+ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var orderID: String? = null
     var notificationsBadge: View? = null
@@ -199,6 +199,31 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun setUIDataForLoginUser() {
+
+        if(app.user.getAppLanguage()==1){
+            binding.include14.textView2.text=resources.getString(R.string.nayaganj_h)
+            // Todo Bottom Menu Title in Hindi
+            binding.navView.menu.findItem(R.id.navigation_home).title=resources.getString(R.string.home_h)
+            binding.navView.menu.findItem(R.id.navigation_dashboard).title=resources.getString(R.string.category_h)
+            binding.navView.menu.findItem(R.id.navigation_search).title=resources.getString(R.string.search_h)
+            binding.navView.menu.findItem(R.id.navigation_notifications).title=resources.getString(R.string.all_offers_h)
+            binding.navView.menu.findItem(R.id.navigation_mycart).title=resources.getString(R.string.my_cart_h)
+
+            // Todo Hide Side Menu Item in Hindi
+            binding.sideNavigation.menu.findItem(R.id.home).title=resources.getString(R.string.home_h)
+            binding.sideNavigation.menu.findItem(R.id.myaccount).title=resources.getString(R.string.my_account_h)
+            binding.sideNavigation.menu.findItem(R.id.shop_category).title=resources.getString(R.string.category_h)
+            binding.sideNavigation.menu.findItem(R.id.my_order).title=resources.getString(R.string.myorders_h)
+            binding.sideNavigation.menu.findItem(R.id.myvirtualorder).title=resources.getString(R.string.my_virtual_order_hindi)
+            binding.sideNavigation.menu.findItem(R.id.all_offer).title=resources.getString(R.string.all_offers_h)
+            binding.sideNavigation.menu.findItem(R.id.share_App).title=resources.getString(R.string.share_h)
+            binding.sideNavigation.menu.findItem(R.id.refer_earn).title=resources.getString(R.string.refer_and_earn_h)
+            binding.sideNavigation.menu.findItem(R.id.customer_support).title=resources.getString(R.string.csupport_h)
+            binding.sideNavigation.menu.findItem(R.id.about_us).title=resources.getString(R.string.about_us_h)
+            binding.sideNavigation.menu.findItem(R.id.privacy_policy).title=resources.getString(R.string.privacy_policy_h)
+            binding.sideNavigation.menu.findItem(R.id.logout).title=resources.getString(R.string.logout_h)
+        }
+
         // Todo Hide Side Menu Item
         binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
@@ -264,11 +289,26 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun showLogoutDialog() {
+        var title: String
+        var message: String
+        var yes: String
+        var no: String
+        if(app.user.getAppLanguage()==1){
+            title=resources.getString(R.string.logout_h)
+            message=resources.getString(R.string.logout_text_h)
+            yes=resources.getString(R.string.yes_h)
+            no=resources.getString(R.string.no_h)
+        }else{
+            title="LOGOUT"
+            message=" Are you sure, you want to logout?"
+            yes="YES"
+            no="CANCEL"
+        }
         MaterialAlertDialogBuilder(this@MainActivity)
-            .setTitle("LOGOUT")
-            .setMessage("Are you sure, you want to logout?")
+            .setTitle(title)
+            .setMessage(message)
             .setPositiveButton(
-                "YES"
+                yes
             ) { dialogInterface, i ->
                 isDrawerIsOpen()
                 app.user.clearSharedPreference()
@@ -279,7 +319,7 @@ open class MainActivity : AppCompatActivity() {
                 finish()
             }
             .setNegativeButton(
-                "CANCEL"
+                no
             ) { dialogInterface, i -> dialogInterface.dismiss() }
             .show()
     }
@@ -317,7 +357,6 @@ open class MainActivity : AppCompatActivity() {
         }
         binding.navView.addView(notificationsBadge)
     }
-
 
     private fun setToolBar() {
 

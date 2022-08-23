@@ -54,10 +54,21 @@
     <string name="enable_gps">Enable Gps</string>
     <string name="required_for_this_app">Required for this app</string>
     <string name="enable_now">Enable Now</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="enter_first_name">Enter First Name</string>
+    <string name="enter_last_name">Enter Last Name</string>
+    <string name="address_detail">Address Detail</string>
+    <string name="house_no">House No.</string>
+    <string name="street_details">Street Details</string>
+    <string name="enter_city">Enter city</string>
+    <string name="pin_code">Pin Code</string>
+    <string name="select_address_type">Select Address Type</string>
+    <string name="area_details">Area Details</string>
 
-    // All Hindi Values in app
 
-    //All Hindi string
+    // All Hindi Value String
+
+    <string name="nayaganj_h">नयागंज</string>
     <string name="home_h">होम</string>
     <string name="myorders_h">मेरा ऑर्डर्स</string>
     <string name="logout_h">लॉगआउट</string>
@@ -68,6 +79,7 @@
     <string name="refer_and_earn_h">रेफेर एंड यॉर्न </string>
     <string name="my_addresses_h">मेरा अदड्रेस्सेस</string>
     <string name="search_here_h">यंहा 100+ सामन खोज करें</string>
+    <string name="search_h">सर्चं</string>
     <string name="my_virtual_order_hindi">मेरा वर्चुअल ऑर्डर्स </string>
     <string name="record_order_h"> रिकॉर्ड ऑर्डर </string>
     <string name="name_h">नाम:</string>
@@ -166,16 +178,10 @@
     <string name="edit_number_h">नंबर बदलें</string>
     <string name="verifyOtp">OTP जांच करें </string>
     <string name="about_us_text_h">NayaGanj भारत का ऑनलाइन मसाला और किराना स्टोर है। प्रत्येक श्रेणी में विकल्पों की एक विस्तृत श्रृंखला में से चुनें, विशेष रूप से सबसे कम कीमतों पर उपलब्ध सर्वोत्तम गुणवत्ता खोजने में आपकी सहायता के लिए चुना गया है। डिलीवरी के लिए एक समय स्लॉट चुनें और आपका ऑर्डर कानपुर, लखनऊ और वाराणसी में कहीं भी आपके दरवाजे पर पहुंचा दिया जाएगा आप अपने डेबिट/क्रेडिट कार्ड का उपयोग करके या डिलीवरी पर नकद द्वारा ऑनलाइन भुगतान कर सकते हैं। हम समय पर डिलीवरी और सर्वोत्तम गुणवत्ता की गारंटी देते हैं।</string>
-    <string name="personal_details">Personal Details</string>
-    <string name="enter_first_name">Enter First Name</string>
-    <string name="enter_last_name">Enter Last Name</string>
-    <string name="address_detail">Address Detail</string>
-    <string name="house_no">House No.</string>
-    <string name="street_details">Street Details</string>
-    <string name="enter_city">Enter city</string>
-    <string name="pin_code">Pin Code</string>
-    <string name="select_address_type">Select Address Type</string>
-    <string name="area_details">Area Details</string>
+    <string name="my_account_h">मेरा अकाउंट</string>
+    <string name="all_offers_h">आल ऑफर</string>
+    <string name="category_h">केटेगरी देखें</string>
+    <string name="privacy_policy_h">प्राइवेसी पालिसी</string>
 
 
 </resources>

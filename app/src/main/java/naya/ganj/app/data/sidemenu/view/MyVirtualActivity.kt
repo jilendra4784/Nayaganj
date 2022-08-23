@@ -8,8 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
+import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.jsibbold.zoomage.ZoomageView
+import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.sidemenu.adapter.VirtualRecyclerviewAdapter
@@ -121,45 +124,20 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
         val factory = LayoutInflater.from(this)
         val deleteDialogView: View = factory.inflate(R.layout.layout_fullscreen, null)
         val ivClose = deleteDialogView.findViewById(R.id.iv_close) as ImageView
-        val zoomableImageView = deleteDialogView.findViewById(R.id.iv_dealer_image) as ImageView
+        val zoomableImageView2 = deleteDialogView.findViewById(R.id.myZoomageView) as ZoomageView
 
-
-        Glide.with(applicationContext).load(data).error(R.drawable.user).into(zoomableImageView)
-        scaleGestureDetector = ScaleGestureDetector(this, ScaleListener(zoomableImageView))
-
+        Picasso.get().load(data).into(zoomableImageView2)
 
         val dialog = AlertDialog.Builder(this).create()
-        val window = dialog.window
-        window!!.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
-        )
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         dialog.setView(deleteDialogView)
-        // clientImage.setOnClickListener { dialog.dismiss() }
         dialog.show()
 
         ivClose.setOnClickListener { dialog.dismiss() }
 
-
     }
 
-    override fun onTouchEvent(motionEvent: MotionEvent?): Boolean {
-        scaleGestureDetector?.onTouchEvent(motionEvent)
-        return true
-    }
 
-    class ScaleListener(val zoomableImageView: ImageView) : SimpleOnScaleGestureListener() {
-        private var mScaleFactor = 1.0f
-        override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-            mScaleFactor *= scaleGestureDetector.scaleFactor
-            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f))
-            zoomableImageView.setScaleX(mScaleFactor)
-            zoomableImageView.setScaleY(mScaleFactor)
-            return true
-        }
-    }
 
 
     private fun playAudioPlayerDialog(data: String) {

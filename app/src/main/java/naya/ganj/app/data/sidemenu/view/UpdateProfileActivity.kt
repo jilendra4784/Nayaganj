@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.mycart.view.OTPVerifyActivity
 import naya.ganj.app.data.sidemenu.repositry.SideMenuDataRepositry
 import naya.ganj.app.data.sidemenu.viewmodel.SideMenuViewModelFactory
@@ -34,10 +35,21 @@ class UpdateProfileActivity : AppCompatActivity(), OnitemClickListener {
         setContentView(binding.root)
 
         app = applicationContext as Nayaganj
+
         viewModel = ViewModelProvider(
             this,
             SideMenuViewModelFactory(SideMenuDataRepositry(RetrofitClient.instance))
         )[UpdateProfileActivityViewModel::class.java]
+
+        if (app.user.getAppLanguage() == 1) {
+            binding.tvStaticName.text = resources.getString(R.string.name_h)
+            binding.tvStaticEmail.text = resources.getString(R.string.email_h)
+            binding.tvStaticNumber.text = resources.getString(R.string.mobile_number_h)
+            binding.tvStaticLang.text = resources.getString(R.string.selected_lan_h)
+            binding.include11.toolbarTitle.text = resources.getString(R.string.update_profile_h)
+        } else {
+            binding.include11.toolbarTitle.text = "Update Profile"
+        }
 
         binding.tvName.text = app.user.getUserDetails()?.name
         binding.tvEmail.text = app.user.getUserDetails()?.emailId
@@ -46,7 +58,7 @@ class UpdateProfileActivity : AppCompatActivity(), OnitemClickListener {
 
 
         binding.include11.ivBackArrow.setOnClickListener { finish() }
-        binding.include11.toolbarTitle.text = "Update Profile"
+
 
         binding.ivNameEdit.setOnClickListener {
             valueIdentifier = 1

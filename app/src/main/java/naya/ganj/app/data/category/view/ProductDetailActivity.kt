@@ -2,6 +2,7 @@ package naya.ganj.app.data.category.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -109,11 +110,12 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
         Picasso.get().load(pModel.imgUrl[0]).into(binding.ivProductImage)
-
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName,app)
         binding.tvDescription.text = Utility.convertLanguage(pModel.description,app)
 
-
+        if(app.user.getAppLanguage()==1){
+            binding.tvProductName.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))
+        }
 
         Thread {
             val isProductExist = AppDataBase.getInstance(this).productDao()
@@ -341,6 +343,10 @@ class ProductDetailActivity : AppCompatActivity() {
         val ivClose = view.findViewById(R.id.ivclose) as ImageView
         title.text = Utility.convertLanguage(productDetailModel.productDetails.productName,app)
         description.text = Utility.convertLanguage(productDetailModel.productDetails.description,app)
+
+        if(app.user.getAppLanguage()==1){
+            title.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))
+        }
 
         materialAlertDialogBuilder.setView(view)
         alertDialog = materialAlertDialogBuilder.create()

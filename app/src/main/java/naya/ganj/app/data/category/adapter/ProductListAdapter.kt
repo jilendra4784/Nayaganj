@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +73,13 @@ class ProductListAdapter(
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
         Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
 
-        holder.binding.tvProductTitle.text = Utility.convertLanguage(product.productName,app)
+        holder.binding.tvProductTitle.text = Utility.convertLanguage(product.productName.trimStart(),app)
         holder.binding.tvProductDetail.text =  Utility.convertLanguage(product.description ,app)
+        if(app.user.getAppLanguage()==1){
+            holder.binding.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets, "agrawide.ttf"))
+        }
+
+
 
         Thread {
             val listOfProduct =
@@ -367,6 +373,7 @@ class ProductListAdapter(
         val ivClose = view.findViewById(R.id.ivclose) as ImageView
 
         title.text = Utility.convertLanguage(product.productName,app)
+        title.setTypeface(Typeface.createFromAsset(context.assets, "agrawide.ttf"))
         description.text = Utility.convertLanguage(product.description,app)
 
         materialAlertDialogBuilder.setView(view)

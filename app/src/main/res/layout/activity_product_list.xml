@@ -43,7 +43,7 @@
                 android:layout_height="@dimen/_30sdp"
                 android:background="@drawable/edittext_round_corner"
                 android:fontFamily="@font/poppins_regular"
-                android:hint="Search 100+ product"
+
                 android:paddingStart="@dimen/_10sdp"
                 android:textSize="@dimen/_10sdp"
                 android:drawableLeft="@drawable/search"
