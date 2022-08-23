@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/_10sdp"
-    android:layout_marginTop="@dimen/_10sdp"
     android:clickable="true"
     android:focusable="true"
+    app:cardUseCompatPadding="true"
+    app:strokeWidth="0dp"
+    app:cardMaxElevation="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
     app:cardElevation="@dimen/_5sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -12,9 +12,9 @@ import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 class PersonalDetailViewModel(val repo: AddressListRespositry) : ViewModel() {
     var mutableLiveData = MutableLiveData<ApiResponseModel>()
 
-    fun updateProfileRequet(jsonObject: JsonObject): LiveData<ApiResponseModel> {
+    fun updateProfileRequet(userId:String?,jsonObject: JsonObject): LiveData<ApiResponseModel> {
         viewModelScope.launch {
-            val result = repo.updateProfileRequest(jsonObject)
+            val result = repo.updateProfileRequest(userId,jsonObject)
             mutableLiveData.value = result.body()
         }
 

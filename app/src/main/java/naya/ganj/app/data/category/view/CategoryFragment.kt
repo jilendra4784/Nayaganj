@@ -78,7 +78,6 @@ class CategoryFragment : Fragment() {
                 val listOfTitle=ArrayList<String>()
                 val listOfDataItems=HashMap<String,List<String>>()
 
-
                 for((i,item) in it.categoryList.withIndex()){
                     listOfTitle.add(item.category)
 
@@ -87,7 +86,6 @@ class CategoryFragment : Fragment() {
                     {
                         listOfChildItem.add(childItem.category)
                     }
-
                     listOfDataItems.put(item.category,listOfChildItem)
                 }
 

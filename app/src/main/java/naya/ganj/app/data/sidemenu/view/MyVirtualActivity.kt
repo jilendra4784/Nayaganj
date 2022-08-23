@@ -25,8 +25,11 @@ import naya.ganj.app.data.sidemenu.repositry.SideMenuDataRepositry
 import naya.ganj.app.data.sidemenu.viewmodel.SideMenuViewModelFactory
 import naya.ganj.app.data.sidemenu.viewmodel.VirtualOrderViewModel
 import naya.ganj.app.databinding.ActivityMyVirtualBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.utility.NetworkResult
+import naya.ganj.app.utility.Utility
 import java.io.IOException
 
 
@@ -69,17 +72,38 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
     override fun onResume() {
         super.onResume()
 
+        if (Utility.isAppOnLine(this@MyVirtualActivity, object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getVirtualOrderData()
+                }
+
+            }))
+            getVirtualOrderData()
+
+
+    }
+
+    private fun getVirtualOrderData() {
         bining.rvVirtualList.layoutManager = LinearLayoutManager(this@MyVirtualActivity)
         bining.rvVirtualList.isNestedScrollingEnabled = false
-        viewModel.getMyVirtualOrderList(app.user.getUserDetails()?.userId)
-            .observe(this@MyVirtualActivity) {
-                if (it != null) {
-                    bining.rvVirtualList.adapter =
-                        VirtualRecyclerviewAdapter(
+        viewModel.getMyVirtualOrderList(this@MyVirtualActivity, app.user.getUserDetails()?.userId)
+            .observe(this@MyVirtualActivity) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
+                        val it = response.data!!
+                        bining.rvVirtualList.adapter =
+                            VirtualRecyclerviewAdapter(
+                                this@MyVirtualActivity,
+                                it.virtualOrdersList,
+                                this@MyVirtualActivity
+                            )
+                    }
+                    is NetworkResult.Error -> {
+                        Utility.serverNotResponding(
                             this@MyVirtualActivity,
-                            it.virtualOrdersList,
-                            this@MyVirtualActivity
+                            response.message.toString()
                         )
+                    }
                 }
             }
     }

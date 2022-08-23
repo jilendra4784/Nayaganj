@@ -195,6 +195,7 @@ open class MainActivity : AppCompatActivity() {
         super.onResume()
 
         setUIDataForLoginUser()
+        setBadgeCount()
     }
 
     private fun setUIDataForLoginUser() {
@@ -286,10 +287,8 @@ open class MainActivity : AppCompatActivity() {
     private fun setBadgeCount() {
         lifecycleScope.launch(Dispatchers.IO) {
             val list: List<ProductDetail> = Utility().getAllProductList(this@MainActivity)
-            if (!list.isEmpty()) {
-                withContext(Dispatchers.Main) {
-                    addBadge(list.size.toString())
-                }
+            withContext(Dispatchers.Main) {
+                addBadge(list.size.toString())
             }
         }
     }

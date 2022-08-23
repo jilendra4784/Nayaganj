@@ -228,7 +228,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_UPDATE_DETAIL_URL)
     suspend fun updateProfileRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>

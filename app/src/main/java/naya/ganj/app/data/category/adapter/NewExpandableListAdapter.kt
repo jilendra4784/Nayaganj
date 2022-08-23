@@ -49,7 +49,7 @@ class NewExpandableListAdapter(private var context: Context? = null,
         return expandableListDetail!![expandableListTitle!![listPosition]]?.size ?: 0
     }
 
-    override fun getGroup(listPosition: Int): Any? {
+    override fun getGroup(listPosition: Int): Any {
         return expandableListTitle!![listPosition]
     }
 

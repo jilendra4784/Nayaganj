@@ -49,7 +49,7 @@ class PaymentOptionActivity : AppCompatActivity() {
         viewmodel = ViewModelProvider(
             this,
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
-        ).get(PaymentOptionsViewModel::class.java)
+        )[PaymentOptionsViewModel::class.java]
 
         intent.extras.let {
             amount = intent.getStringExtra("TOTAL_AMOUNT").toString()
@@ -58,12 +58,10 @@ class PaymentOptionActivity : AppCompatActivity() {
             walletBalance = intent.getStringExtra("WALLET_BALANCE").toString()
             setUI()
         }
-
-
     }
 
     private fun setUI() {
-        binding.tvFinalAmount.text = resources.getString(R.string.Rs) + amount
+        binding.tvFinalAmount.text =   amount
         binding.radioButtonCashOnDelivery.setOnCheckedChangeListener { p0, p1 ->
             if (p1) {
                 binding.radioButtonWallet.isChecked = false
