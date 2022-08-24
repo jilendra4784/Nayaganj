@@ -9,10 +9,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
         android:layout_marginStart="20dp"
-        android:src="@drawable/demo_image"
+        android:src="@drawable/profile_icon_testing"
         app:civ_border_color="@color/purple_700"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +38,7 @@
             android:gravity="center"
             android:text="Jilendra Singh"
             android:textStyle="bold"
-            android:textSize="@dimen/_18sdp"
+            android:textSize="@dimen/_16sdp"
             tools:layout_editor_absoluteX="124dp"
             tools:layout_editor_absoluteY="6dp" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:text="9910494784"
-            android:textSize="@dimen/_15sdp"
+            android:textSize="@dimen/_14sdp"
             android:textColor="#565656"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="223dp"
@@ -73,7 +73,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="Login/SignUp"
-            android:textSize="@dimen/_18sdp"
+            android:textSize="@dimen/_16sdp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="124dp"
             tools:layout_editor_absoluteY="6dp" />

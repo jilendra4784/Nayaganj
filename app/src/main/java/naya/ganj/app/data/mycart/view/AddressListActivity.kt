@@ -39,7 +39,13 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         app = applicationContext as Nayaganj
 
         binding.include.ivBackArrow.setOnClickListener { finish() }
-        binding.include.toolbarTitle.text = "Address List"
+
+        if(app.user.getAppLanguage()==1){
+            binding.include.toolbarTitle.text = resources.getString(R.string.address_list_h)
+        }else{
+            binding.include.toolbarTitle.text = "Address List"
+        }
+
 
         if (intent.extras != null) {
             addressId = intent.getStringExtra("ADDRESS_ID").toString()

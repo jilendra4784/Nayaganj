@@ -70,11 +70,13 @@ class AddAddressActivity : AppCompatActivity() {
             addressType = intent.getStringExtra("nickName").toString()
 
         } else {
-            binding.include2.toolbarTitle.text = "Add New Address"
+
             if(app.user.getAppLanguage()==1){
                 binding.btnAddAddress.text =resources.getString(R.string.add_address_h)
+                binding.include2.toolbarTitle.text = resources.getString(R.string.add_new_address_h)
             }else{
                 binding.btnAddAddress.text = "Add Address"
+                binding.include2.toolbarTitle.text = "Add New Address"
             }
         }
 

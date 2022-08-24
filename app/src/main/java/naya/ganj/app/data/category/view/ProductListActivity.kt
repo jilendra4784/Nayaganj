@@ -44,11 +44,16 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         binding = ActivityProductListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this).get(ProductListViewModel::class.java)
+        viewModel = ViewModelProvider(this)[ProductListViewModel::class.java]
         app = applicationContext as Nayaganj
 
         binding.include7.ivBackArrow.setOnClickListener { finish() }
-        binding.include7.toolbarTitle.setText("Product List")
+        if(app.user.getAppLanguage()==1){
+            binding.include7.toolbarTitle.text =resources.getString(R.string.product_list_h)
+        }else{
+            binding.include7.toolbarTitle.text = "Product List"
+        }
+
         val categoryId = intent.getStringExtra(Constant.CATEGORY_ID)
 
         if (categoryId == null || categoryId.equals("")) {

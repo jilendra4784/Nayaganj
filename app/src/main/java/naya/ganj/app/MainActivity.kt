@@ -129,7 +129,7 @@ import java.util.*
 
                 }
                 R.id.myaccount -> {
-                    startActivity(Intent(this@MainActivity,MyAccountActivity::class.java))
+                    startActivity(Intent(this@MainActivity, MyAccountActivity::class.java))
                 }
 
                 R.id.shop_category -> {
@@ -150,11 +150,13 @@ import java.util.*
                     showMessage(item.title.toString())
                 }
                 R.id.share_App -> {
-                     val sendIntent = Intent()
-                     sendIntent.action = Intent.ACTION_SEND
-                     sendIntent.putExtra(Intent.EXTRA_TEXT,
-                         "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
-                     sendIntent.type = "text/plain"
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
+                    )
+                    sendIntent.type = "text/plain"
                     startActivity(sendIntent)
                 }
                 R.id.refer_earn -> {
@@ -187,7 +189,6 @@ import java.util.*
                 )
             }
         }
-
 
     }
 
@@ -631,7 +632,7 @@ import java.util.*
         if (it) {
             val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
             val selectedImage = BitmapFactory.decodeStream(imageStream)
-            val converetdImage = selectedImage?.let { getResizedBitmap(it, 500) }
+            val converetdImage = selectedImage?.let { getResizedBitmap(it, 600) }
             val baos1 = ByteArrayOutputStream()
             converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
             val imageByteArray2 = baos1.toByteArray()

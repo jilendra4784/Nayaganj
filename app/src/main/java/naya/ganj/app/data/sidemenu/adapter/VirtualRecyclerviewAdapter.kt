@@ -56,41 +56,21 @@ class VirtualRecyclerviewAdapter(
         try {
             if (orderStatus[0] == "Pending") {
                 holder.binding.tvStatus.text = orderStatus[0]
-                holder.binding.tvStatus.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.white
-                    )
-                )
+                holder.binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
                 holder.binding.tvStatus.setBackgroundColor(Color.parseColor(orderStatus[1]))
 
             } else if (orderStatus[0].equals("Failed") || orderStatus[0].equals("Cancelled")) {
                 holder.binding.tvStatus.text = orderStatus[0]
-                holder.binding.tvStatus.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.white
-                    )
-                )
+                holder.binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
                 holder.binding.tvStatus.setBackgroundColor(Color.parseColor(orderStatus[1]))
             } else if (orderStatus[0].equals("Delivered")) {
                 holder.binding.tvStatus.text = orderStatus[0]
-                holder.binding.tvStatus.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.white
-                    )
-                )
+                holder.binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
                 holder.binding.tvStatus.setBackgroundColor(Color.parseColor(orderStatus[1]))
 
             } else {
                 holder.binding.tvStatus.text = orderStatus[0]
-                holder.binding.tvStatus.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.white
-                    )
-                )
+                holder.binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.white))
                 holder.binding.tvStatus.setBackgroundColor(Color.parseColor(orderStatus[1]))
             }
         } catch (e: Exception) {

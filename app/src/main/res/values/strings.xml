@@ -91,11 +91,12 @@
     <string name="add_h">जोड़ें</string>
     <string name="net_weight_h">नेट वेट:</string>
     <string name="product_details_h">प्रोडक्ट डिटेल्स</string>
+    <string name="product_list_h">प्रोडक्ट लिस्ट</string>
     <string name="my_cart_h">मेरा कार्ट</string>
     <string name="delivery_address_h">डिलीवरी एड्रेस </string>
     <string name="change_h">चेंज</string>
     <string name="payment_options_h">पेमेंट ऑप्शन्स </string>
-    <string name="add_new_address_h"> ऐड न्यू एड्रेस </string>
+    <string name="add_new_address_h"> एक नया एड्रेस जोड़े </string>
     <string name="re_order_h">री-आर्डर </string>
     <string name="empty_cart_h">आपका कार्ट खाली हैं !</string>
     <string name="add_new_address_h2"> ऐड न्यू एड्रेस</string>
@@ -131,6 +132,7 @@
     <string name="no_h">नहीं</string>
     <string name="personal_details_h">पर्सनल डिटेल्स </string>
     <string name="address_details_h">एड्रेस डिटेल्स </string>
+    <string name="address_list_h">एड्रेस लिस्ट </string>
     <string name="total_amount_h1">कुल राशि:</string>
     <string name="total_amount_h">कुल राशि:</string>
 

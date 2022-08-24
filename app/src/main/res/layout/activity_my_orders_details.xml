@@ -11,9 +11,12 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
         app:cardCornerRadius="@dimen/_10sdp"
+        android:layout_margin="@dimen/_5sdp"
+        app:cardElevation="@dimen/_5sdp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/includeLayout"
@@ -21,7 +24,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="@dimen/_10sdp">
 
             <com.google.android.material.textview.MaterialTextView
@@ -29,32 +32,32 @@
                 style="@style/TitleStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/btn_change_Address"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:text="Delvery Addrress" />
 
             <TextView
                 android:id="@+id/tv_address_detail"
                 style="@style/NormalStyle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_address"
                 android:layout_alignEnd="@+id/tv_address"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="9dp"
-                android:layout_marginEnd="16dp"
-                />
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:text="njjjbbjbjhbjhbjhbhhbjhbjhbjhbjhbjhbjhbjhbjhbhbjhbjhbjvfdvfrvrvrvrvrvrh" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_reorder"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="1dp"
                 android:backgroundTint="@color/red_color"
                 android:text="Reorder"
-                android:textSize="@dimen/_10sdp"
+                android:textSize="@dimen/_12sdp"
                 android:visibility="visible"
                 app:cornerRadius="@dimen/_5sdp" />
 
@@ -70,6 +73,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
+        app:strokeWidth="0dp"
+        app:cardElevation="@dimen/_5sdp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView">
@@ -209,8 +215,10 @@
         android:id="@+id/cv_item_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
         app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/_5sdp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_order_detail">
@@ -255,7 +263,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:text="TextView"
                 android:gravity="center"
-                android:paddingEnd="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_7sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_amount" />
 
@@ -294,8 +302,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_item_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="0dp"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_item_count" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

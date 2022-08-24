@@ -2,15 +2,14 @@ package naya.ganj.app.data.sidemenu.view
 
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
-import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.jsibbold.zoomage.ZoomageView
 import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
@@ -50,8 +48,6 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
     var total: TextView? = null
     private lateinit var handler: Handler
 
-    private var scaleGestureDetector: ScaleGestureDetector? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +59,12 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
         mediaPlayer = MediaPlayer()
 
         bining.include12.ivBackArrow.setOnClickListener { finish() }
-        bining.include12.toolbarTitle.text = "My Virtual Orders"
+
+        if(app.user.getAppLanguage()==1){
+            bining.include12.toolbarTitle.text=resources.getString(R.string.my_virtual_order_hindi)
+        }else{
+            bining.include12.toolbarTitle.text = "My Virtual Orders"
+        }
 
         viewModel = ViewModelProvider(
             this,
@@ -121,23 +122,27 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
 
     private fun showFullscreenImage(data: String) {
 
-        val factory = LayoutInflater.from(this)
-        val deleteDialogView: View = factory.inflate(R.layout.layout_fullscreen, null)
-        val ivClose = deleteDialogView.findViewById(R.id.iv_close) as ImageView
-        val zoomableImageView2 = deleteDialogView.findViewById(R.id.myZoomageView) as ZoomageView
+        var alertDialog : AlertDialog?=null
+        val displayRectangle = Rect()
+        val window: Window = this@MyVirtualActivity.getWindow()
+        window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+        val builder = AlertDialog.Builder(this@MyVirtualActivity)
+        val viewGroup = findViewById<ViewGroup>(android.R.id.content)
+        val dialogView: View =
+            LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_fullscreen, viewGroup, false)
 
-        Picasso.get().load(data).into(zoomableImageView2)
+        dialogView.minimumWidth = (displayRectangle.width() * 1f).toInt()
+        dialogView.minimumHeight = (displayRectangle.height() * 1f).toInt()
+        val zoomableImageView2 = dialogView.findViewById(R.id.myZoomageView) as ZoomageView
 
-        val dialog = AlertDialog.Builder(this).create()
+        Picasso.get().load(data).resize(500,1200).into(zoomableImageView2)
+        val ivClose = dialogView.findViewById(R.id.iv_close) as ImageView
+        ivClose.setOnClickListener { alertDialog?.dismiss() }
 
-        dialog.setView(deleteDialogView)
-        dialog.show()
-
-        ivClose.setOnClickListener { dialog.dismiss() }
-
+        builder.setView(dialogView)
+         alertDialog = builder.create()
+        alertDialog.show()
     }
-
-
 
 
     private fun playAudioPlayerDialog(data: String) {

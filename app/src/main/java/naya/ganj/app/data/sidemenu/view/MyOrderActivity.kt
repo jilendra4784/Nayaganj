@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.sidemenu.adapter.MyOrderListAdapter
 import naya.ganj.app.data.sidemenu.repositry.SideMenuDataRepositry
 import naya.ganj.app.data.sidemenu.viewmodel.MyOrderViewModel
@@ -29,7 +30,12 @@ class MyOrderActivity : AppCompatActivity() {
         )[MyOrderViewModel::class.java]
 
         binding.include4.ivBackArrow.setOnClickListener { finish() }
-        binding.include4.toolbarTitle.text = "My Order List"
+        if(app.user.getAppLanguage()==1){
+            binding.include4.toolbarTitle.text=resources.getString(R.string.myorders_h)
+        }else{
+            binding.include4.toolbarTitle.text = "My Order List"
+        }
+
         getMyOrderList()
     }
 

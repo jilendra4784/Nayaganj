@@ -302,13 +302,13 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_change_Address"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_height="@dimen/_35sdp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="1dp"
                         android:backgroundTint="@color/red_color"
                         android:text="Change"
-                        android:textSize="@dimen/_10sdp"
+                        android:textSize="@dimen/_12sdp"
                         android:visibility="visible"
                         app:cornerRadius="@dimen/_5sdp" />
 

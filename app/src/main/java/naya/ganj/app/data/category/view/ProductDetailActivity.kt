@@ -3,6 +3,7 @@ package naya.ganj.app.data.category.view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
@@ -56,10 +58,13 @@ class ProductDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         app = application as Nayaganj
-
         binding.include.ivBackArrow.setOnClickListener { finish() }
-        binding.include.toolbarTitle.text = "Product Detail"
-
+        if(app.user.getAppLanguage()==1){
+            binding.include.toolbarTitle.text =resources.getString(R.string.product_details_h)
+        }else
+        {
+            binding.include.toolbarTitle.text = "Product Detail"
+        }
 
         viewModel = ViewModelProvider(this)[ProductDetailViewModel::class.java]
         if (intent.extras != null) {
@@ -98,6 +103,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
 
     private fun getProductData(productId: String) {
+        binding.progressBar.visibility=View.VISIBLE
+
         val jsonObject = JsonObject()
         jsonObject.addProperty(PRODUCT_ID, productId)
 
@@ -109,7 +116,10 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
-        Picasso.get().load(pModel.imgUrl[0]).into(binding.ivProductImage)
+        binding.progressBar.visibility=View.GONE
+        binding.rootLayout.visibility=View.VISIBLE
+        Glide.with(this@ProductDetailActivity).load(pModel.imgUrl[0]).into(binding.ivProductImage)
+
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName,app)
         binding.tvDescription.text = Utility.convertLanguage(pModel.description,app)
 

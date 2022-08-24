@@ -20,6 +20,8 @@ import naya.ganj.app.utility.Constant
 import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.mycart.view.MyCartActivity
+import naya.ganj.app.interfaces.OnInternetCheckListener
+import naya.ganj.app.utility.Utility
 
 class MyOrdersDetailsActivity : AppCompatActivity() {
     lateinit var viewModel: OrderDetailViewModel
@@ -33,7 +35,13 @@ class MyOrdersDetailsActivity : AppCompatActivity() {
         app=applicationContext as Nayaganj
 
         binding.includeLayout.ivBackArrow.setOnClickListener { finish() }
-        binding.includeLayout.toolbarTitle.text = "Order Details"
+        if(app.user.getAppLanguage()==1){
+            binding.includeLayout.toolbarTitle.text=resources.getString(R.string.order_details_h)
+            binding.tvAddress.text=resources.getString(R.string.address_details_h)
+            binding.btnReorder.text=resources.getString(R.string.re_order_h)
+        }else{
+            binding.includeLayout.toolbarTitle.text = "Order Details"
+        }
 
         viewModel = ViewModelProvider(
             this,
@@ -46,6 +54,11 @@ class MyOrdersDetailsActivity : AppCompatActivity() {
             val orderStatus = intent.getStringExtra(Constant.orderStatus)
             val totalItems = intent.getStringExtra(Constant.totalItems)
 
+            if(Utility.isAppOnLine(this@MyOrdersDetailsActivity,object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        getMyOrderDetailRequest(orderId, totalItems)
+                    }
+                }))
             getMyOrderDetailRequest(orderId, totalItems)
         }
     }
@@ -127,7 +140,8 @@ class MyOrdersDetailsActivity : AppCompatActivity() {
                     }
                     // Set List Data
                     binding.rvItemList.layoutManager = LinearLayoutManager(this@MyOrdersDetailsActivity)
-                    binding.rvItemList.adapter = ProductDetailListAdapter(it.orderDetails.products)
+                    binding.rvItemList.adapter = ProductDetailListAdapter(this@MyOrdersDetailsActivity
+                            ,it.orderDetails.products,app)
 
                 }
             }
