@@ -3,13 +3,12 @@ package naya.ganj.app.data.category.view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import naya.ganj.app.Nayaganj
@@ -58,7 +56,7 @@ class ProductDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         app = application as Nayaganj
-        binding.include.ivBackArrow.setOnClickListener { finish() }
+        binding.include.ivBackArrow.setOnClickListener {finish() }
         if(app.user.getAppLanguage()==1){
             binding.include.toolbarTitle.text =resources.getString(R.string.product_details_h)
         }else
@@ -103,7 +101,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
 
     private fun getProductData(productId: String) {
-        binding.progressBar.visibility=View.VISIBLE
+        binding.progressBar.visibility=View.GONE
 
         val jsonObject = JsonObject()
         jsonObject.addProperty(PRODUCT_ID, productId)
@@ -596,5 +594,15 @@ class ProductDetailActivity : AppCompatActivity() {
             binding.llMinusPlusLayout.visibility = View.GONE
             binding.addButton.visibility = View.VISIBLE
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

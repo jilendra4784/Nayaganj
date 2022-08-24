@@ -9,9 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.util.Pair
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.ActivityCompat
+
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -36,6 +42,7 @@ import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class ProductListAdapter(
     val activity: Activity,
@@ -78,9 +85,6 @@ class ProductListAdapter(
         if(app.user.getAppLanguage()==1){
             holder.binding.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets, "agrawide.ttf"))
         }
-
-
-
         Thread {
             val listOfProduct =
                 AppDataBase.getInstance(context).productDao().getProductListByProductId(product.id)
@@ -141,10 +145,21 @@ class ProductListAdapter(
                     variantID = item.vId
                 }
             }
+
             val intent = Intent(context, ProductDetailActivity::class.java)
             intent.putExtra(PRODUCT_ID, product.id)
             intent.putExtra(VARIANT_ID, variantID)
-            context.startActivity(intent)
+
+            val pair1 = Pair.create<View, String>(holder.binding.ivImagview, "product_image")
+            val pair2 = Pair.create<View, String>(holder.binding.tvProductTitle, "product_name")
+            val pair3 = Pair.create<View, String>(holder.binding.tvProductDetail, "product_detail")
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair1, pair2,pair3)
+            ActivityCompat.startActivity(activity, intent, options.toBundle())
+
+            /*val intent = Intent(context, ProductDetailActivity::class.java)
+            intent.putExtra(PRODUCT_ID, product.id)
+            intent.putExtra(VARIANT_ID, variantID)
+            context.startActivity(intent)*/
 
         }
 

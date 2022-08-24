@@ -227,7 +227,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onResume() {
         super.onResume()
-        adapter?.notifyDataSetChanged()
+        //adapter?.notifyDataSetChanged()
 
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
