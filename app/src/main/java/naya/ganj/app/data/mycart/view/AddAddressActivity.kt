@@ -85,7 +85,9 @@ class AddAddressActivity : AppCompatActivity() {
             MyViewModelFactory(AddressListRespositry(RetrofitClient.instance))
         ).get(AddAddressViewModel::class.java)
 
-        binding.include2.ivBackArrow.setOnClickListener { finish() }
+        binding.include2.ivBackArrow.setOnClickListener { finish()
+            overridePendingTransition(R.anim.slide_in_left,
+                R.anim.slide_out_right)}
         
         val addressList =
             listOf("Home(7 AM - 9 PM delivery)", "Office/Commercial(10 AM - 6 PM delivery)")
@@ -198,5 +200,11 @@ class AddAddressActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left,
+            R.anim.slide_out_right);
     }
 }

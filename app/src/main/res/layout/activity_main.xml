@@ -51,7 +51,7 @@
         app:itemTextAppearance="@style/TextAppearance.Material3.BodyLarge"
         app:headerLayout="@layout/header_layout"
         app:menu="@menu/navigation_menu"
-        app:itemIconTint="@color/purple_700"/>
+        app:itemIconTint="@color/purple_500"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

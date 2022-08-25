@@ -38,7 +38,9 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         setContentView(binding.root)
         app = applicationContext as Nayaganj
 
-        binding.include.ivBackArrow.setOnClickListener { finish() }
+        binding.include.ivBackArrow.setOnClickListener { finish()
+            overridePendingTransition(R.anim.slide_in_left,
+                R.anim.slide_out_right);}
 
         if(app.user.getAppLanguage()==1){
             binding.include.toolbarTitle.text = resources.getString(R.string.address_list_h)
@@ -62,6 +64,8 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
 
         binding.btnAddAddress.setOnClickListener {
             startActivity(Intent(this, AddAddressActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         }
     }
 
@@ -110,5 +114,11 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
                 binding.rvAddressList.adapter = addresListAdapter
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left,
+            R.anim.slide_out_right);
     }
 }

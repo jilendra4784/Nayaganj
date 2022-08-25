@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -202,7 +203,8 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener {
 
     override fun onClickAddOrRemoveItem(
         action: String,
-        productDetail: ProductDetail
+        productDetail: ProductDetail,
+        textview:TextView
     ) {
         /* Utility().addRemoveItem(action, productId, variantId, promoCode)
          if (totalAmount > 0) {

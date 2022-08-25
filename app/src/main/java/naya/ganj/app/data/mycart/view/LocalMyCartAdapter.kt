@@ -95,7 +95,7 @@ class LocalMyCartAdapter(
                 AppDataBase.getInstance(context).productDao()
                     .updateProduct(itemQuantity, productDetail.productId, productDetail.variantId)
             }.start()
-            listener.onClickAddOrRemoveItem("", productDetail)
+            listener.onClickAddOrRemoveItem("", productDetail,holder.binding.tvPlus)
 
         }
         holder.binding.tvMinus.setOnClickListener {
@@ -115,7 +115,7 @@ class LocalMyCartAdapter(
                     AppDataBase.getInstance(context).productDao()
                         .deleteSavedAmount(productDetail.productId, productDetail.variantId.toInt())
                 }.start()
-                listener.onClickAddOrRemoveItem("LOCAL_CART", productDetail)
+                listener.onClickAddOrRemoveItem("LOCAL_CART", productDetail,holder.binding.tvMinus)
                 return@setOnClickListener
             }
 
@@ -143,7 +143,7 @@ class LocalMyCartAdapter(
                     .updateProduct(itemQuantity, productDetail.productId, productDetail.variantId)
             }.start()
 
-            listener.onClickAddOrRemoveItem("", productDetail)
+            listener.onClickAddOrRemoveItem("", productDetail,holder.binding.tvMinus)
         }
         holder.binding.ivDelete.setOnClickListener {
             itemDeleteDialog(holder, productDetail)
@@ -210,7 +210,7 @@ class LocalMyCartAdapter(
                         0,
                         "",
                         0
-                    )
+                    ),holder.binding.tvMinus
                 )
             }
             .setNegativeButton(

@@ -17,11 +17,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
@@ -29,6 +29,7 @@ import naya.ganj.app.data.category.model.CheckProductInCartModel
 import naya.ganj.app.data.category.model.ProductListModel
 import naya.ganj.app.data.category.view.ProductDetailActivity
 import naya.ganj.app.databinding.ProductListLayoutBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
@@ -128,7 +129,7 @@ class ProductListAdapter(
                         0,
                         "",
                         0
-                    )
+                    ),holder.binding.tvMinus
                 )
             }
         }.start()
@@ -153,24 +154,23 @@ class ProductListAdapter(
             val pair1 = Pair.create<View, String>(holder.binding.ivImagview, "product_image")
             val pair2 = Pair.create<View, String>(holder.binding.tvProductTitle, "product_name")
             val pair3 = Pair.create<View, String>(holder.binding.tvProductDetail, "product_detail")
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair1, pair2,pair3)
-            ActivityCompat.startActivity(activity, intent, options.toBundle())
+            val pair4 = Pair.create<View, String>(holder.binding.tvOff, "product_off")
 
-            /*val intent = Intent(context, ProductDetailActivity::class.java)
-            intent.putExtra(PRODUCT_ID, product.id)
-            intent.putExtra(VARIANT_ID, variantID)
-            context.startActivity(intent)*/
+            val pair5 = Pair.create<View, String>(holder.binding.llProductUnit, "product_unit")
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair1, pair2,pair3,pair4,pair5)
+            ActivityCompat.startActivity(activity, intent, options.toBundle())
+            activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         }
 
         holder.binding.addItem.setOnClickListener {
-            updateItemToLocalDB("add", holder, product)
+            updateItemToLocalDB("add", holder, product,holder.binding.addItem)
         }
         holder.binding.tvPlus.setOnClickListener {
-            updateItemToLocalDB("plus", holder, product)
+            updateItemToLocalDB("plus", holder, product,holder.binding.tvPlus)
         }
         holder.binding.tvMinus.setOnClickListener {
-            updateItemToLocalDB("minus", holder, product)
+            updateItemToLocalDB("minus", holder, product,holder.binding.tvMinus)
         }
     }
 
@@ -443,7 +443,8 @@ class ProductListAdapter(
     private fun updateItemToLocalDB(
         action: String,
         holder: MyViewHolder,
-        product: ProductListModel.Product
+        product: ProductListModel.Product,
+        textview: MaterialTextView
     ) {
         var variantID = ""
         var vPrice = 0.0
@@ -466,61 +467,81 @@ class ProductListAdapter(
 
         when (action) {
             "add" -> {
-                holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
-                holder.binding.addItem.visibility = View.GONE
-                holder.binding.tvQuantity.text = "1"
-                val quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-                holder.binding.tvQuantity.text = quantity.toString()
-                // Refresh Cart List
-                onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
-                    Constant.INSERT, ProductDetail(
-                        product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
-                        vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
+                if(Utility.isAppOnLine(context,object :OnInternetCheckListener{
+                        override fun onInternetAvailable() {
+
+                        }
+                    })){
+                    holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
+                    holder.binding.addItem.visibility = View.GONE
+                    holder.binding.tvQuantity.text = "1"
+                    val quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                    holder.binding.tvQuantity.text = quantity.toString()
+                    // Refresh Cart List
+                    onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
+                        Constant.INSERT, ProductDetail(
+                            product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
+                            vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
+                        ),textview
                     )
-                )
+                }
             }
             "plus" -> {
-                var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-                quantity++
-                holder.binding.tvQuantity.text = quantity.toString()
-                onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
-                    Constant.ADD, ProductDetail(
-                        product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
-                        vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
+
+                if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+                        override fun onInternetAvailable() {
+
+                        }
+                    })){
+                    var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                    quantity++
+                    holder.binding.tvQuantity.text = quantity.toString()
+                    onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
+                        Constant.ADD, ProductDetail(
+                            product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
+                            vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
+                        ),textview
                     )
-                )
+                }
             }
             "minus" -> {
-                var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-                quantity--
 
-                if (quantity == 0) {
-                    holder.binding.llPlusMinusLayout.visibility = View.GONE
-                    holder.binding.addItem.visibility = View.VISIBLE
+                if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+                        override fun onInternetAvailable() {
 
+                        }
+                    })){
+                    var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                    quantity--
+
+                    if (quantity == 0) {
+                        holder.binding.llPlusMinusLayout.visibility = View.GONE
+                        holder.binding.addItem.visibility = View.VISIBLE
+
+                        onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
+                            Constant.REMOVE, ProductDetail(
+                                product.id,
+                                variantID,
+                                quantity,
+                                product.productName,
+                                product.imgUrl.get(0),
+                                vPrice,
+                                vDiscount,
+                                vUnitQuantity,
+                                vUnit,
+                                totalMaxQuantity
+                            ),textview
+                        )
+                        return
+                    }
+                    holder.binding.tvQuantity.text = quantity.toString()
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.REMOVE, ProductDetail(
-                            product.id,
-                            variantID,
-                            quantity,
-                            product.productName,
-                            product.imgUrl.get(0),
-                            vPrice,
-                            vDiscount,
-                            vUnitQuantity,
-                            vUnit,
-                            totalMaxQuantity
-                        )
+                            product.id, variantID, quantity, product.productName, product.imgUrl[0],
+                            vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
+                        ),textview
                     )
-                    return
                 }
-                holder.binding.tvQuantity.text = quantity.toString()
-                onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
-                    Constant.REMOVE, ProductDetail(
-                        product.id, variantID, quantity, product.productName, product.imgUrl[0],
-                        vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
-                    )
-                )
             }
         }
     }

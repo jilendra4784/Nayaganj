@@ -160,7 +160,7 @@ class ProductDetailActivity : AppCompatActivity() {
                         if (pModel.variant[i].vId == variantId) {
                             val price = item.vPrice
                             val vDiscountPrice: Double =
-                                (price - ((price * item.vDiscount) / 100)).toDouble()
+                                (price - ((price * item.vDiscount) / 100))
                             binding.tvPrice.text =
                                 resources.getString(R.string.Rs) + price.toString()
                             binding.tvDiscountPrice.text =
@@ -604,5 +604,10 @@ class ProductDetailActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }

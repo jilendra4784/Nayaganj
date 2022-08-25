@@ -202,7 +202,7 @@ class Utility {
             }
         }
 
-        private fun isNetworkConnected(context: Context): Boolean {
+        fun isNetworkConnected(context: Context): Boolean {
 
             // register activity with the connectivity manager service
             val connectivityManager =

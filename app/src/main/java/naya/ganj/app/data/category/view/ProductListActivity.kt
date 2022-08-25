@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,16 +21,21 @@ import kotlinx.coroutines.launch
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductListAdapter
+import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.category.viewmodel.ProductListViewModel
 import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.databinding.ActivityProductListBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
+import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.isListActivity
 import naya.ganj.app.utility.Utility
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
@@ -107,6 +113,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             intent.putExtra("ORDER_ID", "")
             intent.putExtra(isListActivity, true)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
 
         binding.arrowIcon.setOnClickListener {
@@ -133,7 +140,8 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onClickAddOrRemoveItem(
         action: String,
-        productDetail: ProductDetail
+        productDetail: ProductDetail,
+        addremoveText:TextView
     ) {
         when (action) {
             Constant.INSERT -> {
@@ -151,54 +159,105 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 }
             }
             Constant.ADD -> {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().updateProduct(
-                        this@ProductListActivity,
-                        productDetail.productId,
-                        productDetail.variantId,
-                        productDetail.itemQuantity
-                    )
-                }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        Constant.ADD,
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
-                    )
-                }
+                if(app.user.getLoginSession()){
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
+                    jsonObject.addProperty(Constant.ACTION, action)
+                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
 
+                    RetrofitClient.instance.addremoveItemRequest(
+                        app.user.getUserDetails()?.userId,
+                        Constant.DEVICE_TYPE,
+                        jsonObject
+                    )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status)
+                                        addremoveText.isEnabled=true
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                    }
+                                }else{
+                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                            }
+                        })
+                }else{
+                    addremoveText.isEnabled=true
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                    }
+                }
             }
             Constant.REMOVE -> {
-                if (productDetail.itemQuantity > 0) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().updateProduct(
-                            this@ProductListActivity,
-                            productDetail.productId,
-                            productDetail.variantId,
-                            productDetail.itemQuantity
-                        )
-                    }
-                } else {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().deleteProduct(
-                            this@ProductListActivity,
-                            productDetail.productId,
-                            productDetail.variantId
-                        )
-                    }
-                }
-
-
                 if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
+                    jsonObject.addProperty(Constant.ACTION, action)
+                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
+
+                    RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
-                        "remove",
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
+                        Constant.DEVICE_TYPE,
+                        jsonObject
                     )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status)
+                                        addremoveText.isEnabled=true
+                                    if(productDetail.itemQuantity>0){
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                        }
+                                    }else{
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@ProductListActivity).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
+                                        }
+                                    }
+
+                                }else{
+                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                            }
+                        })
+                }else{
+                    addremoveText.isEnabled=true
+                    if (productDetail.itemQuantity > 0) {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            Utility().updateProduct(
+                                this@ProductListActivity,
+                                productDetail.productId,
+                                productDetail.variantId,
+                                productDetail.itemQuantity
+                            )
+                        }
+                    } else {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            Utility().deleteProduct(
+                                this@ProductListActivity,
+                                productDetail.productId,
+                                productDetail.variantId
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -227,7 +286,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onResume() {
         super.onResume()
-        //adapter?.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
 
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))

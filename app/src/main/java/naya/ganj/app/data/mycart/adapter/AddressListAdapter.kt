@@ -38,7 +38,7 @@ class AddressListAdapter(
         holder.binding.tvTitle.text = m.address.firstName + " " + m.address.lastName
         holder.binding.tvDescription.text = m.address.nickName
         holder.binding.tvAddress.text =
-            m.address.houseNo + m.address.apartName + m.address.street + m.address.city + m.address.pincode
+            m.address.houseNo + "," + m.address.apartName + "," + m.address.street + "," + m.address.city + "-" + m.address.pincode
         holder.binding.tvMobile.text = m.address.contactNumber
 
         holder.binding.radioButton2.isChecked = ADDRESS_RADIO_SELECTION==position

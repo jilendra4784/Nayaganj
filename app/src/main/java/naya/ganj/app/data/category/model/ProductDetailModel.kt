@@ -47,7 +47,7 @@ data class ProductDetailModel(
             @SerializedName("vId")
             val vId: String,
             @SerializedName("vPrice")
-            val vPrice: Int,
+            val vPrice: Double,
             @SerializedName("vQuantity")
             val vQuantity: Int,
             @SerializedName("vQuantityInCart")

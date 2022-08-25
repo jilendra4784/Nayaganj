@@ -16,6 +16,7 @@ import naya.ganj.app.R
 import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.databinding.MycartAdapterLayoutBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
@@ -71,83 +72,21 @@ class MyCartAdapter(
         }
 
         holder.binding.tvPlus.setOnClickListener {
-            var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-            quantity++
+            holder.binding.tvPlus.isEnabled=false
+            if(Utility.isAppOnLine(context,object:OnInternetCheckListener{
+                    override fun onInternetAvailable() {
 
-            holder.binding.tvQuantity.text = quantity.toString()
-            val priceAmount = (cart.price / cart.quantity) * quantity
-            val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
+                    }
+                })){
+                var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                quantity++
 
-            holder.binding.tvPrice.text =
-                Utility().formatTotalAmount(priceAmount.toDouble()).toString()
-            holder.binding.tvDiscountPrice.text =
-                Utility().formatTotalAmount(discountAmount).toString()
-            val itemSavedAmount = (priceAmount - discountAmount)
-
-            if(app.user.getAppLanguage()==1){
-                holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
-            }else{
-                holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
-            }
-
-            Thread {
-                AppDataBase.getInstance(context).productDao()
-                    .updateSavedAmount(cart.productId, cart.variantId.toInt(), itemSavedAmount)
-            }.start()
-
-            addOremoveItemListener.onClickAddOrRemoveItem(
-                Constant.ADD,
-                ProductDetail(cart.productId, cart.variantId, quantity, "", "", 0.0, 0, 0, "", 0)
-            )
-
-            if (app.user.getLoginSession()) {
-                Thread {
-                    AppDataBase.getInstance(context).productDao()
-                        .updateCart(cart.productId, cart.variantId, discountAmount)
-                }.start()
-            }
-        }
-        holder.binding.tvMinus.setOnClickListener {
-            var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-            quantity--
-
-            if (quantity == 0) {
-                cartList.remove(cart)
-                notifyItemRemoved(holder.adapterPosition)
-                notifyItemRangeChanged(position, cartList.size)
-
-                addOremoveItemListener.onClickAddOrRemoveItem(
-                    Constant.REMOVE,
-                    ProductDetail(
-                        cart.productId,
-                        cart.variantId,
-                        quantity,
-                        "",
-                        "",
-                        0.0,
-                        0,
-                        0,
-                        "",
-                        0
-                    )
-                )
-                Thread {
-                    AppDataBase.getInstance(context).productDao()
-                        .deleteSavedAmount(cart.productId, cart.variantId.toInt())
-                }.start()
-
-                if (app.user.getLoginSession()) {
-                    Thread {
-                        AppDataBase.getInstance(context).productDao()
-                            .deleteCartItem(cart.productId, cart.variantId)
-                    }.start()
-                }
-
-            } else {
                 holder.binding.tvQuantity.text = quantity.toString()
                 val priceAmount = (cart.price / cart.quantity) * quantity
                 val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
-                holder.binding.tvPrice.text = Utility().formatTotalAmount(priceAmount.toDouble()).toString()
+
+                holder.binding.tvPrice.text =
+                    Utility().formatTotalAmount(priceAmount.toDouble()).toString()
                 holder.binding.tvDiscountPrice.text =
                     Utility().formatTotalAmount(discountAmount).toString()
                 val itemSavedAmount = (priceAmount - discountAmount)
@@ -164,20 +103,11 @@ class MyCartAdapter(
                 }.start()
 
                 addOremoveItemListener.onClickAddOrRemoveItem(
-                    Constant.REMOVE,
-                    ProductDetail(
-                        cart.productId,
-                        cart.variantId,
-                        quantity,
-                        "",
-                        "",
-                        0.0,
-                        0,
-                        0,
-                        "",
-                        0
-                    )
+                    Constant.ADD,
+                    ProductDetail(cart.productId, cart.variantId, quantity, "", "", 0.0, 0, 0, "", 0),
+                    holder.binding.tvPlus
                 )
+
                 if (app.user.getLoginSession()) {
                     Thread {
                         AppDataBase.getInstance(context).productDao()
@@ -185,6 +115,94 @@ class MyCartAdapter(
                     }.start()
                 }
             }
+
+        }
+        holder.binding.tvMinus.setOnClickListener {
+
+            if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+
+                    }
+                })){
+                holder.binding.tvMinus.isEnabled=false
+                var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                quantity--
+
+                if (quantity == 0) {
+                    cartList.remove(cart)
+                    notifyItemRemoved(holder.adapterPosition)
+                    notifyItemRangeChanged(position, cartList.size)
+
+                    addOremoveItemListener.onClickAddOrRemoveItem(
+                        Constant.REMOVE,
+                        ProductDetail(
+                            cart.productId,
+                            cart.variantId,
+                            quantity,
+                            "",
+                            "",
+                            0.0,
+                            0,
+                            0,
+                            "",
+                            0
+                        ),holder.binding.tvMinus
+                    )
+                    Thread {
+                        AppDataBase.getInstance(context).productDao()
+                            .deleteSavedAmount(cart.productId, cart.variantId.toInt())
+                    }.start()
+                    if (app.user.getLoginSession()) {
+                        Thread {
+                            AppDataBase.getInstance(context).productDao()
+                                .deleteCartItem(cart.productId, cart.variantId)
+                        }.start()
+                    }
+
+                } else {
+                    holder.binding.tvQuantity.text = quantity.toString()
+                    val priceAmount = (cart.price / cart.quantity) * quantity
+                    val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
+                    holder.binding.tvPrice.text = Utility().formatTotalAmount(priceAmount.toDouble()).toString()
+                    holder.binding.tvDiscountPrice.text =
+                        Utility().formatTotalAmount(discountAmount).toString()
+                    val itemSavedAmount = (priceAmount - discountAmount)
+
+                    if(app.user.getAppLanguage()==1){
+                        holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                    }else{
+                        holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                    }
+
+                    Thread {
+                        AppDataBase.getInstance(context).productDao()
+                            .updateSavedAmount(cart.productId, cart.variantId.toInt(), itemSavedAmount)
+                    }.start()
+
+                    addOremoveItemListener.onClickAddOrRemoveItem(
+                        Constant.REMOVE,
+                        ProductDetail(
+                            cart.productId,
+                            cart.variantId,
+                            quantity,
+                            "",
+                            "",
+                            0.0,
+                            0,
+                            0,
+                            "",
+                            0
+                        ),holder.binding.tvMinus
+                    )
+                    if (app.user.getLoginSession()) {
+                        Thread {
+                            AppDataBase.getInstance(context).productDao().updateCart(cart.productId, cart.variantId, discountAmount)
+                        }.start()
+                    }
+                }
+            }
+
+
         }
         holder.binding.ivDelete.setOnClickListener {
             itemDeleteDialog(holder, cart)
@@ -263,7 +281,12 @@ class MyCartAdapter(
                 }.start()
 
                 activity.runOnUiThread {
-                    holder.tvQuantity.text = singleProduct.itemQuantity.toString()
+                    if(cart.quantity>singleProduct.itemQuantity){
+                        holder.tvQuantity.text = cart.quantity.toString()
+                    }else{
+                        holder.tvQuantity.text = singleProduct.itemQuantity.toString()
+                    }
+
                 }
             } else {
                 val price = cart.price / cart.quantity
@@ -375,7 +398,7 @@ class MyCartAdapter(
                                         "",
                                         0
                                     )
-                                )
+                                ,holder.binding.tvMinus)
                             }
                         }
 

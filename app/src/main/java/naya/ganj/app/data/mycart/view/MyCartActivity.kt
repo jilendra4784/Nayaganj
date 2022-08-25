@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,18 +18,24 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
+import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
 import naya.ganj.app.databinding.ActivityMyCartBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
+import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
 import naya.ganj.app.utility.Constant.IS_FROM_MYCART
+import naya.ganj.app.utility.NetworkResult
 import naya.ganj.app.utility.Utility
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     lateinit var app: Nayaganj
@@ -47,7 +54,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         myCartViewModel = ViewModelProvider(this)[MyCartViewModel::class.java]
         app = applicationContext as Nayaganj
         orderId = intent.getStringExtra(Constant.orderId)
-        binding.includeToolbar.ivBackArrow.setOnClickListener { finish() }
+        binding.includeToolbar.ivBackArrow.setOnClickListener { finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
 
         if (app.user.getAppLanguage() == 1) {
             binding.includeToolbar.toolbarTitle.text = resources.getString(R.string.my_cart_h)
@@ -65,6 +74,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             val intent = Intent(this@MyCartActivity, AddressListActivity::class.java)
             intent.putExtra("ADDRESS_ID", addressId)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         binding.btnLoginButton.setOnClickListener {
@@ -122,6 +132,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 orderId = ""
             }
 
+            if(Utility.isAppOnLine(this@MyCartActivity,object:OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
+                    }
+                }))
             getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
@@ -215,50 +230,106 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onClickAddOrRemoveItem(
         action: String,
-        productDetail: ProductDetail
+        productDetail: ProductDetail,
+        addRemovTextView: TextView
     ) {
-        if(Utility.isAppOnLine(this@MyCartActivity,
-                object : OnInternetCheckListener {
-                    override fun onInternetAvailable() {
-                        // Call API Again if Internet is available
-                    }
-                })){
-            when (action) {
-                Constant.INSERT -> {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().insertProduct(this@MyCartActivity, productDetail)
-                    }
-                    if (app.user.getLoginSession()) {
-                        Utility().addRemoveItem(
-                            app.user.getUserDetails()?.userId,
-                            "add",
-                            productDetail.productId,
-                            productDetail.variantId,
-                            ""
-                        )
-                    }
+        when (action) {
+            Constant.INSERT -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Utility().insertProduct(this@MyCartActivity, productDetail)
                 }
-                Constant.ADD -> {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().updateProduct(
-                            this@MyCartActivity,
-                            productDetail.productId,
-                            productDetail.variantId,
-                            productDetail.itemQuantity
-                        )
-                    }
-                    if (app.user.getLoginSession()) {
-                        Utility().addRemoveItem(
-                            app.user.getUserDetails()?.userId,
-                            Constant.ADD,
-                            productDetail.productId,
-                            productDetail.variantId,
-                            ""
-                        )
-                    }
+                if (app.user.getLoginSession()) {
+                    Utility().addRemoveItem(
+                        app.user.getUserDetails()?.userId,
+                        "add",
+                        productDetail.productId,
+                        productDetail.variantId,
+                        ""
+                    )
+                }
+            }
+            Constant.ADD -> {
+                if(app.user.getLoginSession()){
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
+                    jsonObject.addProperty(Constant.ACTION, action)
+                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
 
+                    RetrofitClient.instance.addremoveItemRequest(
+                        app.user.getUserDetails()?.userId,
+                        Constant.DEVICE_TYPE,
+                        jsonObject
+                    )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status)
+                                        addRemovTextView.isEnabled=true
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        AppDataBase.getInstance(this@MyCartActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                    }
+                                }else{
+                                    Utility.serverNotResponding(this@MyCartActivity,response.message())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@MyCartActivity,t.message.toString())
+                            }
+                        })
+                }else{
+                    addRemovTextView.isEnabled=true
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        AppDataBase.getInstance(this@MyCartActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                    }
                 }
-                Constant.REMOVE -> {
+            }
+            Constant.REMOVE -> {
+                if (app.user.getLoginSession()) {
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
+                    jsonObject.addProperty(Constant.ACTION, action)
+                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
+
+                    RetrofitClient.instance.addremoveItemRequest(
+                        app.user.getUserDetails()?.userId,
+                        Constant.DEVICE_TYPE,
+                        jsonObject
+                    )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status)
+                                        addRemovTextView.isEnabled=true
+                                    if(productDetail.itemQuantity>0){
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@MyCartActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                        }
+                                    }else{
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
+                                        }
+                                    }
+
+                                }else{
+                                    Utility.serverNotResponding(this@MyCartActivity,response.message())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@MyCartActivity,t.message.toString())
+                            }
+                        })
+                }else{
+                    addRemovTextView.isEnabled=true
                     if (productDetail.itemQuantity > 0) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             Utility().updateProduct(
@@ -277,22 +348,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                             )
                         }
                     }
-
-
-                    if (app.user.getLoginSession()) {
-                        Utility().addRemoveItem(
-                            app.user.getUserDetails()?.userId,
-                            "remove",
-                            productDetail.productId,
-                            productDetail.variantId,
-                            ""
-                        )
-                    }
                 }
             }
-            Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-            Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
         }
+
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
     }
 
     private fun calculateAmount() {
@@ -396,5 +457,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+        overridePendingTransition(R.anim.slide_in_left,
+            R.anim.slide_out_right);
     }
+
 }
