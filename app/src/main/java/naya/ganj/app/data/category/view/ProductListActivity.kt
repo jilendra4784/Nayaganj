@@ -145,17 +145,44 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     ) {
         when (action) {
             Constant.INSERT -> {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().insertProduct(this@ProductListActivity, productDetail)
-                }
                 if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
+                    jsonObject.addProperty(Constant.ACTION, "add")
+                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
+
+                    RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
-                        "add",
-                        productDetail.productId,
-                        productDetail.variantId,
-                        ""
+                        Constant.DEVICE_TYPE,
+                        jsonObject
                     )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status)
+                                        addremoveText.isEnabled=true
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        Utility().insertProduct(this@ProductListActivity, productDetail)
+                                    }
+                                }else{
+                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                            }
+                        })
+
+
+                }else{
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utility().insertProduct(this@ProductListActivity, productDetail)
+                    }
                 }
             }
             Constant.ADD -> {
@@ -286,8 +313,8 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onResume() {
         super.onResume()
-        adapter?.notifyDataSetChanged()
 
+        adapter?.notifyDataSetChanged()
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
         }.start()

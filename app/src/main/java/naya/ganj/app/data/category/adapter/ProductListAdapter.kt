@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,16 +81,17 @@ class ProductListAdapter(
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
         Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
-
         holder.binding.tvProductTitle.text = Utility.convertLanguage(product.productName.trimStart(),app)
         holder.binding.tvProductDetail.text =  Utility.convertLanguage(product.description ,app)
         if(app.user.getAppLanguage()==1){
-            holder.binding.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets, "agrawide.ttf"))
+            holder.binding.tvProductTitle.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
         }
         Thread {
             val listOfProduct =
                 AppDataBase.getInstance(context).productDao().getProductListByProductId(product.id)
+
             if (listOfProduct.isNotEmpty()) {
+                Log.e("TAG", "setUpData: "+listOfProduct )
                 activity.runOnUiThread {
                     val price = listOfProduct[0].vPrice
                     val vDiscountPrice: Double =

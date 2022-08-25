@@ -57,7 +57,7 @@ class MyCartAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val cart = cartList.get(position)
+        val cart = cartList[position]
         if (cart.discountPrice.toDouble() > 0) {
             if(app.user.getAppLanguage()==1){
                 holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
@@ -281,6 +281,8 @@ class MyCartAdapter(
                 }.start()
 
                 activity.runOnUiThread {
+
+
                     if(cart.quantity>singleProduct.itemQuantity){
                         holder.tvQuantity.text = cart.quantity.toString()
                     }else{
@@ -361,27 +363,17 @@ class MyCartAdapter(
                             response: Response<ApiResponseModel>
                         ) {
                             if (response.body()!!.status) {
-
                                 Thread {
-                                    AppDataBase.getInstance(context).productDao()
-                                        .deleteProduct(
-                                            productDetail.productId,
-                                            productDetail.variantId
-                                        )
-                                    AppDataBase.getInstance(context).productDao()
-                                        .deleteSavedAmount(
-                                            productDetail.productId,
-                                            productDetail.variantId.toInt()
-                                        )
-                                    AppDataBase.getInstance(context).productDao()
-                                        .deleteCartItem(
-                                            productDetail.productId,
-                                            productDetail.variantId
-                                        )
-                                }.start()
+                                    AppDataBase.getInstance(context).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
+                                    AppDataBase.getInstance(context).productDao().deleteSavedAmount(productDetail.productId, productDetail.variantId.toInt())
+                                    AppDataBase.getInstance(context).productDao().deleteCartItem(productDetail.productId, productDetail.variantId)
 
-                                cartList.removeAt(holder.adapterPosition)
-                                notifyItemRemoved(holder.adapterPosition)
+                                    activity.runOnUiThread{
+                                        cartList.removeAt(holder.adapterPosition)
+                                        notifyItemRemoved(holder.adapterPosition)
+                                    }
+
+                                }.start()
 
                                 // Refresh List
                                 addOremoveItemListener.onClickAddOrRemoveItem(

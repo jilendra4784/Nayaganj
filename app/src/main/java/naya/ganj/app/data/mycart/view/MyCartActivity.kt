@@ -116,10 +116,10 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     override fun onResume() {
         super.onResume()
-
         Thread {
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
         }.start()
 
         if (app.user.getLoginSession()) {
@@ -315,6 +315,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                         }
                                     }else{
                                         lifecycleScope.launch(Dispatchers.IO) {
+                                            Log.e("TAG", "onResponse: "+" Item deleted successfully" )
                                             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
                                         }
                                     }

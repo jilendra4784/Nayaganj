@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,12 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductDetailVariantAdapter
+import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.category.model.CheckProductInCartModel
 import naya.ganj.app.data.category.model.ProductDetailModel
 import naya.ganj.app.data.category.viewmodel.ProductDetailViewModel
@@ -71,13 +76,15 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         binding.addButton.setOnClickListener {
-            updateItemToLocalDB("add", productDetailModel.productDetails)
+            updateItemToLocalDB("insert", productDetailModel.productDetails,binding.addButton)
         }
         binding.tvPlus.setOnClickListener {
-            updateItemToLocalDB("plus", productDetailModel.productDetails)
+            binding.tvPlus.isEnabled=false
+            updateItemToLocalDB("plus", productDetailModel.productDetails,binding.tvPlus)
         }
         binding.tvMinus.setOnClickListener {
-            updateItemToLocalDB("minus", productDetailModel.productDetails)
+            binding.tvMinus.isEnabled=false
+            updateItemToLocalDB("minus", productDetailModel.productDetails,binding.tvMinus)
         }
 
         binding.llVariantLayout.setOnClickListener {
@@ -396,6 +403,7 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun calculateAmount() {
+        Log.e("TAG", "calculateAmount: " )
         lifecycleScope.launch(Dispatchers.IO) {
             val listofProduct = Utility().getAllProductList(applicationContext)
             runOnUiThread {
@@ -417,7 +425,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun updateItemToLocalDB(
         action: String,
-        product: ProductDetailModel.ProductDetails
+        product: ProductDetailModel.ProductDetails,
+        addremoveText: TextView
     ) {
 
         var vPrice = 0.0
@@ -435,118 +444,238 @@ class ProductDetailActivity : AppCompatActivity() {
                 totalMaxQuantity = item.vQuantity
             }
         }
+
         when (action) {
-            "add" -> {
-                binding.llMinusPlusLayout.visibility = View.VISIBLE
-                binding.addButton.visibility = View.GONE
-                binding.tvQuantity.text = "1"
-                val quantity = 1
-                lifecycleScope.launch(Dispatchers.IO) {
-                    AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
-                        ProductDetail(
-                            productId,
-                            variantId,
-                            quantity,
-                            product.productName,
-                            product.imgUrl[0],
-                            vPrice,
-                            vDiscount,
-                            vUnitQuantity,
-                            vUnit,
-                            totalMaxQuantity
-                        )
-                    )
+            "insert" -> {
+                if(app.user.getLoginSession()){
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                    jsonObject.addProperty(Constant.ACTION, "add")
+                    jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
 
-                    if (app.user.getLoginSession()) {
-                        Utility().addRemoveItem(
-                            app.user.getUserDetails()?.userId,
-                            "add",
-                            productId,
-                            variantId,
-                            ""
-                        )
-                    }
-
-                }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
+                    RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
-                        "add",
-                        productId,
-                        variantId,
-                        ""
+                        Constant.DEVICE_TYPE,
+                        jsonObject
                     )
-                }
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+                                    if(response.body()!!.status){
+                                        addremoveText.isEnabled=true
+                                        binding.llMinusPlusLayout.visibility = View.VISIBLE
+                                        binding.addButton.visibility = View.GONE
+                                        binding.tvQuantity.text = "1"
+                                        val quantity = 1
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
+                                                ProductDetail(
+                                                    productId,
+                                                    variantId,
+                                                    quantity,
+                                                    product.productName,
+                                                    product.imgUrl[0],
+                                                    vPrice,
+                                                    vDiscount,
+                                                    vUnitQuantity,
+                                                    vUnit,
+                                                    totalMaxQuantity
+                                                )
+                                            )
+                                        }
+                                    }else{
+                                        Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                    }
+                                }else{
+                                    Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                }
+                            }
 
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@ProductDetailActivity,t.message.toString())
+                            }
+                        })
+
+                }else{
+                    binding.llMinusPlusLayout.visibility = View.VISIBLE
+                    binding.addButton.visibility = View.GONE
+                    binding.tvQuantity.text = "1"
+                    val quantity = 1
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
+                            ProductDetail(
+                                productId,
+                                variantId,
+                                quantity,
+                                product.productName,
+                                product.imgUrl[0],
+                                vPrice,
+                                vDiscount,
+                                vUnitQuantity,
+                                vUnit,
+                                totalMaxQuantity
+                            )
+                        )
+
+                        if (app.user.getLoginSession()) {
+                            Utility().addRemoveItem(
+                                app.user.getUserDetails()?.userId,
+                                "add",
+                                productId,
+                                variantId,
+                                ""
+                            )
+                        }
+
+                    }
+                }
             }
             "plus" -> {
-                var quantity: Int = binding.tvQuantity.text.toString().toInt()
-                quantity++
-                binding.tvQuantity.text = quantity.toString()
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().updateProduct(
-                        this@ProductDetailActivity,
-                        productId,
-                        variantId,
-                        quantity
-                    )
-                }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        "add",
-                        productId,
-                        variantId,
-                        ""
-                    )
-                }
+                    if(app.user.getLoginSession()){
+                        val jsonObject = JsonObject()
+                        jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                        jsonObject.addProperty(Constant.ACTION, "add")
+                        jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                        jsonObject.addProperty(Constant.PROMO_CODE, "")
+
+                        RetrofitClient.instance.addremoveItemRequest(
+                            app.user.getUserDetails()?.userId,
+                            Constant.DEVICE_TYPE,
+                            jsonObject
+                        )
+                            .enqueue(object : Callback<AddRemoveModel> {
+                                override fun onResponse(
+                                    call: Call<AddRemoveModel>,
+                                    response: Response<AddRemoveModel>
+                                ) {
+                                    if(response.isSuccessful){
+                                        if(response.body()!!.status){
+                                            addremoveText.isEnabled=true
+                                            var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                                            quantity++
+                                            binding.tvQuantity.text = quantity.toString()
+                                            lifecycleScope.launch(Dispatchers.IO) {
+                                                Utility().updateProduct(
+                                                    this@ProductDetailActivity,
+                                                    productId,
+                                                    variantId,
+                                                    quantity
+                                                )
+                                            }
+                                        }else{
+                                            Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                        }
+                                    }else{
+                                        Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                    Utility.serverNotResponding(this@ProductDetailActivity,t.message.toString())
+                                }
+                            })
+                    }else{
+                        var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                        quantity++
+                        binding.tvQuantity.text = quantity.toString()
+                        addremoveText.isEnabled=true
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            Utility().updateProduct(
+                                this@ProductDetailActivity,
+                                productId,
+                                variantId,
+                                quantity
+                            )
+                        }
+                    }
             }
             "minus" -> {
-                var quantity: Int = binding.tvQuantity.text.toString().toInt()
-                quantity--
-                if (quantity == 0) {
-                    binding.llMinusPlusLayout.visibility = View.GONE
-                    binding.addButton.visibility = View.VISIBLE
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        AppDataBase.getInstance(this@ProductDetailActivity).productDao()
-                            .deleteProduct(product.id, variantId)
-                    }
+                if (app.user.getLoginSession()) {
+                    val jsonObject = JsonObject()
+                    jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                    jsonObject.addProperty(Constant.ACTION, "remove")
+                    jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                    jsonObject.addProperty(Constant.PROMO_CODE, "")
 
-                    if (app.user.getLoginSession()) {
-                        Utility().addRemoveItem(
-                            app.user.getUserDetails()?.userId,
-                            "remove",
+                    RetrofitClient.instance.addremoveItemRequest(
+                        app.user.getUserDetails()?.userId,
+                        Constant.DEVICE_TYPE,
+                        jsonObject
+                    )
+                        .enqueue(object : Callback<AddRemoveModel> {
+                            override fun onResponse(
+                                call: Call<AddRemoveModel>,
+                                response: Response<AddRemoveModel>
+                            ) {
+                                if(response.isSuccessful){
+
+                                    if(response.body()!!.status){
+                                        addremoveText.isEnabled=true
+                                        var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                                        quantity--
+                                        if (quantity == 0) {
+                                            binding.llMinusPlusLayout.visibility = View.GONE
+                                            binding.addButton.visibility = View.VISIBLE
+                                            lifecycleScope.launch(Dispatchers.IO) {
+                                                AppDataBase.getInstance(this@ProductDetailActivity).productDao()
+                                                    .deleteProduct(product.id, variantId)
+                                            }
+                                            calculateAmount()
+                                            return
+                                        }
+                                        binding.tvQuantity.text = quantity.toString()
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            Utility().updateProduct(
+                                                this@ProductDetailActivity,
+                                                productId,
+                                                variantId,
+                                                quantity
+                                            )
+                                        }
+
+                                    }else{
+                                        Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                    }
+
+                                }else{
+                                    Utility.serverNotResponding(this@ProductDetailActivity,response.message())
+                                }
+                            }
+                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                Utility.serverNotResponding(this@ProductDetailActivity,t.message.toString())
+                            }
+                        })
+                }else{
+                    addremoveText.isEnabled=true
+                    var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                    quantity--
+                    if (quantity == 0) {
+                        binding.llMinusPlusLayout.visibility = View.GONE
+                        binding.addButton.visibility = View.VISIBLE
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            AppDataBase.getInstance(this@ProductDetailActivity).productDao()
+                                .deleteProduct(product.id, variantId)
+                        }
+                        calculateAmount()
+                        return
+                    }
+                    binding.tvQuantity.text = quantity.toString()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utility().updateProduct(
+                            this@ProductDetailActivity,
                             productId,
                             variantId,
-                            ""
+                            quantity
                         )
                     }
-
-                    calculateAmount()
-                    return
                 }
-                binding.tvQuantity.text = quantity.toString()
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Utility().updateProduct(
-                        this@ProductDetailActivity,
-                        productId,
-                        variantId,
-                        quantity
-                    )
-                }
-                if (app.user.getLoginSession()) {
-                    Utility().addRemoveItem(
-                        app.user.getUserDetails()?.userId,
-                        "remove",
-                        productId,
-                        variantId,
-                        ""
-                    )
-                }
-
             }
         }
-        calculateAmount()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() },300)
     }
 
     override fun onResume() {
