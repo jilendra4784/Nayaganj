@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.util.Pair
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.ActivityCompat
 
@@ -135,11 +134,9 @@ class ProductListAdapter(
                 )
             }
         }.start()
-
         holder.binding.llVariantLayout.setOnClickListener {
             showVariantDialog(product, holder)
         }
-
         holder.binding.ivImagview.setOnClickListener {
             var variantID = ""
             val unitQuantity: Int = holder.binding.tvUnitQuantity.text.toString().toInt()
@@ -148,30 +145,38 @@ class ProductListAdapter(
                     variantID = item.vId
                 }
             }
-
             val intent = Intent(context, ProductDetailActivity::class.java)
             intent.putExtra(PRODUCT_ID, product.id)
             intent.putExtra(VARIANT_ID, variantID)
-
-            val pair1 = Pair.create<View, String>(holder.binding.ivImagview, "product_image")
-            val pair2 = Pair.create<View, String>(holder.binding.tvProductTitle, "product_name")
-            val pair3 = Pair.create<View, String>(holder.binding.tvProductDetail, "product_detail")
-            val pair4 = Pair.create<View, String>(holder.binding.tvOff, "product_off")
-
-            val pair5 = Pair.create<View, String>(holder.binding.llProductUnit, "product_unit")
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair1, pair2,pair3,pair4,pair5)
-            ActivityCompat.startActivity(activity, intent, options.toBundle())
-            activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
+            //context.startActivity(intent)
+            ActivityCompat.startActivity(context, intent,
+                ActivityOptionsCompat
+                    .makeScaleUpAnimation(it, 0, 0, it.width, it.height)
+                    .toBundle()
+            );
         }
-
         holder.binding.addItem.setOnClickListener {
+            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("add", holder, product,holder.binding.addItem)
+                    }
+                }))
             updateItemToLocalDB("add", holder, product,holder.binding.addItem)
         }
         holder.binding.tvPlus.setOnClickListener {
+            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("plus", holder, product,holder.binding.tvPlus)
+                    }
+                }))
             updateItemToLocalDB("plus", holder, product,holder.binding.tvPlus)
         }
         holder.binding.tvMinus.setOnClickListener {
+            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("minus", holder, product,holder.binding.tvMinus)
+                    }
+                }))
             updateItemToLocalDB("minus", holder, product,holder.binding.tvMinus)
         }
     }
@@ -190,8 +195,6 @@ class ProductListAdapter(
             variant[vPosition].vQuantityInCart
         }
         if (quantityInCart > 0) {
-            holder.binding.addItem.visibility = View.GONE
-            holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
             Thread {
                 val isProductExist = AppDataBase.getInstance(context).productDao().isProductExist(
                     productList.get(holder.adapterPosition).id,
@@ -204,6 +207,8 @@ class ProductListAdapter(
                             variant[vPosition].vId
                         )
                     activity.runOnUiThread {
+                        holder.binding.addItem.visibility = View.GONE
+                        holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
                         holder.binding.tvUnitQuantity.text = singleProduct.vUnitQuantity.toString()
                         holder.binding.tvUnit.text = singleProduct.vUnit
                         holder.binding.tvQuantity.text = singleProduct.itemQuantity.toString()
@@ -231,6 +236,8 @@ class ProductListAdapter(
                     }
                 } else {
                     activity.runOnUiThread {
+                        holder.binding.addItem.visibility = View.VISIBLE
+                        holder.binding.llPlusMinusLayout.visibility = View.GONE
                         holder.binding.tvUnitQuantity.text =
                             variant[vPosition].vUnitQuantity.toString()
                         holder.binding.tvUnit.text = variant[vPosition].vUnit
@@ -256,29 +263,13 @@ class ProductListAdapter(
 
                         var vMaxQuantity = variant[vPosition].vQuantity
 
-                        Thread {
-                            Utility().insertProduct(
-                                context, ProductDetail(
-                                    productList[holder.adapterPosition].id,
-                                    variant[vPosition].vId,
-                                    variant[vPosition].vQuantityInCart,
-                                    productList[holder.adapterPosition].productName,
-                                    productList[holder.adapterPosition].imgUrl[0],
-                                    variant[vPosition].vPrice,
-                                    variant[vPosition].vDiscount,
-                                    variant[vPosition].vUnitQuantity,
-                                    variant[vPosition].vUnit,
-                                    variant[vPosition].vQuantity
-                                )
-                            )
-                        }.start()
                     }
                 }
             }.start()
         } else {
+
             holder.binding.addItem.visibility = View.VISIBLE
             holder.binding.llPlusMinusLayout.visibility = View.GONE
-
             holder.binding.tvUnitQuantity.text =
                 variant[vPosition].vUnitQuantity.toString()
             holder.binding.tvUnit.text = variant[vPosition].vUnit

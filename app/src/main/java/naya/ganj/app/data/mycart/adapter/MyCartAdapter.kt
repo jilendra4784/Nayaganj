@@ -281,8 +281,6 @@ class MyCartAdapter(
                 }.start()
 
                 activity.runOnUiThread {
-
-
                     if(cart.quantity>singleProduct.itemQuantity){
                         holder.tvQuantity.text = cart.quantity.toString()
                     }else{

@@ -49,6 +49,7 @@ import naya.ganj.app.data.mycart.view.MyCartActivity
 import naya.ganj.app.data.sidemenu.view.*
 import naya.ganj.app.databinding.ActivityMainBinding
 import naya.ganj.app.databinding.BottomAudioDialogBinding
+import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -703,7 +704,12 @@ import java.util.*
             showAddAddressDialog()
         }
         btnPlaceOrder!!.setOnClickListener {
-            if (!addressId.equals("")) {
+            if (addressId != "") {
+                if(Utility.isAppOnLine(this@MainActivity,object : OnInternetCheckListener{
+                        override fun onInternetAvailable() {
+                            placeOrderApi(addressId, bottomSheetAddressDialog!!)
+                        }
+                    }))
                 placeOrderApi(addressId, bottomSheetAddressDialog!!)
             } else {
                 Toast.makeText(this, "Please select address", Toast.LENGTH_SHORT).show()

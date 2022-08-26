@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,7 @@ import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
@@ -105,9 +107,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             } else {
                 getProductList("", "", categoryId)
             }
-
         }
-
         binding.llCartLayout.setOnClickListener {
             val intent = Intent(this@ProductListActivity, MyCartActivity::class.java)
             intent.putExtra("ORDER_ID", "")
@@ -119,7 +119,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         binding.arrowIcon.setOnClickListener {
             finish()
         }
-
     }
 
     private fun getProductList(
@@ -136,7 +135,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             getProductListRequestData(text,userId,cateId)
         }
     }
-
 
     override fun onClickAddOrRemoveItem(
         action: String,
@@ -294,6 +292,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     private fun showCartLayout() {
         lifecycleScope.launch(Dispatchers.IO) {
             val listofProduct = Utility().getAllProductList(applicationContext)
+            Log.e("TAG", "showCartLayout: "+listofProduct )
             runOnUiThread {
                 if (listofProduct.isNotEmpty()) {
                     binding.llCartLayout.visibility = View.VISIBLE
@@ -309,8 +308,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             }
         }
     }
-
-
     override fun onResume() {
         super.onResume()
 
@@ -318,8 +315,9 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
         }.start()
-    }
 
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { showCartLayout() }, 400)
+    }
     fun getProductListRequestData(text: String, userId: String?, cateId: String?) {
         val json = JsonObject()
         json.addProperty(Constant.CATEGORY_ID, cateId)
@@ -369,6 +367,24 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         LinearLayoutManager(this@ProductListActivity)
                     binding.productList.isNestedScrollingEnabled = false
                     binding.productList.adapter = adapter
+
+                    binding.productList.viewTreeObserver.addOnPreDrawListener(
+                        object : ViewTreeObserver.OnPreDrawListener {
+                            override fun onPreDraw(): Boolean {
+                                binding.productList.viewTreeObserver.removeOnPreDrawListener(this)
+                                for (i in 0 until binding.productList.childCount) {
+                                    val v: View = binding.productList.getChildAt(i)
+                                    v.alpha = 0.0f
+                                    v.animate().alpha(1.0f)
+                                        .setDuration(300)
+                                        .setStartDelay((i * 50).toLong())
+                                        .start()
+                                }
+                                return true
+                            }
+                        })
+
+                    binding.productList.setHasFixedSize(true)
                     binding.tvNoProduct.visibility = View.GONE
                     binding.productList.visibility = View.VISIBLE
 

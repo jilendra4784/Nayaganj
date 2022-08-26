@@ -28,7 +28,6 @@ import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

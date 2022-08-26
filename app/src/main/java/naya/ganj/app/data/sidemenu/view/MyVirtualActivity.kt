@@ -75,7 +75,6 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
 
     override fun onResume() {
         super.onResume()
-
         if (Utility.isAppOnLine(this@MyVirtualActivity, object : OnInternetCheckListener {
                 override fun onInternetAvailable() {
                     getVirtualOrderData()
@@ -83,8 +82,6 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
 
             }))
             getVirtualOrderData()
-
-
     }
 
     private fun getVirtualOrderData() {
@@ -172,6 +169,7 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
             } else {
                 mediaPlayer!!.start()
                 pause.setImageResource(R.drawable.pause_icon)
+                setAudioProgress()
             }
         }
 

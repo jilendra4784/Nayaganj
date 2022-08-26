@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -119,7 +120,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         Thread {
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
-            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
         }.start()
 
         if (app.user.getLoginSession()) {
@@ -157,6 +157,22 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.rvMycartList.adapter =
                         LocalMyCartAdapter(this@MyCartActivity, listOfProduct, this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
+                    binding.rvMycartList.viewTreeObserver.addOnPreDrawListener(
+                        object : ViewTreeObserver.OnPreDrawListener {
+                            override fun onPreDraw(): Boolean {
+                                binding.rvMycartList.viewTreeObserver.removeOnPreDrawListener(this)
+                                for (i in 0 until binding.rvMycartList.childCount) {
+                                    val v: View = binding.rvMycartList.getChildAt(i)
+                                    v.alpha = 0.0f
+                                    v.animate().alpha(1.0f)
+                                        .setDuration(300)
+                                        .setStartDelay((i * 50).toLong())
+                                        .start()
+                                }
+                                return true
+                            }
+                        })
+
                     binding.progressBar.visibility = View.GONE
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.finalCheckoutLayout.visibility = View.VISIBLE
@@ -195,6 +211,22 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.nestedscrollview.isNestedScrollingEnabled = false
                     binding.rvMycartList.adapter = adapter
                     binding.progressBar.visibility = View.GONE
+
+                    binding.rvMycartList.viewTreeObserver.addOnPreDrawListener(
+                        object : ViewTreeObserver.OnPreDrawListener {
+                            override fun onPreDraw(): Boolean {
+                                binding.rvMycartList.viewTreeObserver.removeOnPreDrawListener(this)
+                                for (i in 0 until binding.rvMycartList.childCount) {
+                                    val v: View = binding.rvMycartList.getChildAt(i)
+                                    v.alpha = 0.0f
+                                    v.animate().alpha(1.0f)
+                                        .setDuration(300)
+                                        .setStartDelay((i * 50).toLong())
+                                        .start()
+                                }
+                                return true
+                            }
+                        })
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
 
