@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    >
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -13,7 +13,9 @@
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
+
         app:cardElevation="@dimen/_2sdp"
+        app:cardBackgroundColor="@color/white"
         app:rippleColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
@@ -23,8 +25,9 @@
 
             <ImageView
                 android:id="@+id/iv_imageview"
-                android:layout_width="@dimen/_80sdp"
+                android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_100sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:src="@mipmap/ic_launcher_round"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_product_title"
@@ -39,6 +42,7 @@
                 android:paddingTop="@dimen/_5sdp"
                 android:text="product name"
                 android:textSize="@dimen/_12sdp"
+                android:paddingStart="@dimen/_10sdp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_product_Detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.107"
@@ -64,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="127dp" />
+                app:layout_constraintGuide_begin="94dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -81,6 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -114,6 +119,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp">
 
                     <TextView
@@ -122,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_bold"
                         android:text="@string/Rs"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/_10sdp" />
 
                     <TextView
                         android:id="@+id/tv_discount_price"
@@ -131,7 +137,7 @@
                         android:layout_toEndOf="@+id/tv_rupee_symbol"
                         android:fontFamily="@font/roboto_bold"
                         android:paddingStart="@dimen/_2sdp"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/_10sdp" />
 
 
                     <TextView
@@ -153,6 +159,7 @@
                         android:layout_marginStart="@dimen/_2sdp"
                         android:layout_toEndOf="@id/tv_rupee"
                         android:paddingTop="@dimen/_1sdp"
+                        android:text="1000"
                         android:textSize="@dimen/_10sdp" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -181,7 +188,7 @@
                         <com.google.android.material.textview.MaterialTextView
 
                             android:id="@+id/tv_minus"
-                            android:layout_width="@dimen/_30sdp"
+                            android:layout_width="@dimen/_25sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_2sdp"
                             android:background="@drawable/bg_minus"
@@ -194,7 +201,7 @@
                         <com.google.android.material.textview.MaterialTextView
 
                             android:id="@+id/tv_quantity"
-                            android:layout_width="@dimen/_20sdp"
+                            android:layout_width="@dimen/_30sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_2sdp"
                             android:fontFamily="@font/poppins_regular"
@@ -206,7 +213,7 @@
                         <com.google.android.material.textview.MaterialTextView
 
                             android:id="@+id/tv_plus"
-                            android:layout_width="@dimen/_30sdp"
+                            android:layout_width="@dimen/_25sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_2sdp"
                             android:background="@drawable/bg_plus"
@@ -233,15 +240,15 @@
                 android:background="@drawable/bg_primary_border"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp"
+                android:textSize="@dimen/_8sdp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_delete"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:layout_margin="@dimen/_5sdp"
                 android:src="@drawable/ic_delete_icon"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -76,13 +76,29 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         binding.addButton.setOnClickListener {
+
+            if(Utility.isAppOnLine(this@ProductDetailActivity,object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("insert", productDetailModel.productDetails,binding.addButton)
+                    }
+                }))
             updateItemToLocalDB("insert", productDetailModel.productDetails,binding.addButton)
         }
         binding.tvPlus.setOnClickListener {
-            binding.tvPlus.isEnabled=false
+            binding.tvPlus.isEnabled=true
+            if(Utility.isAppOnLine(this@ProductDetailActivity,object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("plus", productDetailModel.productDetails,binding.tvPlus)
+                    }
+                }))
             updateItemToLocalDB("plus", productDetailModel.productDetails,binding.tvPlus)
         }
         binding.tvMinus.setOnClickListener {
+            if(Utility.isAppOnLine(this@ProductDetailActivity,object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        updateItemToLocalDB("minus", productDetailModel.productDetails,binding.tvMinus)
+                    }
+                }))
             binding.tvMinus.isEnabled=false
             updateItemToLocalDB("minus", productDetailModel.productDetails,binding.tvMinus)
         }
@@ -536,6 +552,13 @@ class ProductDetailActivity : AppCompatActivity() {
             }
             "plus" -> {
                     if(app.user.getLoginSession()){
+                        var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                        if(quantity>=totalMaxQuantity){
+                            addremoveText.isEnabled=true
+                            Utility.showToast(this@ProductDetailActivity,"Sorry! you can not add more item for this product")
+                            return
+                        }
+
                         val jsonObject = JsonObject()
                         jsonObject.addProperty(Constant.PRODUCT_ID, productId)
                         jsonObject.addProperty(Constant.ACTION, "add")
@@ -555,7 +578,6 @@ class ProductDetailActivity : AppCompatActivity() {
                                     if(response.isSuccessful){
                                         if(response.body()!!.status){
                                             addremoveText.isEnabled=true
-                                            var quantity: Int = binding.tvQuantity.text.toString().toInt()
                                             quantity++
                                             binding.tvQuantity.text = quantity.toString()
                                             lifecycleScope.launch(Dispatchers.IO) {
@@ -580,6 +602,12 @@ class ProductDetailActivity : AppCompatActivity() {
                             })
                     }else{
                         var quantity: Int = binding.tvQuantity.text.toString().toInt()
+                        if(quantity>=totalMaxQuantity){
+                            addremoveText.isEnabled=true
+                            Utility.showToast(this@ProductDetailActivity,"Sorry! you can not add more item for this product")
+                            return
+                        }
+
                         quantity++
                         binding.tvQuantity.text = quantity.toString()
                         addremoveText.isEnabled=true

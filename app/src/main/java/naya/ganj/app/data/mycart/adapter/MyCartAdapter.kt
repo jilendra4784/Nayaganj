@@ -79,6 +79,12 @@ class MyCartAdapter(
                     }
                 })){
                 var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+
+                if(quantity>=cart.variantQuantity){
+                    Toast.makeText(context,"Sorry! you can not add more quantity for this product",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 quantity++
 
                 holder.binding.tvQuantity.text = quantity.toString()

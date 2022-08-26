@@ -465,11 +465,11 @@ class ProductListAdapter(
 
                         }
                     })){
+
                     holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
                     holder.binding.addItem.visibility = View.GONE
                     holder.binding.tvQuantity.text = "1"
                     val quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-                    holder.binding.tvQuantity.text = quantity.toString()
                     // Refresh Cart List
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.INSERT, ProductDetail(
@@ -487,6 +487,11 @@ class ProductListAdapter(
                         }
                     })){
                     var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
+                    if(quantity>=totalMaxQuantity){
+                        Toast.makeText(context,"Sorry, you can not add more quantity of this product",Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
                     quantity++
                     holder.binding.tvQuantity.text = quantity.toString()
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(

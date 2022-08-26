@@ -157,6 +157,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.rvMycartList.adapter =
                         LocalMyCartAdapter(this@MyCartActivity, listOfProduct, this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
+                    // animation on recyclerview
                     binding.rvMycartList.viewTreeObserver.addOnPreDrawListener(
                         object : ViewTreeObserver.OnPreDrawListener {
                             override fun onPreDraw(): Boolean {

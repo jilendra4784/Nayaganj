@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/_10sdp"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <com.google.android.material.textview.MaterialTextView
 
@@ -217,7 +217,7 @@
                         <com.google.android.material.textview.MaterialTextView
 
                             android:id="@+id/tv_quantity"
-                            android:layout_width="@dimen/_20sdp"
+                            android:layout_width="@dimen/_30sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_2sdp"
                             android:fontFamily="@font/poppins_regular"

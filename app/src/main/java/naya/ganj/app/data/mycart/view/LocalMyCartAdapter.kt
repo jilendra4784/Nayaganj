@@ -70,6 +70,7 @@ class LocalMyCartAdapter(
 
         holder.binding.tvPlus.setOnClickListener {
             var itemQuantity = holder.binding.tvQuantity.text.toString().toInt()
+
             itemQuantity++
             holder.binding.tvQuantity.text = itemQuantity.toString()
 

@@ -48,6 +48,7 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         binding.toolbar.ivChatIcon.visibility = View.VISIBLE
         binding.toolbar.ivChatIcon.setOnClickListener {
+
             Log.e("TAG", "onCreate: " + userName + "," + mNumber + "," + deviceToken)
             ReveChat.init("4447722")
             val visitorInfo = VisitorInfo.Builder()
