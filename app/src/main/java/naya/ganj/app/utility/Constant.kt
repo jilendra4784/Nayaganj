@@ -81,6 +81,7 @@ object Constant {
     const val productId="productId"
     const val variantId="variantId"
     const val quantity="quantity"
+    const val cartAmount="cartAmount"
 
 
 }

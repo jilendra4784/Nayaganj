@@ -374,7 +374,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
                     <TextView
-                        android:id="@+id/textView16"
+                        android:id="@+id/tv_view_offer"
                         style="@style/TitleStyle"
                         android:layout_width="0dp"
                         android:layout_height="0dp"

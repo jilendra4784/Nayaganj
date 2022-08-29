@@ -1,5 +1,6 @@
 package naya.ganj.app.data.mycart.view
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -78,6 +80,15 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
+        binding.tvViewOffer.setOnClickListener{
+
+            binding.tvViewOffer.isClickable=false
+            val intent = Intent(this@MyCartActivity, CouponActivity::class.java)
+            intent.putExtra(Constant.cartAmount, binding.tvCartAmount.text.toString())
+            resultLauncher.launch(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         binding.btnLoginButton.setOnClickListener {
             if (binding.btnLoginButton.text.toString() == "Checkout" || binding.btnLoginButton.text.toString() == resources.getString(R.string.checkout_h)) {
                 if (addressId == null) {
@@ -115,6 +126,14 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
     }
 
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            //doSomeOperations()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         Thread {
@@ -142,6 +161,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             binding.btnLoginButton.text = "Login/SignUp"
             getLocalCartData()
         }
+
+        binding.tvViewOffer.isClickable=true
+        //binding.changeOffers.isClickable=true
     }
 
     private fun getLocalCartData() {
@@ -230,11 +252,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         })
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
-
-                    if (myCartModel.address != null) {
-                        setAddressDetail(myCartModel.address.address)
-                        binding.materialAddressCardview.visibility = View.VISIBLE
-                    }
+                    binding.offerCardLayout.visibility=View.VISIBLE
+                    setAddressDetail(myCartModel.address.address)
+                    binding.materialAddressCardview.visibility = View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
                 } else {
@@ -494,5 +514,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         overridePendingTransition(R.anim.slide_in_left,
             R.anim.slide_out_right);
     }
+
 
 }

@@ -242,7 +242,12 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>
 
-
+    @Headers("Content-Type: application/json")
+    @GET(URLConstant.URL_COUPON_URL)
+    suspend fun getCouponList(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String
+    ): Response<CouponModel>
 
 
     @Headers("Content-Type: application/json")

@@ -52,6 +52,6 @@ class AddressListRespositry(var apiInterface: ApiInterface) {
     suspend fun placeVirtualOrderRequest(userId:String?,jsonObject: JsonObject) =
         apiInterface.placeVirtualOrderRequest(userId, Constant.DEVICE_TYPE, jsonObject)
 
-
+    suspend fun getCouponList(userId:String?) = apiInterface.getCouponList(userId, Constant.DEVICE_TYPE)
 
 }

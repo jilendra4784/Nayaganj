@@ -22,7 +22,10 @@ class MyViewModelFactory constructor(val repo: AddressListRespositry) : ViewMode
             return PersonalDetailViewModel(this.repo) as T
         }else if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
             return MainActivityViewModel(this.repo) as T
-        }else {
+        }else if (modelClass.isAssignableFrom(CouponViewModel::class.java)) {
+            return CouponViewModel(this.repo) as T
+        }
+        else {
             throw IllegalArgumentException("ViewModel Not Found")
         }
 

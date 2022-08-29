@@ -4,7 +4,9 @@
     package="naya.ganj.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" android:required="true" />
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        android:required="true" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -24,6 +26,9 @@
         android:theme="@style/Theme.Nayaganj"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".data.mycart.view.CouponActivity"
+            android:exported="false" />
         <activity
             android:name=".deliverymodule.view.TrackLocationByDeliveryBoy"
             android:exported="false" />
@@ -112,6 +117,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
