@@ -85,8 +85,9 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:strokeWidth=".5dp"
-            app:cardCornerRadius="0dp"
+            app:strokeWidth="@dimen/_2sdp"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:strokeColor="@color/light_gray_color"
             app:cardUseCompatPadding="true"
             app:cardElevation="@dimen/_5sdp"
             app:cardBackgroundColor="@color/white"
@@ -102,8 +103,7 @@
                     android:layout_height="wrap_content"
                     android:text="Shop By Category"
                     android:padding="@dimen/_5sdp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:textColor="@color/dark_gray"
+                    android:fontFamily="@font/roboto_bold"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold"/>
 
@@ -144,11 +144,17 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray_color"/>
+
+        <TextView
             android:id="@+id/tv_subCatTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sub Category"
             android:padding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             android:fontFamily="@font/poppins_regular"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold"/>

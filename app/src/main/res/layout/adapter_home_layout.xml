@@ -12,7 +12,7 @@
         android:clickable="true"
         android:focusable="true"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="0dp"
+        app:cardCornerRadius="@dimen/_5sdp"
         app:cardElevation="@dimen/_5sdp"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,27 +27,38 @@
             android:orientation="vertical"
             android:padding="@dimen/_5sdp">
 
-
-            <ImageView
-                android:id="@+id/imageView11"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_80sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:src="@drawable/product_icon"
-                android:scaleType="fitCenter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content"
+                app:cardElevation="@dimen/_5sdp"
+                app:strokeWidth="0dp"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardBackgroundColor="@color/light_gray_color">
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:src="@drawable/product_icon"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:fontFamily="@font/poppins_medium"
-                android:gravity="top|center"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
                 android:text="Kali Mirch"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_8sdp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
