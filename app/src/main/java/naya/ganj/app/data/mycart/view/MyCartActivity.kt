@@ -507,7 +507,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     }
 
-
     override fun onBackPressed() {
         super.onBackPressed()
         finish()

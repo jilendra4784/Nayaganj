@@ -1,18 +1,16 @@
 package naya.ganj.app.retrofit
 
+
 import com.google.gson.JsonObject
 import naya.ganj.app.data.category.model.*
-import naya.ganj.app.data.home.model.BannerModel
+import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
-
-
 import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
-
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
@@ -260,13 +258,15 @@ interface ApiInterface {
     ): Response<ProductListModel>
 
 
-    @GET(URLConstant.URL_HOME_BANNER_URL)
-   suspend fun getBannerData(
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_HOME_PAGE_URL)
+    suspend fun getBannerData(
         @Header("userid") userid: String?,
         @Header("devicetype") d: String,
-    ): Response<BannerModel>
+        @Body jsonObject: JsonObject
+    ): Response<HomePageModel>
 
-   // Delivery Module
+    // Delivery Module
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELIVERY_ORDERS_URL)

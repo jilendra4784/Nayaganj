@@ -3,9 +3,13 @@ package naya.ganj.app.data.home.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import naya.ganj.app.Nayaganj
+import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.AdapterHomeLayoutBinding
+import naya.ganj.app.utility.Utility
 
-class HomeAdapter : RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
+class HomeAdapter(val category: List<HomePageModel.Data.Category>,val app: Nayaganj) :
+    RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: AdapterHomeLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -19,10 +23,10 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: HomeAdapter.MyViewHolder, position: Int) {
-
+        holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category,app)
     }
 
     override fun getItemCount(): Int {
-        return 20
+        return category.size
     }
 }

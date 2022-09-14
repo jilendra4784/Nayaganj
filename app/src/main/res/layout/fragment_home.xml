@@ -10,8 +10,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/_50sdp">
+
 
         <LinearLayout
             android:id="@+id/ll_search_layout"
@@ -80,16 +82,15 @@
                 app:sliderScrollTimeInSec="1" />
         </com.google.android.material.card.MaterialCardView>
 
-
-
-
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:strokeWidth="0dp"
+            app:strokeWidth=".5dp"
+            app:cardCornerRadius="0dp"
             app:cardUseCompatPadding="true"
-            android:layout_marginTop="@dimen/_10sdp"
-            app:cardBackgroundColor="@color/white">
+            app:cardElevation="@dimen/_5sdp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginTop="@dimen/_10sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -99,7 +100,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Shop By Ctegory"
+                    android:text="Shop By Category"
+                    android:padding="@dimen/_5sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textColor="@color/dark_gray"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold"/>
 
@@ -111,6 +115,58 @@
             </LinearLayout>
 
 
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:strokeWidth="0dp"
+            android:layout_margin="@dimen/_5sdp"
+            >
+
+            <com.smarteist.autoimageslider.SliderView
+                android:id="@+id/promo_banner_slider"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                app:sliderAnimationDuration="600"
+                app:sliderAutoCycleDirection="back_and_forth"
+                app:sliderIndicatorAnimationDuration="600"
+                app:sliderIndicatorEnabled="true"
+                app:sliderIndicatorGravity="center_horizontal|bottom"
+                app:sliderIndicatorMargin="15dp"
+                app:sliderIndicatorOrientation="horizontal"
+                app:sliderIndicatorPadding="3dp"
+                app:sliderIndicatorRadius="2dp"
+                app:sliderIndicatorSelectedColor="#5A5A5A"
+                app:sliderIndicatorUnselectedColor="#FFF"
+                app:sliderScrollTimeInSec="1" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_subCatTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sub Category"
+            android:padding="@dimen/_5sdp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold"/>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:strokeWidth="0dp"
+            app:cardCornerRadius="0dp"
+            app:cardBackgroundColor="@color/light_gray_color"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="@dimen/_1sdp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sub_category_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
         </com.google.android.material.card.MaterialCardView>
 

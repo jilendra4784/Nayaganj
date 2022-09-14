@@ -1,5 +1,4 @@
 package naya.ganj.app.data.home.adapter
-
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,8 +8,8 @@ import naya.ganj.app.data.home.model.BannerModel
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.SliderLayoutBinding
 
-class SliderAdapter(val context: Context, private val bannerList: List<HomePageModel.Data.PromoBanner>) :
-    SliderViewAdapter<SliderAdapter.SliderViewHolder>() {
+class OfferPromoBanner(val context: Context, private val bannerList: List<HomePageModel.Data.OfferPromoBanner>) :
+    SliderViewAdapter<OfferPromoBanner.SliderViewHolder>() {
 
     override fun getCount(): Int {
         return bannerList.size

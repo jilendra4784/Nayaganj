@@ -185,6 +185,8 @@
     <string name="category_h">केटेगरी देखें</string>
     <string name="privacy_policy_h">प्राइवेसी पालिसी</string>
     <string name="apply">APPLY</string>
+    <string name="default_notification_channel_id">NayaGanj Latest Notification</string>
+    <string name="notification_channel_name">Nayaganj Latest channel</string>
 
 
 </resources>

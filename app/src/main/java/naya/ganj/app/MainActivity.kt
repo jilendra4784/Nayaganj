@@ -361,6 +361,10 @@ import java.util.*
         binding.navView.addView(notificationsBadge)
     }
 
+     public fun updateCartValue(value:String){
+         addBadge(value)
+     }
+
     private fun setToolBar() {
 
         binding.include14.ivHumbergerIcon.setOnClickListener { isDrawerIsOpen() }

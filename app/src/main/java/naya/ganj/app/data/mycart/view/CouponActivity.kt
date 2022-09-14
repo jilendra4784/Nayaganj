@@ -116,6 +116,5 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
     private fun applyCouponRequest() {
         // apply coupon api
 
-
     }
 }

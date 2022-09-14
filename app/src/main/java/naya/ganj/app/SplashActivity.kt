@@ -81,6 +81,7 @@ class SplashActivity : AppCompatActivity() {
                 return@OnCompleteListener
             }
             deviceToken = task.result
+            Log.e("TAG", "deviceToken:   "+ deviceToken )
             if (app.user.getLoginSession()) {
 
                 app.user.getUserDetails()?.userId?.let {
