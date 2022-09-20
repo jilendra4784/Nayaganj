@@ -55,13 +55,13 @@
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_25sdp"
+                android:layout_height="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
-                android:text="Kali Mirch"
-                android:textSize="@dimen/_10sdp"
+                android:text="Kali Mirchmfkvmkfvmfmv"
+                android:textSize="@dimen/_12sdp"
                 android:textStyle="bold"
+                android:paddingStart="@dimen/_5sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView11" />
@@ -69,11 +69,11 @@
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:fontFamily="@font/poppins_regular"
-                android:gravity="center"
-                android:text="Description"
-                android:textSize="@dimen/_10sdp"
+                android:text="Description  cns jilla jhbjhbhbdbj"
+                android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView11" />
@@ -86,63 +86,22 @@
                 android:paddingStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
+
+                <TextView
+                    android:id="@+id/ntet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_20sdp"
+                    android:gravity="center|start"
+                    android:text="Net Wt:"
+                    android:textSize="@dimen/_10sdp" />
+
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_20sdp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/tv_rupee_symbol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="@string/Rs"
-                        android:textSize="@dimen/_8sdp" />
-
-                    <TextView
-                        android:id="@+id/tv_discount_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/tv_rupee_symbol"
-                        android:fontFamily="@font/roboto_bold"
-                        android:paddingStart="@dimen/_2sdp"
-                        android:text="50"
-                        android:textSize="@dimen/_8sdp" />
-
-
-                    <TextView
-                        android:id="@+id/tv_rupee"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_toEndOf="@+id/tv_discount_price"
-                        android:paddingTop="@dimen/_1sdp"
-                        android:text="@string/Rs"
-                        android:textColor="@color/red"
-                        android:textSize="@dimen/_8sdp" />
-
-
-                    <TextView
-                        android:id="@+id/tv_price"
-                        style="@style/RedLineStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_2sdp"
-                        android:layout_toEndOf="@id/tv_rupee"
-                        android:paddingTop="@dimen/_1sdp"
-                        android:text="60000"
-                        android:textColor="@color/red"
-                        android:textSize="@dimen/_8sdp" />
-
-
-                </RelativeLayout>
-
-                <LinearLayout
                     android:id="@+id/ll_variant_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_width="match_parent"
+                    android:layout_toEndOf="@+id/ntet"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:background="@drawable/edittext_round_corner">
 
                     <TextView
@@ -150,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
-                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingStart="@dimen/_10sdp"
                         android:text="20"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp" />
@@ -169,10 +128,63 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
                         android:src="@drawable/ic_down_arrow" />
 
 
-                </LinearLayout>
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_20sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_rupee_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/Rs"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/tv_discount_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tv_rupee_symbol"
+                    android:fontFamily="@font/roboto_bold"
+                    android:paddingStart="@dimen/_2sdp"
+                    android:text="50"
+                    android:textSize="@dimen/_10sdp" />
+
+
+                <TextView
+                    android:id="@+id/tv_rupee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_toEndOf="@+id/tv_discount_price"
+                    android:paddingTop="@dimen/_1sdp"
+                    android:text="@string/Rs"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/_10sdp" />
+
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    style="@style/RedLineStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_toEndOf="@id/tv_rupee"
+                    android:paddingTop="@dimen/_1sdp"
+                    android:text="60000"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/_10sdp" />
 
 
             </RelativeLayout>

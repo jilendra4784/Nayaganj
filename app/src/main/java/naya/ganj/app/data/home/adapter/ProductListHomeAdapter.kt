@@ -21,9 +21,7 @@ import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
-import naya.ganj.app.data.category.adapter.ProductListAdapter
 import naya.ganj.app.data.category.model.CheckProductInCartModel
-import naya.ganj.app.data.category.model.ProductListModel
 import naya.ganj.app.data.category.view.ProductDetailActivity
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.ProductListHomeAdapterBinding
@@ -94,12 +92,10 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             context.startActivity(intent)
 
         }
-
         Thread {
             val listOfProduct =
                 AppDataBase.getInstance(context).productDao().getProductListByProductId(product.get(position).id)
             if (listOfProduct.isNotEmpty()) {
-                Log.e("TAG", "setUpData: "+listOfProduct )
                 activity.runOnUiThread {
                     val price = listOfProduct[0].vPrice
                     val vDiscountPrice: Double =

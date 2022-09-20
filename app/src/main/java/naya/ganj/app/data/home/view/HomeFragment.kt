@@ -7,7 +7,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -60,19 +59,26 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         savedInstanceState: Bundle?
     ): View {
 
-        homeViewModel = ViewModelProvider(requireActivity(),HomePageDataFactory(HomeRepositry(RetrofitClient.instance)))[HomeViewModel::class.java]
+        homeViewModel = ViewModelProvider(
+            requireActivity(),
+            HomePageDataFactory(HomeRepositry(RetrofitClient.instance))
+        )[HomeViewModel::class.java]
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         app = requireActivity().applicationContext as Nayaganj
 
-        if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener {
+
+        binding.llMainLeaniearLayout.visibility = View.GONE
+        binding.llProgressbar.visibility = View.VISIBLE
+
+        if (Utility.isAppOnLine(requireActivity(), object : OnInternetCheckListener {
                 override fun onInternetAvailable() {
                     getBannerList()
                 }
             }))
-
-        getBannerList()
-        if(app.user.getAppLanguage()==1){
-            binding.searchEdittext.hint=requireActivity().resources.getString(R.string.search_here_h)
+            getBannerList()
+        if (app.user.getAppLanguage() == 1) {
+            binding.searchEdittext.hint =
+                requireActivity().resources.getString(R.string.search_here_h)
         }
         binding.llSearchLayout.setOnClickListener {
             startActivity(Intent(requireActivity(), ProductListActivity::class.java))
@@ -136,6 +142,9 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.subCategoryList.isNestedScrollingEnabled = false
         binding.subCategoryList.adapter = ProductListHomeAdapter(requireActivity(),response.data.data.productList,app,requireActivity(),this)
         Utility.listAnimation(binding.subCategoryList)
+
+        binding.llMainLeaniearLayout.visibility = View.VISIBLE
+        binding.llProgressbar.visibility = View.GONE
     }
 
     override fun onClickAddOrRemoveItem(

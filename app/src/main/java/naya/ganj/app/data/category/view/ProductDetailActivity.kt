@@ -123,12 +123,13 @@ class ProductDetailActivity : AppCompatActivity() {
 
 
     private fun getProductData(productId: String) {
-        binding.progressBar.visibility=View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.rootLayout.visibility = View.GONE
 
         val jsonObject = JsonObject()
         jsonObject.addProperty(PRODUCT_ID, productId)
 
-        viewModel.getProductDetai(this@ProductDetailActivity,jsonObject)
+        viewModel.getProductDetai(this@ProductDetailActivity, jsonObject)
             .observe(this) {
                 setProductData(it.productDetails)
                 productDetailModel = it
@@ -136,12 +137,15 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
-        binding.progressBar.visibility=View.GONE
-        binding.rootLayout.visibility=View.VISIBLE
-        Glide.with(this@ProductDetailActivity).load(pModel.imgUrl[0]).into(binding.ivProductImage)
 
+        Glide.with(this@ProductDetailActivity).load(pModel.imgUrl[0]).into(binding.ivProductImage)
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName,app)
-        binding.tvDescription.text = Utility.convertLanguage(pModel.description,app)
+        if (pModel.description != null){
+            binding.tvDescription.text = Utility.convertLanguage(pModel.description, app)
+            binding.tvDescription.visibility=View.VISIBLE
+        }else{
+            binding.tvDescription.visibility=View.GONE
+        }
 
         if(app.user.getAppLanguage()==1){
             binding.tvProductName.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))
@@ -211,6 +215,11 @@ class ProductDetailActivity : AppCompatActivity() {
 
             }
         }.start()
+
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            binding.progressBar.visibility = View.GONE
+            binding.rootLayout.visibility = View.VISIBLE
+        }, 200)
     }
 
     private fun showVariantDialog(
@@ -372,7 +381,6 @@ class ProductDetailActivity : AppCompatActivity() {
         val description = view.findViewById(R.id.tv_description) as TextView
         val ivClose = view.findViewById(R.id.ivclose) as ImageView
         title.text = Utility.convertLanguage(productDetailModel.productDetails.productName,app)
-        description.text = Utility.convertLanguage(productDetailModel.productDetails.description,app)
 
         if(app.user.getAppLanguage()==1){
             title.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))

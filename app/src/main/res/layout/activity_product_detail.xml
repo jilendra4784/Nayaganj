@@ -24,7 +24,8 @@
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:background="@color/white"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,8 +58,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
             android:text="title"
-            android:transitionName="product_name"
             android:textSize="@dimen/_15sdp"
+            android:transitionName="product_name"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
@@ -66,15 +67,18 @@
             android:id="@+id/tv_description"
             android:layout_width="0dp"
             android:layout_height="@dimen/_60sdp"
-            android:layout_marginTop="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/poppins_regular"
             android:maxLines="4"
-            android:transitionName="product_detail"
             android:text="description"
             android:textSize="@dimen/_10sdp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline5"
-            app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+            android:transitionName="product_detail"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/add_button"
@@ -84,12 +88,12 @@
             android:background="@drawable/bg_add"
             android:gravity="center"
             android:paddingStart="@dimen/_20sdp"
-            android:transitionName="product_add_button"
             android:paddingEnd="@dimen/_20sdp"
             android:text="Add +"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp"
             android:textStyle="bold"
+            android:transitionName="product_add_button"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
@@ -154,12 +158,11 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
-            android:layout_height="31dp"
-            android:layout_marginTop="10dp"
-            android:transitionName="product_unit"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/guideline5"
-            app:layout_constraintHorizontal_bias="1.0"
+            android:transitionName="product_unit"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toBottomOf="@+id/tv_description">
 
