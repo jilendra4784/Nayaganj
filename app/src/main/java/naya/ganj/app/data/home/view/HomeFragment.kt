@@ -1,14 +1,13 @@
 package naya.ganj.app.data.home.view
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -119,7 +118,9 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         // Set Category Data
         binding.rvHomeRecyclerview.layoutManager = GridLayoutManager(requireActivity(), 3)
         binding.rvHomeRecyclerview.isNestedScrollingEnabled = false
-        binding.rvHomeRecyclerview.adapter = HomeAdapter(response.data.data.category,app)
+        binding.rvHomeRecyclerview.adapter = HomeAdapter(requireActivity(),response.data.data.category,app)
+        Utility.listAnimation(binding.rvHomeRecyclerview)
+
 
         // Set PromoBanner Slider
         val promoBannerSlider = OfferPromoBanner(requireActivity(), response.data.data.offerPromoBanner)
@@ -134,8 +135,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.subCategoryList.layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false)
         binding.subCategoryList.isNestedScrollingEnabled = false
         binding.subCategoryList.adapter = ProductListHomeAdapter(requireActivity(),response.data.data.productList,app,requireActivity(),this)
-
-
+        Utility.listAnimation(binding.subCategoryList)
     }
 
     override fun onClickAddOrRemoveItem(
@@ -302,8 +302,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
             }
         }
     }
-
-
 
 
 }

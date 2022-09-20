@@ -98,6 +98,7 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
                                 it.virtualOrdersList,
                                 this@MyVirtualActivity
                             )
+                        Utility.listAnimation(bining.rvVirtualList)
                     }
                     is NetworkResult.Error -> {
                         Utility.serverNotResponding(

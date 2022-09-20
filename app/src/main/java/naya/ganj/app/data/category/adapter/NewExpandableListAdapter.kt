@@ -30,7 +30,7 @@ class NewExpandableListAdapter(private var context: Context? = null,
     override fun getChildView(
         listPosition: Int, expandedListPosition: Int,
         isLastChild: Boolean, convertView: View?, parent: ViewGroup?
-    ): View? {
+    ): View {
         var convertView: View? = convertView
         val expandedListText = getChild(listPosition, expandedListPosition) as String?
         if (convertView == null) {

@@ -3,6 +3,7 @@ package naya.ganj.app.data.home.adapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductListAdapter
 import naya.ganj.app.data.category.model.CheckProductInCartModel
 import naya.ganj.app.data.category.model.ProductListModel
+import naya.ganj.app.data.category.view.ProductDetailActivity
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.ProductListHomeAdapterBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
@@ -74,6 +76,24 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             showVariantDialog(product[position].variant,holder,product.get(holder.adapterPosition).id)
         }
 
+        holder.binding.ivImageview.setOnClickListener{
+
+            val unit=holder.binding.tvUnitQuantity.text.toString()
+            Log.e("TAG", "onBindViewHolder: "+unit )
+
+            var variantId=""
+            for(item in product[position].variant){
+                if(item.vUnitQuantity.toString() == unit){
+                    variantId=item.vId
+                }
+            }
+
+            val intent= Intent(context,ProductDetailActivity::class.java)
+            intent.putExtra(Constant.productId,product[position].id)
+            intent.putExtra(Constant.variantId,variantId)
+            context.startActivity(intent)
+
+        }
 
         Thread {
             val listOfProduct =
@@ -123,7 +143,6 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                 )
             }
         }.start()
-
         holder.binding.addItem.setOnClickListener {
             if(Utility.isAppOnLine(context,object: OnInternetCheckListener {
                     override fun onInternetAvailable() {

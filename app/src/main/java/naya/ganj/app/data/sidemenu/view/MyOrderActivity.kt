@@ -12,6 +12,7 @@ import naya.ganj.app.data.sidemenu.viewmodel.MyOrderViewModel
 import naya.ganj.app.data.sidemenu.viewmodel.SideMenuViewModelFactory
 import naya.ganj.app.databinding.ActivityMyOrddrBinding
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.utility.Utility
 
 class MyOrderActivity : AppCompatActivity() {
     lateinit var binding: ActivityMyOrddrBinding
@@ -46,6 +47,7 @@ class MyOrderActivity : AppCompatActivity() {
                 binding.rvMyOrderList.adapter =
                     MyOrderListAdapter(this@MyOrderActivity, it.ordersList)
                 binding.rvMyOrderList.isNestedScrollingEnabled = false
+                Utility.listAnimation(binding.rvMyOrderList)
             }
         }
     }

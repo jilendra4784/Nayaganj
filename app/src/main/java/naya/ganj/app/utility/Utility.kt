@@ -8,10 +8,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import com.karumi.dexter.Dexter
@@ -258,7 +261,28 @@ class Utility {
 
         }
 
+        // recyclerView Load Animation
+        fun listAnimation(recyclerView: RecyclerView){
+            recyclerView.viewTreeObserver.addOnPreDrawListener(
+                object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        recyclerView.viewTreeObserver.removeOnPreDrawListener(this)
+                        for (i in 0 until recyclerView.childCount) {
+                            val v: View = recyclerView.getChildAt(i)
+                            v.alpha = 0.0f
+                            v.animate().alpha(1.0f)
+                                .setDuration(300)
+                                .setStartDelay((i * 50).toLong())
+                                .start()
+                        }
+                        return true
+                    }
+                })
+        }
+
 
     }
+
+
 
 }

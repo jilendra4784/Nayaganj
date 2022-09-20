@@ -9,9 +9,11 @@
     tools:context=".data.home.view.HomeFragment">
 
     <LinearLayout
+        android:id="@+id/ll_main_leaniear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:visibility="visible"
         android:layout_marginBottom="@dimen/_50sdp">
 
 
@@ -112,6 +114,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"/>
+
+
             </LinearLayout>
 
 
