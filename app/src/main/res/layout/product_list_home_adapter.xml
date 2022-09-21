@@ -33,21 +33,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardCornerRadius="@dimen/_10sdp"
+                android:layout_margin="@dimen/_10sdp"
                 app:cardElevation="@dimen/_5sdp"
-                app:cardUseCompatPadding="true"
                 app:strokeWidth="0dp">
 
                 <ImageView
                     android:id="@+id/imageView11"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_120sdp"
-                    android:padding="@dimen/_5sdp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/product_icon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/tv_offer"
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="wrap_content"
+                    android:text="50% off"
+                    android:gravity="center"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="@dimen/_10sdp"
+                    android:background="@drawable/custom_offer_drawable"
+                    android:textColor="@color/white"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -88,7 +97,7 @@
 
 
                 <TextView
-                    android:id="@+id/ntet"
+                    android:id="@+id/netweight"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_20sdp"
                     android:gravity="center|start"
@@ -98,7 +107,7 @@
                 <RelativeLayout
                     android:id="@+id/ll_variant_layout"
                     android:layout_width="match_parent"
-                    android:layout_toEndOf="@+id/ntet"
+                    android:layout_toEndOf="@+id/netweight"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_10sdp"

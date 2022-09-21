@@ -42,6 +42,8 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
 ) :
     RecyclerView.Adapter<ProductListHomeAdapter.MyViewHolder>() {
 
+    var vMaxQuantity=0
+
     class MyViewHolder(val binding: ProductListHomeAdapterBinding) :
         RecyclerView.ViewHolder(binding.root) {
     }
@@ -106,11 +108,15 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                     holder.binding.tvUnitQuantity.text = listOfProduct[0].vUnitQuantity.toString()
                     holder.binding.tvUnit.text = listOfProduct[0].vUnit
 
-                   /* if(app.user.getAppLanguage()==1){
-                        holder.binding.tvOff.text =listOfProduct[0].vDiscount.toString() + "% "+ context.resources.getString(R.string.off_h)
-                    }else{
-                        holder.binding.tvOff.text = listOfProduct[0].vDiscount.toString() + "% off"
-                    }*/
+                    if (app.user.getAppLanguage() == 1) {
+                        holder.binding.tvOffer.text =
+                            listOfProduct[0].vDiscount.toString() + "% " + context.resources.getString(
+                                R.string.off_h
+                            )
+                    } else {
+                        holder.binding.tvOffer.text =
+                            listOfProduct[0].vDiscount.toString() + "% off"
+                    }
                     holder.binding.addItem.visibility = View.GONE
                     holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
                 }
@@ -164,6 +170,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                 updateItemToLocalDB("minus", holder, product.get(holder.adapterPosition),holder.binding.tvMinus)
         }
 
+
     }
 
 
@@ -210,12 +217,15 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                                 holder.binding.tvPrice.text = price.toString()
                                 holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-                               /* if(app.user.getAppLanguage()==1){
-                                    holder.binding.tvOff.text =singleProduct.vDiscount.toString()+"% "+ context.resources.getString(R.string.off_h)
-                                }else{
-                                    holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% off"
-                                }*/
-
+                                if (app.user.getAppLanguage() == 1) {
+                                    holder.binding.tvOffer.text =
+                                        singleProduct.vDiscount.toString() + "% " + context.resources.getString(
+                                            R.string.off_h
+                                        )
+                                } else {
+                                    holder.binding.tvOffer.text =
+                                        singleProduct.vDiscount.toString() + "% off"
+                                }
                                 holder.binding.tvQuantity.text =
                                     singleProduct.itemQuantity.toString()
                                 holder.binding.tvUnitQuantity.text =
@@ -331,7 +341,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         holder.binding.tvUnitQuantity.text = singleProduct.vUnitQuantity.toString()
                         holder.binding.tvUnit.text = singleProduct.vUnit
                         holder.binding.tvQuantity.text = singleProduct.itemQuantity.toString()
-                        var vMaxQuantity = singleProduct.totalVariantQuantity
+                        vMaxQuantity = singleProduct.totalVariantQuantity
 
                         val price = singleProduct.vPrice
                         val vDiscountPrice: Double
@@ -345,11 +355,11 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-                     /*   if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                        if(app.user.getAppLanguage()==1){
+                            holder.binding.tvOffer.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
                         }else{
-                            holder.binding.tvOff.text  = singleProduct.vDiscount.toString() + "% off"
-                        }*/
+                            holder.binding.tvOffer.text  = singleProduct.vDiscount.toString() + "% off"
+                        }
 
 
                     }
@@ -374,13 +384,13 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-                       /* if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                        if(app.user.getAppLanguage()==1){
+                            holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
                         }else{
-                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
-                        }*/
+                            holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
+                        }
 
-                        var vMaxQuantity = variant[vPosition].vQuantity
+                         vMaxQuantity = variant[vPosition].vQuantity
 
                     }
                 }
@@ -407,16 +417,17 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             }
             holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-          /*  if(app.user.getAppLanguage()==1){
-                holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                holder.binding.tvNetWet.text=context.resources.getString(R.string.net_weight_h)
-                holder.binding.addItem.text=context.resources.getString(R.string.add_h)
-            }else{
-                holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
-            }*/
+            if (app.user.getAppLanguage() == 1) {
+                holder.binding.tvOffer.text =
+                    variant[vPosition].vDiscount.toString() + "% " + context.resources.getString(R.string.off_h)
+                holder.binding.netweight.text = context.resources.getString(R.string.net_weight_h)
+                holder.binding.addItem.text = context.resources.getString(R.string.add_h)
+            } else {
+                holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
+            }
 
 
-            var vMaxQuantity = variant[vPosition].vQuantity
+             vMaxQuantity = variant[vPosition].vQuantity
         }
 
     }
@@ -435,6 +446,12 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         var totalMaxQuantity = 0
 
         val unitQuantity: Int = holder.binding.tvUnitQuantity.text.toString().toInt()
+
+        if(unitQuantity>vMaxQuantity){
+            Utility.showToast(context,"Sorry you can not add more item of this product.")
+            return
+        }
+
         for (item in product.variant) {
             if (item.vUnitQuantity == unitQuantity) {
                 variantID = item.vId

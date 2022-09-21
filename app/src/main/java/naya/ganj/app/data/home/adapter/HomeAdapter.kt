@@ -33,10 +33,8 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category, app)
-        //holder.binding.btnOfferButton.bringToFront()
 
         holder.binding.cvCardview.setOnClickListener {
-            Log.e("TAG", "onBindViewHolder: "+category[position].id )
             val intent = Intent(context, ProductListActivity::class.java)
             intent.putExtra(Constant.CATEGORY_ID, category[position].id)
             context.startActivity(intent)
