@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/_25sdp"
+            android:src="@drawable/tick_mark_icon1"
+            android:scaleType="centerCrop"
+            android:layout_centerVertical="true"
+            android:layout_height="@dimen/_20sdp">
+
+        </ImageView>
+
+        <TextView
+            android:layout_toRightOf="@+id/icon"
+            android:id="@+id/name"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:textSize="@dimen/_10sdp"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Maximum instant discount of ₹120"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
+    </RelativeLayout>
+

@@ -31,6 +31,7 @@ object URLConstant {
     const val URL_SEARCH_PRODUCT_LIST_URL = "getProductList"
     const val URL_PLACE_VIRTUAL_ORDER_URL = "virtualOrders"
     const val URL_COUPON_URL = "getPromoCodeList"
+    const val URL_APPLY_COUPON_URL = "getPromoCodeAmount"
     const val URL_HOME_BANNER_URL = "getpromoBanner"
     const val URL_HOME_PAGE_URL = "homePage"
 

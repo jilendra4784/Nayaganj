@@ -2,12 +2,11 @@ package naya.ganj.app.data.mycart.view
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.data.mycart.adapter.CouponListAdapter
 import naya.ganj.app.data.mycart.model.CouponModel
@@ -34,14 +33,14 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
         setContentView(binding.root)
 
         app = applicationContext as Nayaganj
-        amount = intent.getStringExtra(Constant.cartAmount)!!.toDouble()
+        amount = intent.getStringExtra(Constant.cartAmount)?.substring(1)!!.toDouble()
         if (app.user.getAppLanguage() == 1) {
             // set Hindi Labels
         } else {
             binding.includeLayout.toolbarTitle.text = "Available Coupons"
             binding.includeLayout.ivBackArrow.setOnClickListener { finish() }
         }
-        Log.e("TAG", "onCreate: " + amount)
+
 
         viewModel = ViewModelProvider(
             this@CouponActivity,
@@ -72,49 +71,41 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
 
     private fun setListData(response: NetworkResult.Success<CouponModel>) {
         try {
+
             binding.couponList.layoutManager = LinearLayoutManager(this@CouponActivity)
-            binding.couponList.adapter = CouponListAdapter(
-                this@CouponActivity,
-                this,
-                response.data!!.promoCodeList,
-                "",
-                amount
-            )
-
-            binding.couponList.viewTreeObserver.addOnPreDrawListener(
-                object : ViewTreeObserver.OnPreDrawListener {
-                    override fun onPreDraw(): Boolean {
-                        binding.couponList.viewTreeObserver.removeOnPreDrawListener(this)
-                        for (i in 0 until binding.couponList.childCount) {
-                            val v: View = binding.couponList.getChildAt(i)
-                            v.alpha = 0.0f
-                            v.animate().alpha(1.0f)
-                                .setDuration(300)
-                                .setStartDelay((i * 50).toLong())
-                                .start()
-                        }
-                        return true
-                    }
-                })
-
+            binding.couponList.adapter = CouponListAdapter(this@CouponActivity, this, response.data!!.promoCodeList, "", amount,supportFragmentManager)
+            Utility.listAnimation(binding.couponList)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
     }
 
     override fun applyCoupon(couponId: String, apply_offer: TextView) {
+
         // apply coupon api
         if (Utility.isAppOnLine(this@CouponActivity, object : OnInternetCheckListener {
                 override fun onInternetAvailable() {
-                    applyCouponRequest()
+                    applyCouponRequest(couponId, apply_offer)
                 }
             })) {
-            applyCouponRequest()
+            applyCouponRequest(couponId,apply_offer)
         }
     }
 
-    private fun applyCouponRequest() {
+    private fun applyCouponRequest(couponId: String, apply_offer: TextView) {
         // apply coupon api
-
+        apply_offer.isEnabled=false
+        val jsonObject= JsonObject()
+        try {
+            jsonObject.addProperty(Constant.promoCodeId, couponId)
+        }
+        catch (e: Exception)
+        {
+            e.printStackTrace()
+        }
+        viewModel.applyCouponRequest(app.user.getUserDetails()?.userId,jsonObject).observe(this) {
+            Log.e("TAG", "applyCouponRequest: "+it )
+        }
     }
 }

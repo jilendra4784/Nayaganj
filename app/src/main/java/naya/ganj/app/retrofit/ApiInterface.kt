@@ -249,6 +249,16 @@ interface ApiInterface {
 
 
     @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_APPLY_COUPON_URL)
+    suspend fun applyCouponRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<CouponResponseModel>
+
+
+
+    @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_SEARCH_PRODUCT_LIST_URL)
     suspend fun getSearchDataRequest(
         @Header("text") text: String,

@@ -13,8 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp"
-        >
+        android:padding="@dimen/_10sdp">
 
 
         <TextView
@@ -22,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nayaganj"
-            android:textSize="@dimen/_14sdp"
             android:textColor="@color/purple_500"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,6 +34,7 @@
             android:text="View Details"
             android:textColor="@color/dark_gray"
             android:textSize="@dimen/_12sdp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,9 +58,9 @@
             android:id="@+id/textView67"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:text="TextView"
             android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/light_gray_color"
+            android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_description" />
@@ -69,10 +69,10 @@
             android:id="@+id/tv_coupon_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="NYGJ50"
-            android:padding="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:background="@drawable/edittext_round_corner"
+            android:padding="@dimen/_5sdp"
+            android:text="NYGJ50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView67" />
 
@@ -80,7 +80,7 @@
             android:id="@+id/tv_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="@dimen/_12sdp"
             android:layout_marginEnd="4dp"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/apply"
@@ -93,20 +93,20 @@
             android:id="@+id/textView70"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/light_gray_color"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_coupon_code"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/tv_coupon_code" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_coupon_detail_list"
             android:layout_width="0dp"
-            android:visibility="gone"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
             android:nestedScrollingEnabled="true"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView70" />
