@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +39,7 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
+import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -138,17 +138,17 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
 
-        Glide.with(this@ProductDetailActivity).load(pModel.imgUrl[0]).into(binding.ivProductImage)
-        binding.tvProductName.text = Utility.convertLanguage(pModel.productName,app)
-        if (pModel.description != null){
+        ImageCacheManager.instance.loadCacheImage(binding.ivProductImage, pModel.imgUrl[0])
+        binding.tvProductName.text = Utility.convertLanguage(pModel.productName, app)
+        if (pModel.description != null) {
             binding.tvDescription.text = Utility.convertLanguage(pModel.description, app)
-            binding.tvDescription.visibility=View.VISIBLE
-        }else{
-            binding.tvDescription.visibility=View.GONE
+            binding.tvDescription.visibility = View.VISIBLE
+        } else {
+            binding.tvDescription.visibility = View.GONE
         }
 
-        if(app.user.getAppLanguage()==1){
-            binding.tvProductName.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))
+        if (app.user.getAppLanguage() == 1) {
+            binding.tvProductName.setTypeface(Typeface.createFromAsset(assets, "agrawide.ttf"))
         }
 
         Thread {

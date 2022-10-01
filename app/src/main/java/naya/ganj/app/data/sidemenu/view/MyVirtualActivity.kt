@@ -96,6 +96,7 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
                             VirtualRecyclerviewAdapter(
                                 this@MyVirtualActivity,
                                 it.virtualOrdersList,
+                                this@MyVirtualActivity,
                                 this@MyVirtualActivity
                             )
                         Utility.listAnimation(bining.rvVirtualList)

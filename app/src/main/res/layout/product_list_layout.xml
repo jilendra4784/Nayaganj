@@ -27,7 +27,6 @@
                 android:id="@+id/iv_imagview"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_100sdp"
-                android:src="@mipmap/ic_launcher_round"
                 android:transitionName="product_image"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_product_title"

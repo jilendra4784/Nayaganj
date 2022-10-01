@@ -96,12 +96,21 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
             .observe(requireActivity()) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
-                        if (isAdded) {
-                            setHomePageData(response)
+                        if (response.data!!.status) {
+                            if (isAdded) {
+                                setHomePageData(response)
+                            }
+                        } else {
+                            binding.llProgressbar.visibility = View.GONE
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
                         }
                     }
 
                     is NetworkResult.Error -> {
+                        binding.llProgressbar.visibility = View.GONE
                         Utility.serverNotResponding(
                             requireActivity(),
                             response.message.toString()
@@ -109,6 +118,8 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                     }
                 }
             }
+
+
     }
 
     private fun setHomePageData(response: NetworkResult.Success<HomePageModel>) {
@@ -126,7 +137,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.rvHomeRecyclerview.isNestedScrollingEnabled = false
         binding.rvHomeRecyclerview.adapter = HomeAdapter(requireActivity(),response.data.data.category,app)
         Utility.listAnimation(binding.rvHomeRecyclerview)
-
 
         // Set PromoBanner Slider
         val promoBannerSlider = OfferPromoBanner(requireActivity(), response.data.data.offerPromoBanner)

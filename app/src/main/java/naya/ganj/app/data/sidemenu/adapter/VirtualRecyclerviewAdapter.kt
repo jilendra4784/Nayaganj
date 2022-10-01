@@ -1,5 +1,6 @@
 package naya.ganj.app.data.sidemenu.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -12,11 +13,13 @@ import naya.ganj.app.data.sidemenu.adapter.VirtualRecyclerviewAdapter.MyViewHold
 import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.databinding.AdapterVirtualAdapterLayoutBinding
 import naya.ganj.app.interfaces.OnitemClickListener
+import naya.ganj.app.utility.ImageCacheManager
 
 class VirtualRecyclerviewAdapter(
     val context: Context,
     val virtualOrdersList: List<VirtualOrderModel.VirtualOrders>,
-    val listener: OnitemClickListener
+    val listener: OnitemClickListener,
+    val activity:Activity
 ) : RecyclerView.Adapter<MyViewHolder>() {
 
     class MyViewHolder(val binding: AdapterVirtualAdapterLayoutBinding) :
@@ -42,7 +45,7 @@ class VirtualRecyclerviewAdapter(
         if (vOrderModel.fileName.contains(".mp3")) {
             Picasso.get().load(R.drawable.audio_icon).into(holder.binding.imagview8)
         } else {
-            Picasso.get().load(vOrderModel.fileName).into(holder.binding.imagview8)
+            ImageCacheManager.instance.loadCacheImage(holder.binding.imagview8,vOrderModel.fileName)
         }
 
         holder.binding.imagview8.setOnClickListener {

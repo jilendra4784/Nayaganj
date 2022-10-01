@@ -34,7 +34,6 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
 import naya.ganj.app.utility.Constant.IS_FROM_MYCART
-import naya.ganj.app.utility.NetworkResult
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback

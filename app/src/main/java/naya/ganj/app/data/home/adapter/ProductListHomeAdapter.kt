@@ -32,6 +32,7 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -62,8 +63,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-        Picasso.get().load(product[position].imgUrl[0]).into(holder.binding.imageView11)
+        ImageCacheManager.instance.loadCacheImage(holder.binding.imageView11,product[position].imgUrl[0])
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
         holder.binding.tvDescription.text = Utility.convertLanguage(product[position].description, app)
 

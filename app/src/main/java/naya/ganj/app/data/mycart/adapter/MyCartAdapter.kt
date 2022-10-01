@@ -24,6 +24,7 @@ import naya.ganj.app.roomdb.entity.CartModel
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.roomdb.entity.SavedAmountModel
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,6 +59,7 @@ class MyCartAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
+
         if (cart.discountPrice.toDouble() > 0) {
             if(app.user.getAppLanguage()==1){
                 holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
@@ -247,7 +249,7 @@ class MyCartAdapter(
         holder: MycartAdapterLayoutBinding,
     ) {
 
-        Picasso.get().load(cart.img).into(holder.ivImagview)
+        ImageCacheManager.instance.loadCacheImage(holder.ivImagview,cart.img)
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName,app)
         if(app.user.getAppLanguage()==1){
             holder.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets,"agrawide.ttf"))

@@ -57,19 +57,11 @@ class SplashActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Thread {
-                val decodedAnimation = ImageDecoder.decodeDrawable(
-                    ImageDecoder.createSource(
-                        resources,
-                        R.drawable.front_logo
-                    )
-                )
-
+                val decodedAnimation = ImageDecoder.decodeDrawable(ImageDecoder.createSource(resources, R.drawable.front_logo))
                 ima.setImageDrawable(decodedAnimation)
                 (decodedAnimation as? AnimatedImageDrawable)?.start()
             }.start()
-
         }
-
 
         if(Utility.isAppOnLine(this@SplashActivity,object : OnInternetCheckListener{
                 override fun onInternetAvailable() {

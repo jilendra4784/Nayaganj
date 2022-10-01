@@ -4,22 +4,20 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.app.ActivityCompat
-
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
@@ -39,10 +37,13 @@ import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.DEVICE_TYPE
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
+import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.net.URL
 
 
 class ProductListAdapter(
@@ -79,11 +80,14 @@ class ProductListAdapter(
     }
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
-        Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
-        holder.binding.tvProductTitle.text = Utility.convertLanguage(product.productName.trimStart(),app)
-        holder.binding.tvProductDetail.text =  Utility.convertLanguage(product.description ,app)
-        if(app.user.getAppLanguage()==1){
-            holder.binding.tvProductTitle.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
+
+        ImageCacheManager.instance.loadCacheImage(holder.binding.ivImagview,product.imgUrl[0])
+        holder.binding.tvProductTitle.text =
+            Utility.convertLanguage(product.productName.trimStart(), app)
+        holder.binding.tvProductDetail.text = Utility.convertLanguage(product.description, app)
+        if (app.user.getAppLanguage() == 1) {
+            holder.binding.tvProductTitle.typeface =
+                Typeface.createFromAsset(context.assets, "agrawide.ttf")
         }
         Thread {
             val listOfProduct =
