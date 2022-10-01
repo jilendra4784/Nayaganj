@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
-import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.model.CheckProductInCartModel

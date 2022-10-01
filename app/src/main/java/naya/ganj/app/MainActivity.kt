@@ -612,8 +612,7 @@ import java.util.*
     private fun createImageFile(): Uri? {
         val image = File(applicationContext.filesDir, "camera_photo.png")
         return FileProvider.getUriForFile(
-            applicationContext,
-            "com.example.android.fileprovider",
+            applicationContext, "com.example.android.fileprovider",
             image
         )
     }
@@ -635,19 +634,20 @@ import java.util.*
     }
 
     var cameraResult = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+        Log.i("nayaganj", ": capturing image...")
         if (it) {
             val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
             val selectedImage = BitmapFactory.decodeStream(imageStream)
-            val converetdImage = selectedImage?.let { getResizedBitmap(it, 600) }
+            val converetdImage = selectedImage?.let { getResizedBitmap(it, 500) }
             val baos1 = ByteArrayOutputStream()
-            converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 95, baos1)
+            converetdImage!!.compress(Bitmap.CompressFormat.JPEG, 80, baos1)
             val imageByteArray2 = baos1.toByteArray()
             virtualCaptureImge = Base64.encodeToString(imageByteArray2, Base64.DEFAULT)
 
             isImageOrderRequest = true
             checkAddressExist()
         } else {
-            Log.e("TAG", ": " + it)
+            Log.i("nayaganj", ": " + it)
             virtualCameraAlertDialog?.dismiss()
             Toast.makeText(this@MainActivity, "Image is not Captured!", Toast.LENGTH_SHORT).show()
         }
@@ -673,6 +673,7 @@ import java.util.*
                                     response.body()?.addressList!!,
                                     object : OnitemClickListener {
                                         override fun onclick(position: Int, data: String) {
+                                            Log.i("nayaganj", "onclick: Address Selected $data")
                                             addressId = data
                                         }
                                     })
@@ -708,13 +709,14 @@ import java.util.*
             showAddAddressDialog()
         }
         btnPlaceOrder!!.setOnClickListener {
+            Log.i("nayaganj", "placing order: ")
             if (addressId != "") {
                 if(Utility.isAppOnLine(this@MainActivity,object : OnInternetCheckListener{
                         override fun onInternetAvailable() {
                             placeOrderApi(addressId, bottomSheetAddressDialog!!)
                         }
                     }))
-                placeOrderApi(addressId, bottomSheetAddressDialog!!)
+                    placeOrderApi(addressId, bottomSheetAddressDialog!!)
             } else {
                 Toast.makeText(this, "Please select address", Toast.LENGTH_SHORT).show()
             }
@@ -848,6 +850,7 @@ import java.util.*
                 this
             ) {
                 if (it.status) {
+                    Log.i("TAG", "place order success: ")
                     try {
                         bottomSheetDialog.dismiss()
                         bottomSheetAddressDialog?.dismiss()
@@ -864,6 +867,8 @@ import java.util.*
                         Toast.LENGTH_SHORT
                     ).show()
 
+                } else {
+                    Log.i("TAG", "place order fail: " + it.msg.toString())
                 }
             }
     }
