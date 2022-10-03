@@ -172,16 +172,16 @@ class MyCartFragment : Fragment(), OnclickAddOremoveItemListener {
     }
 
     private fun setListData(mModel: MyCartModel?) {
-        val myCartAdapter =
+       /* val myCartAdapter =
             mModel?.let { MyCartAdapter(
                 requireActivity(),
                 it.cartList,
                 this,
                 requireActivity(),
                 app
-            ) }
+            ) }*/
         binding.rvMycartList.layoutManager = LinearLayoutManager(requireActivity())
-        binding.rvMycartList.adapter = myCartAdapter
+       // binding.rvMycartList.adapter = myCartAdapter
         binding.nestedscrollview.isNestedScrollingEnabled = false
         binding.progressBar.visibility = View.GONE
         binding.mainConstraintLayout.visibility = View.VISIBLE

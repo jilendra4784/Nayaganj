@@ -16,16 +16,68 @@
         android:padding="@dimen/_10sdp">
 
 
+        <LinearLayout
+            android:id="@+id/coupon_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="13dp"
+            android:padding="@dimen/_5sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <LinearLayout
+                android:id="@+id/back_button"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/dismiss_bottom"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:src="@drawable/ic_close_icon"
+                    app:tint="@color/black">
+
+                </ImageView>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/add_new_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text="Coupon Details"
+                android:textSize="@dimen/_14sdp">
+
+            </TextView>
+
+        </LinearLayout>
+
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nayaganj"
             android:textColor="@color/purple_500"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:paddingStart="@dimen/_10sdp"
             android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/coupon_details_layout" />
 
         <TextView
             android:id="@+id/tv_view_Detail"
@@ -34,6 +86,7 @@
             android:text="View Details"
             android:textColor="@color/dark_gray"
             android:textSize="@dimen/_12sdp"
+
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="offer"
+            android:paddingStart="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
@@ -51,6 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
+            android:paddingStart="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_offer" />
 
@@ -73,6 +128,7 @@
             android:background="@drawable/edittext_round_corner"
             android:padding="@dimen/_5sdp"
             android:text="NYGJ50"
+            android:layout_marginStart="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView67" />
 
@@ -84,6 +140,7 @@
             android:layout_marginEnd="4dp"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/apply"
+            android:visibility="gone"
             android:textColor="@color/red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

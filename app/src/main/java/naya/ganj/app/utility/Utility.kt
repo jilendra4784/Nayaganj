@@ -53,6 +53,8 @@ class Utility {
         jsonObject.addProperty(Constant.VARIANT_ID, variantId)
         jsonObject.addProperty(Constant.PROMO_CODE, "")
 
+        Log.i("nayaganj", "addRemoveItem: action="+action+","+jsonObject)
+
         RetrofitClient.instance.addremoveItemRequest(
             userId,
             Constant.DEVICE_TYPE,
@@ -278,6 +280,10 @@ class Utility {
                         return true
                     }
                 })
+        }
+        fun equalsToZero(text:String):Boolean
+        {
+            return text.contains(".0")
         }
 
 

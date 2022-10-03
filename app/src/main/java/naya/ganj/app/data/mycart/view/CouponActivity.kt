@@ -1,8 +1,10 @@
 package naya.ganj.app.data.mycart.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +28,7 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
     lateinit var viewModel: CouponViewModel
     lateinit var app: Nayaganj
     var amount: Double = 0.0
+    var promoId=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,7 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
 
         app = applicationContext as Nayaganj
         amount = intent.getStringExtra(Constant.cartAmount)?.substring(1)!!.toDouble()
+        promoId = intent.getStringExtra(Constant.promoCodeId).toString()
         if (app.user.getAppLanguage() == 1) {
             // set Hindi Labels
         } else {
@@ -73,7 +77,7 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
         try {
 
             binding.couponList.layoutManager = LinearLayoutManager(this@CouponActivity)
-            binding.couponList.adapter = CouponListAdapter(this@CouponActivity, this, response.data!!.promoCodeList, "", amount,supportFragmentManager)
+            binding.couponList.adapter = CouponListAdapter(this@CouponActivity, this, response.data!!.promoCodeList, promoId, amount,supportFragmentManager)
             Utility.listAnimation(binding.couponList)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -95,17 +99,28 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
 
     private fun applyCouponRequest(couponId: String, apply_offer: TextView) {
         // apply coupon api
-        apply_offer.isEnabled=false
-        val jsonObject= JsonObject()
+        apply_offer.isEnabled = false
+        val jsonObject = JsonObject()
         try {
             jsonObject.addProperty(Constant.promoCodeId, couponId)
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-        viewModel.applyCouponRequest(app.user.getUserDetails()?.userId,jsonObject).observe(this) {
-            Log.e("TAG", "applyCouponRequest: "+it )
-        }
+        viewModel.applyCouponRequest(app.user.getUserDetails()?.userId, jsonObject)
+            .observe(this) { model ->
+                if (model.data?.status == true) {
+                    val returnIntent = Intent()
+                    returnIntent.putExtra("couponCode", "Code " + model.data.codeName + " applied!")
+                    returnIntent.putExtra("saveAmountText", model.data.offer)
+                    returnIntent.putExtra("promoCodeId", model.data.promoCodeId)
+                    returnIntent.putExtra("Couponprice", model.data.promoCodeDiscountAmount)
+                    returnIntent.putExtra("codeName", model.data.codeName)
+                    returnIntent.putParcelableArrayListExtra("productlist",model.data.updatedCartList)
+                    setResult(Activity.RESULT_OK, returnIntent)
+                    finish()
+                }else{
+                        Toast.makeText(this@CouponActivity, model.data?.msg, Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }

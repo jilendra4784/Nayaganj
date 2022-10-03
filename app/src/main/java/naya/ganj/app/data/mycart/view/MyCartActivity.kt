@@ -24,6 +24,7 @@ import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.mycart.adapter.MyCartAdapter
 import naya.ganj.app.data.mycart.model.MyCartModel
+import naya.ganj.app.data.mycart.model.UpdatedCart
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
 import naya.ganj.app.databinding.ActivityMyCartBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
@@ -46,6 +47,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     lateinit var myCartModel: MyCartModel
     private var addressId: String? = null
     var orderId: String? = null
+    var couponList: ArrayList<UpdatedCart> = ArrayList()
+    var cartList: MutableList<MyCartModel.Cart>? = null
+    var myCartAdapter: MyCartAdapter? = null
+    var promoId = ""
+    var couponPrice = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +89,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
             binding.tvViewOffer.isClickable=false
             val intent = Intent(this@MyCartActivity, CouponActivity::class.java)
+            intent.putExtra(Constant.promoCodeId, promoId)
             intent.putExtra(Constant.cartAmount, binding.tvCartAmount.text.toString())
             resultLauncher.launch(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -129,7 +136,41 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data: Intent? = result.data
-            //doSomeOperations()
+
+            val couponCode = data?.getStringExtra("couponCode")
+            val couponDes = data?.getStringExtra("saveAmountText")
+            promoId = data?.getStringExtra("promoCodeId").toString()
+            couponPrice = data?.getDoubleExtra("Couponprice", 0.0)!!
+            var codeName = data.getStringExtra("codeName")
+            couponList = data.getParcelableArrayListExtra("productlist")!!
+
+            myCartAdapter = MyCartAdapter(
+                this@MyCartActivity,
+                cartList!!,
+                couponList,
+                this@MyCartActivity,
+                this@MyCartActivity,
+                app
+            )
+            binding.rvMycartList.adapter = myCartAdapter
+
+            if (couponPrice == 0.0) {
+                binding.tvCouponName.visibility = View.GONE
+                binding.tvCouponDes.visibility = View.VISIBLE
+                binding.tvCouponAmount.visibility = View.VISIBLE
+                binding.tvCouponDes.text = "Select a coupon code"
+                binding.tvViewOffer.text = "View Offer"
+            } else {
+                binding.tvCouponName.text = couponCode
+                binding.tvCouponDes.text = couponDes
+                binding.tvViewOffer.text = "Change Offer"
+                binding.tvCouponAmount.text =
+                    resources.getString(R.string.Rs) + " " + couponPrice.toString()
+
+                binding.tvCouponName.visibility = View.VISIBLE
+                binding.tvCouponDes.visibility = View.VISIBLE
+                binding.tvCouponAmount.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -152,10 +193,10 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
             if(Utility.isAppOnLine(this@MyCartActivity,object:OnInternetCheckListener{
                     override fun onInternetAvailable() {
-                        getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
+                        getMyCartData(orderId!!)
                     }
                 }))
-            getMyCartData(app.user.getUserDetails()?.userId.toString(), orderId!!)
+                getMyCartData(orderId!!)
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
             getLocalCartData()
@@ -213,45 +254,37 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
     }
 
-    private fun getMyCartData(userId: String, orderId: String) {
+    private fun getMyCartData(orderId: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.mainConstraintLayout.visibility = View.GONE
         val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.ORDER_ID, orderId)
-        myCartViewModel.getMyCartData(this@MyCartActivity, userId, jsonObject)
+        myCartViewModel.getMyCartData(
+            this@MyCartActivity,
+            app.user.getUserDetails()!!.userId,
+            jsonObject
+        )
             .observe(this@MyCartActivity) {
+                cartList = it.cartList
                 myCartModel = it
                 if (it.cartList.size > 0) {
-                    val adapter = MyCartAdapter(
+                    myCartAdapter = MyCartAdapter(
                         this@MyCartActivity,
-                        it.cartList,
+                        cartList!!,
+                        couponList,
                         this@MyCartActivity,
                         this@MyCartActivity,
                         app
                     )
                     binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
-                    binding.rvMycartList.adapter = adapter
+                    binding.rvMycartList.adapter = myCartAdapter
                     binding.progressBar.visibility = View.GONE
 
-                    binding.rvMycartList.viewTreeObserver.addOnPreDrawListener(
-                        object : ViewTreeObserver.OnPreDrawListener {
-                            override fun onPreDraw(): Boolean {
-                                binding.rvMycartList.viewTreeObserver.removeOnPreDrawListener(this)
-                                for (i in 0 until binding.rvMycartList.childCount) {
-                                    val v: View = binding.rvMycartList.getChildAt(i)
-                                    v.alpha = 0.0f
-                                    v.animate().alpha(1.0f)
-                                        .setDuration(300)
-                                        .setStartDelay((i * 50).toLong())
-                                        .start()
-                                }
-                                return true
-                            }
-                        })
+                    Utility.listAnimation(binding.rvMycartList)
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
-                    binding.offerCardLayout.visibility=View.VISIBLE
+                    binding.offerCardLayout.visibility = View.VISIBLE
                     setAddressDetail(myCartModel.address.address)
                     binding.materialAddressCardview.visibility = View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
@@ -306,7 +339,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
                     jsonObject.addProperty(Constant.ACTION, action)
                     jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
+                    jsonObject.addProperty(Constant.PROMO_CODE, promoId)
 
                     RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
@@ -318,12 +351,28 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status)
-                                        addRemovTextView.isEnabled=true
-                                    lifecycleScope.launch(Dispatchers.IO) {
-                                        AppDataBase.getInstance(this@MyCartActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                if(response.isSuccessful) {
+                                    if (response.body()!!.status)
+                                        addRemovTextView.isEnabled = true
+
+                                    //// Need to update he project
+                                    if (response.body()?.updatedCartList != null) {
+                                        couponList = response.body()!!.updatedCartList
                                     }
+                                    getMyCartData("")
+
+
+
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                            .updateProduct(
+                                                productDetail.itemQuantity,
+                                                productDetail.productId,
+                                                productDetail.variantId
+                                            )
+                                    }
+
+
                                 }else{
                                     Utility.serverNotResponding(this@MyCartActivity,response.message())
                                 }

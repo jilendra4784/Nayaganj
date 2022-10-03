@@ -3,6 +3,7 @@ package naya.ganj.app.data.mycart.adapter
 import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,9 @@ import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.mycart.model.ApiResponseModel
+import naya.ganj.app.data.mycart.model.CouponResponseModel
 import naya.ganj.app.data.mycart.model.MyCartModel
+import naya.ganj.app.data.mycart.model.UpdatedCart
 import naya.ganj.app.databinding.MycartAdapterLayoutBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
@@ -29,11 +32,13 @@ import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.DecimalFormat
 
 
 class MyCartAdapter(
     var context: Context,
     private val cartList: MutableList<MyCartModel.Cart>,
+    var couponList: ArrayList<UpdatedCart>,
     private val addOremoveItemListener: OnclickAddOremoveItemListener,
     private val activity: Activity,
     val app: Nayaganj
@@ -59,6 +64,34 @@ class MyCartAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
+
+        // if Coupon applied
+        for(i in 0 until couponList.size)
+        {
+            if(cart.productId.equals(couponList.get(i).productId)&&cart.variantId.equals(couponList.get(i).variantId))
+            {
+                if(couponList.get(i).actualPriceAfterPromoCode.toString().equals("0.0",ignoreCase = true))
+                {
+                    holder.binding.afterCouponApplyLayout.visibility=View.VISIBLE
+                    holder.binding.afterCouponApplyPrice.visibility=View.GONE
+                    holder.binding.couponNotApplied.visibility=View.VISIBLE
+                    holder.binding.couponNotApplied.setText("Coupon not applicable on this product")
+                }
+                else
+                {
+                    holder.binding.afterCouponApplyLayout.visibility=View.VISIBLE
+                    holder.binding.couponNotApplied.visibility=View.VISIBLE
+                    if(Utility.equalsToZero(couponList.get(i).actualPriceAfterPromoCode.toString()))
+                    {
+                        holder.binding.afterCouponApplyPrice.text = "₹" + DecimalFormat("#").format((couponList.get(i).actualPriceAfterPromoCode))
+                    }
+                    else
+                    {
+                        holder.binding.afterCouponApplyPrice.text = "₹" + DecimalFormat("##.##").format((couponList.get(i).actualPriceAfterPromoCode))
+                    }
+                }
+            }
+        }
 
         if (cart.discountPrice.toDouble() > 0) {
             if(app.user.getAppLanguage()==1){

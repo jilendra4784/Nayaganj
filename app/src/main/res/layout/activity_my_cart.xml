@@ -255,7 +255,7 @@
             android:id="@+id/main_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
             <com.google.android.material.card.MaterialCardView
@@ -336,7 +336,7 @@
                 android:layout_marginTop="@dimen/_20sdp"
                 app:cardElevation="@dimen/_5sdp"
                 app:cardUseCompatPadding="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toBottomOf="@+id/rv_mycart_list"
@@ -355,39 +355,77 @@
                         style="@style/TitleStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Offers"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.009"
+                        android:textSize="@dimen/_12sdp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/textView15"
-                        style="@style/NormalStyle"
-                        android:layout_width="178dp"
-                        android:layout_height="35dp"
-                        android:gravity="bottom"
-                        android:text="Select a coupon code"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
 
                     <TextView
                         android:id="@+id/tv_view_offer"
                         style="@style/TitleStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:gravity="bottom|end"
                         android:text="View Offer"
                         android:textColor="@color/red_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.981"
-                        app:layout_constraintStart_toEndOf="@+id/textView15"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/tv_coupon_amount" />
+
+                    <TextView
+                        android:id="@+id/tv_coupon_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="TextView"
+                        android:visibility="gone"
+                        android:textSize="@dimen/_10sdp"
+                        android:fontFamily="@font/poppins_regular"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+                    <TextView
+                        android:id="@+id/tv_coupon_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="30.00"
+                        android:textColor="@color/purple_500"
+                        android:textSize="@dimen/_12sdp"
+                        android:visibility="gone"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_view_offer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.978"
+                        app:layout_constraintStart_toEndOf="@+id/tv_coupon_name"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.741" />
+                        app:layout_constraintVertical_bias="1.0" />
+
+                    <TextView
+                        android:id="@+id/tv_coupon_des"
+                        style="@style/NormalStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/_10sdp"
+                        android:gravity="bottom"
+                        android:text="Select a coupon code"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_coupon_name" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             </com.google.android.material.card.MaterialCardView>
 
 

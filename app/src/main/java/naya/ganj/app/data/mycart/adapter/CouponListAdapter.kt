@@ -20,9 +20,11 @@ class CouponListAdapter(
     private val couponList: List<CouponModel.PromoCode>,
     val promoCodeId: String,
     val amount: Double,
-   val supportFragmentManager: FragmentManager
+   val supportFragmentManager: FragmentManager,
+
 ) :
     RecyclerView.Adapter<MyViewHolder>() {
+    var isApplyOfferVisible=false
 
     interface  ApplyCouponInterface
     {
@@ -58,8 +60,10 @@ class CouponListAdapter(
 
         if (amount >= item.min) {
             holder.binding.tvApply.visibility=View.VISIBLE
+            isApplyOfferVisible=true
         }else{
             holder.binding.tvApply.visibility=View.GONE
+            isApplyOfferVisible=false
         }
         if(promoCodeId == item.id)
         {
@@ -73,7 +77,7 @@ class CouponListAdapter(
 
         holder.binding.tvViewDetail.setOnClickListener{
 
-            val modalBottomSheet = OfferBottomSheetDetail(couponList[position])
+            val modalBottomSheet = OfferBottomSheetDetail(isApplyOfferVisible,couponList[position])
             modalBottomSheet.show(supportFragmentManager, OfferBottomSheetDetail.TAG)
         }
     }
