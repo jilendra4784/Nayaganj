@@ -54,6 +54,7 @@ object Constant {
     const val INSERT = "insert"
     const val ADD = "add"
     const val REMOVE = "remove"
+    const val DELETE_COUPON_ITEM = "DELETE_COUPON_ITEM"
 
 
     const val Mp3="mp3"

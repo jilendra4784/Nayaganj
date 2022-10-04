@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/tv_rupee"
                     android:fontFamily="@font/roboto_bold"
-                    android:text="200"
+
                     android:textSize="@dimen/_10sdp" />
 
                 <TextView
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/tv_rupee_small"
                     android:paddingTop="@dimen/_1sdp"
-                    android:text="200"
+
                     android:textSize="@dimen/_10sdp" />
 
                 <LinearLayout
@@ -184,7 +184,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
                         android:gravity="center"
-                        android:text="0"
+
                         android:textSize="@dimen/_13sdp" />
 
 

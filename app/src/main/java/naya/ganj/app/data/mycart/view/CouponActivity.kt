@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.JsonObject
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.mycart.adapter.CouponListAdapter
 import naya.ganj.app.data.mycart.model.CouponModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
@@ -42,8 +43,13 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
             // set Hindi Labels
         } else {
             binding.includeLayout.toolbarTitle.text = "Available Coupons"
-            binding.includeLayout.ivBackArrow.setOnClickListener { finish() }
-        }
+            binding.includeLayout.ivBackArrow.setOnClickListener {
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+
+            }
+            }
+
 
 
         viewModel = ViewModelProvider(
@@ -122,5 +128,11 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
                         Toast.makeText(this@CouponActivity, model.data?.msg, Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        finish()
     }
 }

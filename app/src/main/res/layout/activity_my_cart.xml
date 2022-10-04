@@ -336,7 +336,7 @@
                 android:layout_marginTop="@dimen/_20sdp"
                 app:cardElevation="@dimen/_5sdp"
                 app:cardUseCompatPadding="true"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toBottomOf="@+id/rv_mycart_list"
@@ -366,7 +366,6 @@
 
                     <TextView
                         android:id="@+id/tv_view_offer"
-                        style="@style/TitleStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
@@ -396,8 +395,7 @@
                         android:id="@+id/tv_coupon_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="30.00"
+                        android:fontFamily="@font/poppins_medium"
                         android:textColor="@color/purple_500"
                         android:textSize="@dimen/_12sdp"
                         android:visibility="gone"
@@ -435,100 +433,148 @@
                 android:layout_height="wrap_content"
                 app:cardElevation="@dimen/_5sdp"
                 app:cardUseCompatPadding="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toBottomOf="@+id/offer_card_layout"
                 app:strokeWidth="0dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/constraint_cartAmount_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:padding="@dimen/_10sdp"
-                    android:visibility="visible">
+                    android:visibility="gone"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/textView22"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Cart Amount"
-                        app:layout_constraintEnd_toStartOf="@+id/tv_cart_amount"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_cart_amount"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="TextView"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView22"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView24"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Delivery Charges"
-                        app:layout_constraintEnd_toStartOf="@+id/tv_delivery_charges"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView24">
 
-                    <TextView
-                        android:id="@+id/tv_delivery_charges"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/textView22"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Cart Amount" />
+
+                        <TextView
+                            android:id="@+id/tv_cart_amount"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/poppins_regular"
+                            android:text="cart" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="TextView"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView24"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_cart_amount" />
-
-                    <TextView
-                        android:id="@+id/textView29"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Total Amount"
-                        android:textColor="@color/red_color"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tv_total_Amount"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
-                    <TextView
-                        android:id="@+id/tv_total_Amount"
-                        style="@style/NormalStyle"
-                        android:layout_width="wrap_content"
+                        >
+
+                        <TextView
+                            android:id="@+id/textView24"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Delivery Charges"
+                       />
+
+                        <TextView
+                            android:id="@+id/tv_delivery_charges"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/poppins_regular"
+                            android:text="@string/deliver_now"
+                  />
+
+
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_coupon_amount_layout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="TextView"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView29" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <TextView
+                            android:id="@+id/tv_coupon"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Total Amount"
+                            android:textColor="@color/purple_500"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/tv_final_coupon_amount"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:textColor="@color/purple_500"
+                            android:fontFamily="@font/poppins_regular"
+                            android:text="amount"
+                            />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <TextView
+                            android:id="@+id/textView29"
+                            style="@style/NormalStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Total Amount"
+                            android:textColor="@color/red_color"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/tv_total_Amount"
+                            android:textColor="@color/red_color"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/poppins_regular"
+                            android:text="amount"
+                      />
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.constraintlayout.widget.Guideline

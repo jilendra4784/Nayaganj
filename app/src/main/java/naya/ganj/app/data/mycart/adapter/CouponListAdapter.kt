@@ -70,6 +70,10 @@ class CouponListAdapter(
             holder.binding.tvApply.text = "APPLIED"
             holder.binding.tvApply.setTextColor(ContextCompat.getColor(context, R.color.green_color))
             holder.binding.tvApply.isEnabled=false
+        }else{
+            holder.binding.tvApply.text = "APPLY"
+            holder.binding.tvApply.setTextColor(ContextCompat.getColor(context, R.color.red_color))
+            holder.binding.tvApply.isEnabled=true
         }
         holder.binding.tvApply.setOnClickListener{
             applyCouponInterface.applyCoupon(item.id,holder.binding.tvApply)

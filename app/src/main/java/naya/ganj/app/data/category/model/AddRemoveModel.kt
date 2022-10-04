@@ -12,5 +12,5 @@ data class AddRemoveModel(
     @SerializedName("status")
     val status: Boolean,
     @SerializedName("updatedCartList")
-    val updatedCartList: ArrayList<UpdatedCart>
+    val updatedCartList: ArrayList<UpdatedCart>?
 )

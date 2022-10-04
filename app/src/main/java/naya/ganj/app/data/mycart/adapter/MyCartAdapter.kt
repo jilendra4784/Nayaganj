@@ -11,11 +11,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
-import com.squareup.picasso.Picasso
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.mycart.model.ApiResponseModel
-import naya.ganj.app.data.mycart.model.CouponResponseModel
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.model.UpdatedCart
 import naya.ganj.app.databinding.MycartAdapterLayoutBinding
@@ -41,7 +39,8 @@ class MyCartAdapter(
     var couponList: ArrayList<UpdatedCart>,
     private val addOremoveItemListener: OnclickAddOremoveItemListener,
     private val activity: Activity,
-    val app: Nayaganj
+    val app: Nayaganj,
+    val promoId: String
 ) :
     RecyclerView.Adapter<MyCartAdapter.MyViewHolder>() {
 
@@ -53,6 +52,7 @@ class MyCartAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        Log.i("nayaganj", "onCreateViewHolder: cartList"+cartList+", cartList "+couponList)
         return MyViewHolder(
             MycartAdapterLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -65,12 +65,14 @@ class MyCartAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
 
+        Log.i("TAG", "onBindViewHolder: couponList size: "+couponList.size +", cartList: "+ cartList.size)
         // if Coupon applied
+
         for(i in 0 until couponList.size)
         {
             if(cart.productId.equals(couponList.get(i).productId)&&cart.variantId.equals(couponList.get(i).variantId))
             {
-                if(couponList.get(i).actualPriceAfterPromoCode.toString().equals("0.0",ignoreCase = true))
+                if(couponList[i].actualPriceAfterPromoCode<=0)
                 {
                     holder.binding.afterCouponApplyLayout.visibility=View.VISIBLE
                     holder.binding.afterCouponApplyPrice.visibility=View.GONE
@@ -91,6 +93,10 @@ class MyCartAdapter(
                     }
                 }
             }
+        }
+
+        if(couponList.size==0){
+            holder.binding.afterCouponApplyLayout.visibility=View.GONE
         }
 
         if (cart.discountPrice.toDouble() > 0) {
@@ -121,17 +127,17 @@ class MyCartAdapter(
                 }
 
                 quantity++
-
-                holder.binding.tvQuantity.text = quantity.toString()
                 val priceAmount = (cart.price / cart.quantity) * quantity
                 val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
 
-                holder.binding.tvPrice.text =
-                    Utility().formatTotalAmount(priceAmount.toDouble()).toString()
-                holder.binding.tvDiscountPrice.text =
-                    Utility().formatTotalAmount(discountAmount).toString()
+                if(couponList.size <= 0){
+                    holder.binding.tvQuantity.text = quantity.toString()
+                    holder.binding.tvPrice.text =
+                        Utility().formatTotalAmount(priceAmount.toDouble()).toString()
+                    holder.binding.tvDiscountPrice.text =
+                        Utility().formatTotalAmount(discountAmount).toString()
+                }
                 val itemSavedAmount = (priceAmount - discountAmount)
-
                 if(app.user.getAppLanguage()==1){
                     holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
                 }else{
@@ -201,14 +207,16 @@ class MyCartAdapter(
                     }
 
                 } else {
-                    holder.binding.tvQuantity.text = quantity.toString()
                     val priceAmount = (cart.price / cart.quantity) * quantity
                     val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
-                    holder.binding.tvPrice.text = Utility().formatTotalAmount(priceAmount.toDouble()).toString()
-                    holder.binding.tvDiscountPrice.text =
-                        Utility().formatTotalAmount(discountAmount).toString()
+                    if(couponList.size <= 0){
+                        holder.binding.tvQuantity.text = quantity.toString()
+                        holder.binding.tvPrice.text =
+                            Utility().formatTotalAmount(priceAmount.toDouble()).toString()
+                        holder.binding.tvDiscountPrice.text =
+                            Utility().formatTotalAmount(discountAmount).toString()
+                    }
                     val itemSavedAmount = (priceAmount - discountAmount)
-
                     if(app.user.getAppLanguage()==1){
                         holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
                     }else{
@@ -302,13 +310,12 @@ class MyCartAdapter(
         Thread {
             val isProductExist = AppDataBase.getInstance(context).productDao()
                 .isProductExist(cart.productId, cart.variantId)
+            Log.i("nayaganj_app", "setListData: isProductExist "+isProductExist )
             if (isProductExist) {
-                val singleProduct = AppDataBase.getInstance(context).productDao()
-                    .getSingleProduct(cart.productId, cart.variantId)
                 val price = cart.price / cart.quantity
                 Thread {
                     AppDataBase.getInstance(context).productDao().syncCart(
-                        singleProduct.itemQuantity,
+                        cart.quantity,
                         cart.productName,
                         cart.img,
                         price.toDouble(),
@@ -322,12 +329,7 @@ class MyCartAdapter(
                 }.start()
 
                 activity.runOnUiThread {
-                    if(cart.quantity>singleProduct.itemQuantity){
-                        holder.tvQuantity.text = cart.quantity.toString()
-                    }else{
-                        holder.tvQuantity.text = singleProduct.itemQuantity.toString()
-                    }
-
+                    holder.tvQuantity.text = cart.quantity.toString()
                 }
             } else {
                 val price = cart.price / cart.quantity
@@ -389,7 +391,7 @@ class MyCartAdapter(
                 val jsonObject = JsonObject()
                 jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
                 jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                jsonObject.addProperty(Constant.promoCodeId, "")
+                jsonObject.addProperty(Constant.promoCodeId, promoId)
 
                 RetrofitClient.instance.removeProduct(
                     app.user.getUserDetails()?.userId,
@@ -406,30 +408,44 @@ class MyCartAdapter(
                                     AppDataBase.getInstance(context).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
                                     AppDataBase.getInstance(context).productDao().deleteSavedAmount(productDetail.productId, productDetail.variantId.toInt())
                                     AppDataBase.getInstance(context).productDao().deleteCartItem(productDetail.productId, productDetail.variantId)
-
-                                    activity.runOnUiThread{
-                                        cartList.removeAt(holder.adapterPosition)
-                                        notifyItemRemoved(holder.adapterPosition)
-                                    }
-
                                 }.start()
 
-                                // Refresh List
-                                addOremoveItemListener.onClickAddOrRemoveItem(
-                                    "",
-                                    ProductDetail(
-                                        productDetail.productId,
-                                        productDetail.variantId,
-                                        0,
+                                if(promoId.equals("")){
+                                    // Refresh List
+                                    addOremoveItemListener.onClickAddOrRemoveItem(
                                         "",
-                                        "",
-                                        0.0,
-                                        0,
-                                        0,
-                                        "",
-                                        0
-                                    )
-                                ,holder.binding.tvMinus)
+                                        ProductDetail(
+                                            productDetail.productId,
+                                            productDetail.variantId,
+                                            0,
+                                            "",
+                                            "",
+                                            0.0,
+                                            0,
+                                            0,
+                                            "",
+                                            0
+                                        )
+                                        ,holder.binding.tvMinus)
+                                }else{
+                                    addOremoveItemListener.onClickAddOrRemoveItem(
+                                        Constant.DELETE_COUPON_ITEM,
+                                        ProductDetail(
+                                            productDetail.productId,
+                                            productDetail.variantId,
+                                            0,
+                                            "",
+                                            "",
+                                            0.0,
+                                            0,
+                                            0,
+                                            "",
+                                            0
+                                        )
+                                        ,holder.binding.tvMinus)
+                                }
+
+
                             }
                         }
 

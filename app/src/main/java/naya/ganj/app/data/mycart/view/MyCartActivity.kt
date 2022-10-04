@@ -49,9 +49,14 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     var orderId: String? = null
     var couponList: ArrayList<UpdatedCart> = ArrayList()
     var cartList: MutableList<MyCartModel.Cart>? = null
-    var myCartAdapter: MyCartAdapter? = null
+    lateinit var myCartAdapter: MyCartAdapter
     var promoId = ""
+    var couponCode = ""
+    var couponDes = ""
+    var codeName = ""
     var couponPrice = 0.0
+    var isCouponApplied = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,14 +139,14 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
+            // Coupon Code
             val data: Intent? = result.data
-
-            val couponCode = data?.getStringExtra("couponCode")
-            val couponDes = data?.getStringExtra("saveAmountText")
+            couponCode = data?.getStringExtra("couponCode").toString()
+            couponDes = data?.getStringExtra("saveAmountText").toString()
             promoId = data?.getStringExtra("promoCodeId").toString()
             couponPrice = data?.getDoubleExtra("Couponprice", 0.0)!!
-            var codeName = data.getStringExtra("codeName")
+            codeName = data.getStringExtra("codeName").toString()
+            couponList.clear()
             couponList = data.getParcelableArrayListExtra("productlist")!!
 
             myCartAdapter = MyCartAdapter(
@@ -150,27 +155,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 couponList,
                 this@MyCartActivity,
                 this@MyCartActivity,
-                app
+                app, promoId
             )
             binding.rvMycartList.adapter = myCartAdapter
+            setCouponData()
 
-            if (couponPrice == 0.0) {
-                binding.tvCouponName.visibility = View.GONE
-                binding.tvCouponDes.visibility = View.VISIBLE
-                binding.tvCouponAmount.visibility = View.VISIBLE
-                binding.tvCouponDes.text = "Select a coupon code"
-                binding.tvViewOffer.text = "View Offer"
-            } else {
-                binding.tvCouponName.text = couponCode
-                binding.tvCouponDes.text = couponDes
-                binding.tvViewOffer.text = "Change Offer"
-                binding.tvCouponAmount.text =
-                    resources.getString(R.string.Rs) + " " + couponPrice.toString()
-
-                binding.tvCouponName.visibility = View.VISIBLE
-                binding.tvCouponDes.visibility = View.VISIBLE
-                binding.tvCouponAmount.visibility = View.VISIBLE
-            }
+            isCouponApplied = true//// check if coupon applied
         }
     }
 
@@ -239,8 +229,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.progressBar.visibility = View.GONE
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.finalCheckoutLayout.visibility = View.VISIBLE
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed({ calculateAmount() }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed({ loadSavedAmount() }, 200)
                 } else {
                     binding.progressBar.visibility = View.GONE
                     binding.finalCheckoutLayout.visibility = View.GONE
@@ -268,20 +258,22 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 cartList = it.cartList
                 myCartModel = it
                 if (it.cartList.size > 0) {
+                    Log.i("nayaganj", "getMyCartData: called" + it.cartList.size)
                     myCartAdapter = MyCartAdapter(
                         this@MyCartActivity,
-                        cartList!!,
+                        it.cartList,
                         couponList,
                         this@MyCartActivity,
                         this@MyCartActivity,
-                        app
+                        app,
+                        promoId
                     )
                     binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
                     binding.rvMycartList.adapter = myCartAdapter
                     binding.progressBar.visibility = View.GONE
 
-                    Utility.listAnimation(binding.rvMycartList)
+                    //Utility.listAnimation(binding.rvMycartList)
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.offerCardLayout.visibility = View.VISIBLE
@@ -303,7 +295,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         }
     }
 
-
     private fun setAddressDetail(address: MyCartModel.Address.Address) {
         addressId = myCartModel.address.id
         val addressString =
@@ -311,7 +302,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     address.city + "-" + address.pincode
         binding.tvAddressDetail.text = addressString
     }
-
 
     override fun onClickAddOrRemoveItem(
         action: String,
@@ -351,18 +341,23 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
+                                addRemovTextView.isEnabled = true
                                 if(response.isSuccessful) {
                                     if (response.body()!!.status)
-                                        addRemovTextView.isEnabled = true
-
-                                    //// Need to update he project
-                                    if (response.body()?.updatedCartList != null) {
-                                        couponList = response.body()!!.updatedCartList
+                                        if (isCouponApplied) {
+                                            if (response.body()!!.updatedCartList != null) {
+                                                couponList = response.body()!!.updatedCartList!!
+                                            } else {
+                                                couponList.clear()
+                                            }
+                                            couponPrice = response.body()!!.promoCodeDiscountAmount
+                                            getMyCartData("")
+                                            setCouponData()
+                                        }
+                                    if (response.body()!!.promoCodeDiscountAmount <= 0) {
+                                        isCouponApplied = false
+                                        promoId = ""
                                     }
-                                    getMyCartData("")
-
-
-
                                     lifecycleScope.launch(Dispatchers.IO) {
                                         AppDataBase.getInstance(this@MyCartActivity).productDao()
                                             .updateProduct(
@@ -371,14 +366,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                                 productDetail.variantId
                                             )
                                     }
-
-
                                 }else{
                                     Utility.serverNotResponding(this@MyCartActivity,response.message())
                                 }
                             }
-
                             override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
+                                addRemovTextView.isEnabled = true
                                 Utility.serverNotResponding(this@MyCartActivity,t.message.toString())
                             }
                         })
@@ -395,7 +388,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
                     jsonObject.addProperty(Constant.ACTION, action)
                     jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
+                    jsonObject.addProperty(Constant.PROMO_CODE, promoId)
 
                     RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
@@ -407,17 +400,43 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status)
-                                        addRemovTextView.isEnabled=true
-                                    if(productDetail.itemQuantity>0){
-                                        lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@MyCartActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.status)
+                                        addRemovTextView.isEnabled = true
+
+                                    if (response.body()!!.status)
+                                        if (isCouponApplied) {
+                                            if (response.body()!!.updatedCartList != null) {
+                                                couponList = response.body()!!.updatedCartList!!
+                                            } else {
+                                                couponList.clear()
+                                            }
+
+                                            couponPrice = response.body()!!.promoCodeDiscountAmount
+                                            getMyCartData("")
+                                            setCouponData()
                                         }
-                                    }else{
+                                    if (response.body()!!.promoCodeDiscountAmount <= 0) {
+                                        isCouponApplied = false
+                                        promoId = ""
+                                    }
+
+                                    if (productDetail.itemQuantity > 0) {
                                         lifecycleScope.launch(Dispatchers.IO) {
-                                            Log.e("TAG", "onResponse: "+" Item deleted successfully" )
-                                            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
+                                            AppDataBase.getInstance(this@MyCartActivity)
+                                                .productDao().updateProduct(
+                                                    productDetail.itemQuantity,
+                                                    productDetail.productId,
+                                                    productDetail.variantId
+                                                )
+                                        }
+                                    } else {
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            AppDataBase.getInstance(this@MyCartActivity)
+                                                .productDao().deleteProduct(
+                                                    productDetail.productId,
+                                                    productDetail.variantId
+                                                )
                                         }
                                     }
 
@@ -451,6 +470,13 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         }
                     }
                 }
+            }
+            Constant.DELETE_COUPON_ITEM->{
+                couponList.clear()
+                promoId=""
+                couponPrice=0.0
+                getMyCartData("")
+                setCouponData()
             }
         }
 
@@ -508,14 +534,22 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         if (cartAmount > myCartModel.deliveryChargesThreshHold) {
                             binding.tvDeliveryCharges.text = "0.0"
                             totalAmount = cartAmount
+
                         } else {
                             totalAmount = cartAmount + myCartModel.deliveryCharges
-                            binding.tvDeliveryCharges.text =resources.getString(R.string.Rs)+" "+ myCartModel.deliveryCharges.toString()
+                            binding.tvDeliveryCharges.text =
+                                resources.getString(R.string.Rs) + " " + myCartModel.deliveryCharges.toString()
+                        }
+                        if (isCouponApplied) {
+                            totalAmount -= couponPrice
                         }
                         binding.deliveryCardLayout.visibility = View.VISIBLE
 
                     } else {
                         totalAmount = cartAmount
+                        if (isCouponApplied) {
+                            totalAmount -= couponPrice
+                        }
                     }
 
                     binding.tvCartAmount.text =resources.getString(R.string.Rs)+" "+ cartAmount
@@ -558,9 +592,35 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-        overridePendingTransition(R.anim.slide_in_left,
-            R.anim.slide_out_right);
+        overridePendingTransition(
+            R.anim.slide_in_left,
+            R.anim.slide_out_right
+        );
     }
 
+    private fun setCouponData() {
 
+        if (couponPrice == 0.0) {
+            binding.tvCouponName.visibility = View.GONE
+            binding.tvCouponDes.visibility = View.VISIBLE
+            binding.tvCouponAmount.visibility = View.GONE
+            binding.tvCouponDes.text = "Select a coupon code"
+            binding.tvViewOffer.text = "View Offer"
+            binding.rlCouponAmountLayout.visibility = View.GONE
+        } else {
+            binding.rlCouponAmountLayout.visibility = View.VISIBLE
+            binding.tvCoupon.text = "Coupon-($codeName):"
+            binding.tvFinalCouponAmount.text =
+                "- " + resources.getString(R.string.Rs) + " " + couponPrice.toString()
+            binding.tvCouponName.text = couponCode
+            binding.tvCouponDes.text = couponDes
+            binding.tvViewOffer.text = "Change Offer"
+            binding.tvCouponAmount.text =
+                resources.getString(R.string.Rs) + " " + couponPrice.toString()
+
+            binding.tvCouponName.visibility = View.VISIBLE
+            binding.tvCouponDes.visibility = View.VISIBLE
+            binding.tvCouponAmount.visibility = View.VISIBLE
+        }
+    }
 }
