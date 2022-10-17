@@ -32,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:labelVisibilityMode="labeled"
-            app:itemBackground="@color/white"
             app:itemIconSize="@dimen/_22sdp"
             app:itemTextColor="@drawable/bottom_navigation_selector"
             app:itemIconTint="@drawable/bottom_navigation_selector"

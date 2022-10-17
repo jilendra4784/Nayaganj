@@ -183,14 +183,31 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         }
 
         CHANGE_ADDRESS_VALUE = ""
+
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (app.user.getLoginSession())
+                AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+            withContext(Dispatchers.Main) {
+                if (orderId == null) {
+                    orderId = ""
+                }
+                if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
+                        override fun onInternetAvailable() {
+                            getMyCartData(orderId!!)
+                        }
+                    }))
+                    getMyCartData(orderId!!)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         Thread {
-            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
-            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
-            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+
         }.start()
 
         if (app.user.getLoginSession()) {
