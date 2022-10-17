@@ -37,6 +37,7 @@ import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
+import naya.ganj.app.utility.Constant.CHANGE_ADDRESS_VALUE
 import naya.ganj.app.utility.Constant.IS_FROM_MYCART
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
@@ -82,9 +83,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             binding.textView22.text = resources.getString(R.string.cart_amount_h)
             binding.textView24.text = resources.getString(R.string.delivery_charge_h)
             binding.textView29.text = resources.getString(R.string.total_amount_h)
+
         } else {
             binding.includeToolbar.toolbarTitle.text = "My Cart"
         }
+
+
 
         binding.btnChangeAddress.setOnClickListener {
 
@@ -177,6 +181,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
             isCouponApplied = true//// check if coupon applied
         }
+
+        CHANGE_ADDRESS_VALUE = ""
     }
 
     override fun onResume() {
@@ -210,6 +216,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
         binding.tvViewOffer.isClickable=true
         //binding.changeOffers.isClickable=true
+
+        if(CHANGE_ADDRESS_VALUE != ""){
+            binding.tvAddressDetail.text=CHANGE_ADDRESS_VALUE
+        }
+
     }
 
     private fun getLocalCartData() {

@@ -10,6 +10,7 @@ import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.view.AddAddressActivity
 import naya.ganj.app.databinding.AdapterAddressListRowBinding
 import naya.ganj.app.interfaces.OnitemClickListener
+import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.ADDRESS_RADIO_SELECTION
 
 class AddressListAdapter(
@@ -67,6 +68,7 @@ class AddressListAdapter(
         }
         holder.binding.radioButton2.setOnCheckedChangeListener { p0, p1 ->
             if (p1) {
+                Constant.CHANGE_ADDRESS_VALUE=holder.binding.tvAddress.text.toString()
                 ADDRESS_RADIO_SELECTION = holder.adapterPosition
                 addressId = m.id
                 onitemClickListener.onclick(holder.adapterPosition, m.id + "@SET_ADDRESS")

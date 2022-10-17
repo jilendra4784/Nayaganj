@@ -38,7 +38,8 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         setContentView(binding.root)
         app = applicationContext as Nayaganj
 
-        binding.include.ivBackArrow.setOnClickListener { finish()
+        binding.include.ivBackArrow.setOnClickListener {
+            finish()
             overridePendingTransition(R.anim.slide_in_left,
                 R.anim.slide_out_right);}
 
@@ -91,13 +92,10 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         } else {
             viewModel.setAddress(jsonObject).observe(this) {
                 finish()
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
             }
         }
 
-        Handler(Looper.getMainLooper()).postDelayed(
-            Runnable { addresListAdapter.notifyDataSetChanged() },
-            200
-        )
     }
 
     private fun getAddressListRequestData(){

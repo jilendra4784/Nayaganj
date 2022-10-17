@@ -1,6 +1,5 @@
 package naya.ganj.app.utility
 
-import java.lang.reflect.Type
 
 object Constant {
     const val pageIndex = "pageIndex"
@@ -63,6 +62,7 @@ object Constant {
     const val data="data"
 
     var ADDRESS_RADIO_SELECTION = 0
+    var CHANGE_ADDRESS_VALUE = ""
     var IS_FROM_MYCART = false
 
     // Delivery module
