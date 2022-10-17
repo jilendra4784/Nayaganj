@@ -81,7 +81,6 @@ class CouponActivity : AppCompatActivity(), CouponListAdapter.ApplyCouponInterfa
 
     private fun setListData(response: NetworkResult.Success<CouponModel>) {
         try {
-
             binding.couponList.layoutManager = LinearLayoutManager(this@CouponActivity)
             binding.couponList.adapter = CouponListAdapter(this@CouponActivity, this, response.data!!.promoCodeList, promoId, amount,supportFragmentManager)
             Utility.listAnimation(binding.couponList)

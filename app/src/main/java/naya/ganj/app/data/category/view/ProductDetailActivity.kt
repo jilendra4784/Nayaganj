@@ -138,7 +138,11 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
 
-        ImageCacheManager.instance.loadCacheImage(binding.ivProductImage, pModel.imgUrl[0])
+        ImageCacheManager.instance.loadCacheImage(
+            this@ProductDetailActivity,
+            binding.ivProductImage,
+            pModel.imgUrl[0]
+        )
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName, app)
         if (pModel.description != null) {
             binding.tvDescription.text = Utility.convertLanguage(pModel.description, app)

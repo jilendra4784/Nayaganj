@@ -9,11 +9,13 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,6 +25,7 @@ import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.mycart.adapter.MyCartAdapter
+import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.model.UpdatedCart
 import naya.ganj.app.data.mycart.viewmodel.MyCartViewModel
@@ -40,7 +43,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
+class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
+    MyCartAdapter.RemoveProduct {
     lateinit var app: Nayaganj
     lateinit var myCartViewModel: MyCartViewModel
     lateinit var binding: ActivityMyCartBinding
@@ -155,7 +159,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                 couponList,
                 this@MyCartActivity,
                 this@MyCartActivity,
-                app, promoId
+                app, promoId, this
             )
             binding.rvMycartList.adapter = myCartAdapter
             setCouponData()
@@ -167,6 +171,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     override fun onResume() {
         super.onResume()
         Thread {
+            AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
         }.start()
@@ -266,7 +271,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         this@MyCartActivity,
                         this@MyCartActivity,
                         app,
-                        promoId
+                        promoId,
+                        this
                     )
                     binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
                     binding.nestedscrollview.isNestedScrollingEnabled = false
@@ -471,17 +477,17 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     }
                 }
             }
-            Constant.DELETE_COUPON_ITEM->{
+            Constant.DELETE_COUPON_ITEM -> {
                 couponList.clear()
-                promoId=""
-                couponPrice=0.0
+                promoId = ""
+                couponPrice = 0.0
                 getMyCartData("")
                 setCouponData()
             }
         }
 
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+        Handler(Looper.getMainLooper()).postDelayed({ calculateAmount() }, 200)
+        Handler(Looper.getMainLooper()).postDelayed({ loadSavedAmount() }, 200)
     }
 
     private fun calculateAmount() {
@@ -622,5 +628,76 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             binding.tvCouponDes.visibility = View.VISIBLE
             binding.tvCouponAmount.visibility = View.VISIBLE
         }
+    }
+
+    override fun removeProductFromList(
+        cartList: MutableList<MyCartModel.Cart>,
+        position: Int,
+        pId: String,
+        vId: String,
+        promoCode: String
+    ) {
+        itemDeleteDialog(cartList, position, pId, vId, promoCode)
+    }
+
+    private fun itemDeleteDialog(
+        cartList: MutableList<MyCartModel.Cart>,
+        position: Int,
+        pId: String,
+        vId: String,
+        promoCode: String
+    ) {
+        MaterialAlertDialogBuilder(this@MyCartActivity)
+            .setTitle("Delete Item? ")
+            .setMessage("Are you sure, you want to delete this product?")
+            .setPositiveButton(
+                "Yes"
+            ) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+
+                val jsonObject = JsonObject()
+                jsonObject.addProperty(Constant.PRODUCT_ID, pId)
+                jsonObject.addProperty(Constant.VARIANT_ID, vId)
+                jsonObject.addProperty(Constant.promoCodeId, promoCode)
+
+                RetrofitClient.instance.removeProduct(
+                    app.user.getUserDetails()?.userId,
+                    Constant.DEVICE_TYPE,
+                    jsonObject
+                )
+                    .enqueue(object : Callback<ApiResponseModel> {
+                        override fun onResponse(
+                            call: Call<ApiResponseModel>,
+                            response: Response<ApiResponseModel>
+                        ) {
+                            if (response.body()!!.status) {
+                                Thread {
+                                    AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                        .deleteProduct(pId, vId)
+                                    AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                        .deleteSavedAmount(pId, vId.toInt())
+                                    AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                        .deleteCartItem(pId, vId)
+                                }.start()
+
+                                cartList.removeAt(position)
+                                myCartAdapter.notifyItemRemoved(position)
+                                Handler(Looper.getMainLooper()).postDelayed({ calculateAmount() }, 200)
+                                Handler(Looper.getMainLooper()).postDelayed({ loadSavedAmount() }, 200)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ApiResponseModel>, t: Throwable) {
+                            Toast.makeText(this@MyCartActivity, t.message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    })
+
+
+            }
+            .setNegativeButton(
+                "NO"
+            ) { dialogInterface, i -> dialogInterface.dismiss() }
+            .show()
     }
 }

@@ -45,7 +45,7 @@ class VirtualRecyclerviewAdapter(
         if (vOrderModel.fileName.contains(".mp3")) {
             Picasso.get().load(R.drawable.audio_icon).into(holder.binding.imagview8)
         } else {
-            ImageCacheManager.instance.loadCacheImage(holder.binding.imagview8,vOrderModel.fileName)
+            ImageCacheManager.instance.loadCacheImage(context,holder.binding.imagview8,vOrderModel.fileName)
         }
 
         holder.binding.imagview8.setOnClickListener {

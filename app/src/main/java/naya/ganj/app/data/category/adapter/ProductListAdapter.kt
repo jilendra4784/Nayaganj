@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
@@ -37,13 +37,10 @@ import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.DEVICE_TYPE
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
-import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import java.net.URL
 
 
 class ProductListAdapter(
@@ -81,7 +78,10 @@ class ProductListAdapter(
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
 
-        ImageCacheManager.instance.loadCacheImage(holder.binding.ivImagview,product.imgUrl[0])
+        //ImageCacheManager.instance.loadCacheImage(context,holder.binding.ivImagview,product.imgUrl[0])
+
+        Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
+
         holder.binding.tvProductTitle.text =
             Utility.convertLanguage(product.productName.trimStart(), app)
         holder.binding.tvProductDetail.text = Utility.convertLanguage(product.description, app)

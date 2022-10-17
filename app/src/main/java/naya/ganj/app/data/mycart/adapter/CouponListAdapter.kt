@@ -81,7 +81,8 @@ class CouponListAdapter(
 
         holder.binding.tvViewDetail.setOnClickListener{
 
-            val modalBottomSheet = OfferBottomSheetDetail(isApplyOfferVisible,couponList[position])
+            val modalBottomSheet =
+                OfferBottomSheetDetail(isApplyOfferVisible, couponList[position], promoCodeId,applyCouponInterface)
             modalBottomSheet.show(supportFragmentManager, OfferBottomSheetDetail.TAG)
         }
     }

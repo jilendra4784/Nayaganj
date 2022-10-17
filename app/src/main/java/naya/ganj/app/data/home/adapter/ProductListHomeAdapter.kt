@@ -62,7 +62,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        ImageCacheManager.instance.loadCacheImage(holder.binding.imageView11,product[position].imgUrl[0])
+        ImageCacheManager.instance.loadCacheImage(context,holder.binding.imageView11,product[position].imgUrl[0])
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
         holder.binding.tvDescription.text = Utility.convertLanguage(product[position].description, app)
 

@@ -40,7 +40,8 @@ class MyCartAdapter(
     private val addOremoveItemListener: OnclickAddOremoveItemListener,
     private val activity: Activity,
     val app: Nayaganj,
-    val promoId: String
+    val promoId: String,
+    val removeProductListener: RemoveProduct
 ) :
     RecyclerView.Adapter<MyCartAdapter.MyViewHolder>() {
 
@@ -48,11 +49,21 @@ class MyCartAdapter(
         return cartList.size
     }
 
+    interface RemoveProduct {
+        fun removeProductFromList(
+            cartList: MutableList<MyCartModel.Cart>,
+            position: Int,
+            pId: String,
+            vId: String,
+            promoCode: String
+        )
+    }
+
     class MyViewHolder(val binding: MycartAdapterLayoutBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        Log.i("nayaganj", "onCreateViewHolder: cartList"+cartList+", cartList "+couponList)
+        Log.i("nayaganj", "onCreateViewHolder: cartList" + cartList + ", cartList " + couponList)
         return MyViewHolder(
             MycartAdapterLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -254,7 +265,8 @@ class MyCartAdapter(
 
         }
         holder.binding.ivDelete.setOnClickListener {
-            itemDeleteDialog(holder, cart)
+            removeProductListener.removeProductFromList(cartList,holder.adapterPosition,cart.productId, cart.variantId, promoId)
+            //itemDeleteDialog()
         }
         setListData(cart, holder.binding)
 
@@ -290,7 +302,7 @@ class MyCartAdapter(
         holder: MycartAdapterLayoutBinding,
     ) {
 
-        ImageCacheManager.instance.loadCacheImage(holder.ivImagview,cart.img)
+        ImageCacheManager.instance.loadCacheImage(context,holder.ivImagview,cart.img)
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName,app)
         if(app.user.getAppLanguage()==1){
             holder.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets,"agrawide.ttf"))
@@ -405,47 +417,35 @@ class MyCartAdapter(
                         ) {
                             if (response.body()!!.status) {
                                 Thread {
-                                    AppDataBase.getInstance(context).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
-                                    AppDataBase.getInstance(context).productDao().deleteSavedAmount(productDetail.productId, productDetail.variantId.toInt())
-                                    AppDataBase.getInstance(context).productDao().deleteCartItem(productDetail.productId, productDetail.variantId)
+                                    AppDataBase.getInstance(context).productDao().deleteProduct(
+                                        productDetail.productId,
+                                        productDetail.variantId
+                                    )
+                                    AppDataBase.getInstance(context).productDao().deleteSavedAmount(
+                                        productDetail.productId,
+                                        productDetail.variantId.toInt()
+                                    )
+                                    AppDataBase.getInstance(context).productDao().deleteCartItem(
+                                        productDetail.productId,
+                                        productDetail.variantId
+                                    )
                                 }.start()
 
-                                if(promoId.equals("")){
-                                    // Refresh List
-                                    addOremoveItemListener.onClickAddOrRemoveItem(
+                                addOremoveItemListener.onClickAddOrRemoveItem(
+                                    "",
+                                    ProductDetail(
+                                        productDetail.productId,
+                                        productDetail.variantId,
+                                        0,
                                         "",
-                                        ProductDetail(
-                                            productDetail.productId,
-                                            productDetail.variantId,
-                                            0,
-                                            "",
-                                            "",
-                                            0.0,
-                                            0,
-                                            0,
-                                            "",
-                                            0
-                                        )
-                                        ,holder.binding.tvMinus)
-                                }else{
-                                    addOremoveItemListener.onClickAddOrRemoveItem(
-                                        Constant.DELETE_COUPON_ITEM,
-                                        ProductDetail(
-                                            productDetail.productId,
-                                            productDetail.variantId,
-                                            0,
-                                            "",
-                                            "",
-                                            0.0,
-                                            0,
-                                            0,
-                                            "",
-                                            0
-                                        )
-                                        ,holder.binding.tvMinus)
-                                }
-
-
+                                        "",
+                                        0.0,
+                                        0,
+                                        0,
+                                        "",
+                                        0
+                                    ), holder.binding.tvMinus
+                                )
                             }
                         }
 
