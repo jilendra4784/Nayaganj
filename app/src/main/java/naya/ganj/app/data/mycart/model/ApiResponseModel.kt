@@ -7,5 +7,7 @@ data class ApiResponseModel(
     @SerializedName("msg")
     val msg: String,
     @SerializedName("status")
-    val status: Boolean
+    val status: Boolean,
+    @SerializedName("promoCodeDiscountAmount")
+    val promoCodeDiscountAmount: Double,
 )

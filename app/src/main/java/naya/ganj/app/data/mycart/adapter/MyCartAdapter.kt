@@ -63,7 +63,7 @@ class MyCartAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        Log.i("nayaganj", "onCreateViewHolder: cartList" + cartList + ", cartList " + couponList)
+
         return MyViewHolder(
             MycartAdapterLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -76,7 +76,7 @@ class MyCartAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
 
-        Log.i("TAG", "onBindViewHolder: couponList size: "+couponList.size +", cartList: "+ cartList.size)
+        Log.i("tag_nayaganj", "onBindViewHolder: couponList size: "+couponList.size +", cartList: "+ cartList.size)
         // if Coupon applied
 
         for(i in 0 until couponList.size)
@@ -266,7 +266,6 @@ class MyCartAdapter(
         }
         holder.binding.ivDelete.setOnClickListener {
             removeProductListener.removeProductFromList(cartList,holder.adapterPosition,cart.productId, cart.variantId, promoId)
-            //itemDeleteDialog()
         }
         setListData(cart, holder.binding)
 
@@ -390,76 +389,4 @@ class MyCartAdapter(
 
         }.start()
     }
-
-    private fun itemDeleteDialog(holder: MyViewHolder, productDetail: MyCartModel.Cart) {
-        MaterialAlertDialogBuilder(context)
-            .setTitle("Delete Item? ")
-            .setMessage("Are you sure, you want to delete this product?")
-            .setPositiveButton(
-                "Yes"
-            ) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-
-                val jsonObject = JsonObject()
-                jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
-                jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                jsonObject.addProperty(Constant.promoCodeId, promoId)
-
-                RetrofitClient.instance.removeProduct(
-                    app.user.getUserDetails()?.userId,
-                    Constant.DEVICE_TYPE,
-                    jsonObject
-                )
-                    .enqueue(object : Callback<ApiResponseModel> {
-                        override fun onResponse(
-                            call: Call<ApiResponseModel>,
-                            response: Response<ApiResponseModel>
-                        ) {
-                            if (response.body()!!.status) {
-                                Thread {
-                                    AppDataBase.getInstance(context).productDao().deleteProduct(
-                                        productDetail.productId,
-                                        productDetail.variantId
-                                    )
-                                    AppDataBase.getInstance(context).productDao().deleteSavedAmount(
-                                        productDetail.productId,
-                                        productDetail.variantId.toInt()
-                                    )
-                                    AppDataBase.getInstance(context).productDao().deleteCartItem(
-                                        productDetail.productId,
-                                        productDetail.variantId
-                                    )
-                                }.start()
-
-                                addOremoveItemListener.onClickAddOrRemoveItem(
-                                    "",
-                                    ProductDetail(
-                                        productDetail.productId,
-                                        productDetail.variantId,
-                                        0,
-                                        "",
-                                        "",
-                                        0.0,
-                                        0,
-                                        0,
-                                        "",
-                                        0
-                                    ), holder.binding.tvMinus
-                                )
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ApiResponseModel>, t: Throwable) {
-                            Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                        }
-                    })
-
-
-            }
-            .setNegativeButton(
-                "NO"
-            ) { dialogInterface, i -> dialogInterface.dismiss() }
-            .show()
-    }
-
 }

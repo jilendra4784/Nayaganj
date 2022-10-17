@@ -132,13 +132,24 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
             } else {
                 startActivity(Intent(this@MyCartActivity, LoginActivity::class.java))
-                IS_FROM_MYCART=true
+                IS_FROM_MYCART = true
             }
         }
 
         binding.btnShopNow.setOnClickListener {
             finish()
         }
+
+        if (orderId == null) {
+            orderId = ""
+        }
+
+        if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
+                override fun onInternetAvailable() {
+                    getMyCartData(orderId!!)
+                }
+            }))
+            getMyCartData(orderId!!)
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -186,12 +197,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                 orderId = ""
             }
 
-            if(Utility.isAppOnLine(this@MyCartActivity,object:OnInternetCheckListener{
-                    override fun onInternetAvailable() {
-                        getMyCartData(orderId!!)
-                    }
-                }))
-                getMyCartData(orderId!!)
+            /* if(Utility.isAppOnLine(this@MyCartActivity,object:OnInternetCheckListener{
+                     override fun onInternetAvailable() {
+                         getMyCartData(orderId!!)
+                     }
+                 }))
+                 getMyCartData(orderId!!)*/
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
             getLocalCartData()
@@ -682,8 +693,23 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
                                 cartList.removeAt(position)
                                 myCartAdapter.notifyItemRemoved(position)
-                                Handler(Looper.getMainLooper()).postDelayed({ calculateAmount() }, 200)
-                                Handler(Looper.getMainLooper()).postDelayed({ loadSavedAmount() }, 200)
+                                Handler(Looper.getMainLooper()).postDelayed(
+                                    { calculateAmount() },
+                                    200
+                                )
+                                Handler(Looper.getMainLooper()).postDelayed(
+                                    { loadSavedAmount() },
+                                    200
+                                )
+
+                                if (response.body()!!.promoCodeDiscountAmount <= 0) {
+                                    promoId = ""
+                                    couponPrice = 0.0
+                                    couponList.clear()
+                                    // myCartAdapter.notifyDataSetChanged()
+                                    setCouponData()
+                                }
+
                             }
                         }
 

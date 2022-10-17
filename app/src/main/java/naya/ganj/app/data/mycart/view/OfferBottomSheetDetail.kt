@@ -1,6 +1,5 @@
 package naya.ganj.app.data.mycart.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,8 +29,7 @@ class OfferBottomSheetDetail(
     var tvDesription: TextView? = null
     var couponLayout: LinearLayout? = null
     var tvApplyOffer: TextView? = null
-
-
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
