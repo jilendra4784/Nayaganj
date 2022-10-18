@@ -144,16 +144,20 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             finish()
         }
 
-        if (orderId == null) {
-            orderId = ""
+        if(app.user.getLoginSession()){
+            if (orderId == null) {
+                orderId = ""
+            }
+            if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        getMyCartData(orderId!!)
+                    }
+                }))
+                getMyCartData(orderId!!)
+        }else{
+            getLocalCartData()
         }
 
-        if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
-                override fun onInternetAvailable() {
-                    getMyCartData(orderId!!)
-                }
-            }))
-            getMyCartData(orderId!!)
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -216,19 +220,8 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             }else{
                 binding.btnLoginButton.text = "Checkout"
             }
-            if (orderId == null) {
-                orderId = ""
-            }
-
-            /* if(Utility.isAppOnLine(this@MyCartActivity,object:OnInternetCheckListener{
-                     override fun onInternetAvailable() {
-                         getMyCartData(orderId!!)
-                     }
-                 }))
-                 getMyCartData(orderId!!)*/
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
-            getLocalCartData()
         }
 
         binding.tvViewOffer.isClickable=true

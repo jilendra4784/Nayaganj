@@ -71,8 +71,8 @@ class CategoryFragment : Fragment() {
     }
 
     private fun getCategoryData() {
-
-        binding.expandablelist.visibility = View.VISIBLE
+        binding.progressBar.visibility=View.VISIBLE
+        binding.expandablelist.visibility = View.GONE
         categoryViewModel?.getCategoryData(requireActivity())?.observe(requireActivity()) {
             if (it != null) {
                 cateModel = it
@@ -102,5 +102,4 @@ class CategoryFragment : Fragment() {
             }
         }
     }
-
 }

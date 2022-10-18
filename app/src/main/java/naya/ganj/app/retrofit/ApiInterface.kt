@@ -270,7 +270,7 @@ interface ApiInterface {
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_HOME_PAGE_URL)
-    suspend fun getBannerData(
+    suspend fun getHomeData(
         @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject

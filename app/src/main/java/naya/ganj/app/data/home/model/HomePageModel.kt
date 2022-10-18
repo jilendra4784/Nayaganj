@@ -7,7 +7,11 @@ data class HomePageModel(
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("status")
-    val status: Boolean
+    val status: Boolean,
+    @SerializedName("msg")
+    val msg: String
+
+
 ) {
     data class Data(
         @SerializedName("category")

@@ -72,10 +72,10 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
 
         if (Utility.isAppOnLine(requireActivity(), object : OnInternetCheckListener {
                 override fun onInternetAvailable() {
-                    getBannerList()
+                    getHomeData()
                 }
             }))
-            getBannerList()
+            getHomeData()
         if (app.user.getAppLanguage() == 1) {
             binding.searchEdittext.hint =
                 requireActivity().resources.getString(R.string.search_here_h)
@@ -87,12 +87,11 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         return binding.root
     }
 
-    private fun getBannerList() {
-
+    private fun getHomeData() {
         val jsonObject = JsonObject()
         jsonObject.addProperty("index", 1);
 
-        homeViewModel.getBannerList(app.user.getUserDetails()?.userId, jsonObject)
+        homeViewModel.getHomeData(app.user.getUserDetails()?.userId, jsonObject)
             .observe(requireActivity()) { response ->
                 when (response) {
                     is NetworkResult.Success -> {
@@ -101,11 +100,15 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                 setHomePageData(response)
                             }
                         } else {
-                            binding.llProgressbar.visibility = View.GONE
-                            Utility.serverNotResponding(
-                                requireActivity(),
-                                response.message.toString()
-                            )
+                            try {
+                                binding.llProgressbar.visibility = View.GONE
+                                Utility.serverNotResponding(
+                                    requireActivity(),
+                                    response.data.msg
+                                )
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                            }
                         }
                     }
 

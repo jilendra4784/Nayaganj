@@ -13,10 +13,10 @@ import naya.ganj.app.utility.NetworkResult
 class HomeViewModel(val repo: HomeRepositry) : ViewModel() {
     private val ballerMutableData = MutableLiveData<NetworkResult<HomePageModel>>()
 
-    fun getBannerList(userId: String?, jsonObject: JsonObject): LiveData<NetworkResult<HomePageModel>> {
+    fun getHomeData(userId: String?, jsonObject: JsonObject): LiveData<NetworkResult<HomePageModel>> {
         viewModelScope.launch {
             try {
-                val result = repo.getBannerData(userId, jsonObject)
+                val result = repo.getHomeData(userId, jsonObject)
                 if (result.isSuccessful) {
                     ballerMutableData.value = NetworkResult.Success(result.body()!!)
                 } else {

@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/top_app_bar_menu"
             android:id="@+id/material_toolbar"
-            app:navigationIcon="@drawable/ic_home_black_24dp"
+            app:navigationIcon="@drawable/category"
             app:title="GeeksforGeeks" />
 
     </com.google.android.material.appbar.AppBarLayout>

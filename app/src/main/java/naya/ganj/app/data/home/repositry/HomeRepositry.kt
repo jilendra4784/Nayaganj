@@ -6,5 +6,5 @@ import naya.ganj.app.utility.Constant
 
 class HomeRepositry(val api: ApiInterface) {
 
-    suspend fun getBannerData(userId:String?, jsonObject: JsonObject) = api.getBannerData(userId, Constant.DEVICE_TYPE,jsonObject)
+    suspend fun getHomeData(userId:String?, jsonObject: JsonObject) = api.getHomeData(userId, Constant.DEVICE_TYPE,jsonObject)
 }

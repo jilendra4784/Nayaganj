@@ -192,6 +192,8 @@ import java.util.*
             }
         }
 
+        binding.navView.setOnItemReselectedListener {  }
+
     }
 
     override fun onResume() {

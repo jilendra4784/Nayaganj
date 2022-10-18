@@ -5,7 +5,7 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/home"
-            android:icon="@drawable/home"
+            android:icon="@drawable/home_main"
             android:title="@string/home" />
         <item
             android:id="@+id/myaccount"
@@ -13,7 +13,7 @@
             android:title="@string/my_account" />
         <item
             android:id="@+id/shop_category"
-            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:icon="@drawable/category"
             android:title="@string/shop_by_category" />
         <item
             android:id="@+id/my_order"

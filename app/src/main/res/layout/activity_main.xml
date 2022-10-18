@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,29 +17,43 @@
             android:id="@+id/nav_host_fragment_activity_main"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/view"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/nav_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@+id/include14"
+            android:layout_below="@+id/include14"
             app:navGraph="@navigation/mobile_navigation" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_above="@+id/nav_view"
+            android:background="@color/dark_gray" />
+
+       <!-- <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/white"
+            android:visibility="visible"
+            app:itemIconTint="@color/bnv_tab_item_foreground"
             app:labelVisibilityMode="labeled"
-            app:itemIconSize="@dimen/_22sdp"
-            app:itemTextColor="@drawable/bottom_navigation_selector"
-            app:itemIconTint="@drawable/bottom_navigation_selector"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/bottom_nav_menu" />
+            app:itemTextColor="@color/bnv_tab_item_foreground"
+            app:menu="@menu/bottom_nav_menu" />-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+           android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:itemIconTint="@color/bnv_tab_item_foreground"
+            app:itemTextColor="@color/bnv_tab_item_foreground"
+            app:menu="@menu/bottom_nav_menu"
+            android:background="@color/white"
+            app:labelVisibilityMode="labeled"/>
+
+    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/side_navigation"
@@ -50,6 +64,7 @@
         app:itemTextAppearance="@style/TextAppearance.Material3.BodyLarge"
         app:headerLayout="@layout/header_layout"
         app:menu="@menu/navigation_menu"
+
         app:itemIconTint="@color/purple_500"/>
 
 
