@@ -66,7 +66,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         app = requireActivity().applicationContext as Nayaganj
 
-
         binding.llMainLeaniearLayout.visibility = View.GONE
         binding.llProgressbar.visibility = View.VISIBLE
 
@@ -121,8 +120,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                     }
                 }
             }
-
-
     }
 
     private fun setHomePageData(response: NetworkResult.Success<HomePageModel>) {
