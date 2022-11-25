@@ -19,7 +19,6 @@
         android:id="@+id/expandablelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:groupIndicator="@null"
         android:divider="@null"
         android:childDivider="@null"

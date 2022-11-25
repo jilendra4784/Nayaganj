@@ -46,5 +46,10 @@ object URLConstant {
     const val URL_SET_DELIVERY_BOY_LOCATION_URL = "setdeliveryBoyLocation"
 
 
+    // PAYTM
+
+    const val PAYTM_PURCHASE = "paytmPurchase"
+    const val VALIDATE_TRANSACTION = "validateTxn"
+
 
 }

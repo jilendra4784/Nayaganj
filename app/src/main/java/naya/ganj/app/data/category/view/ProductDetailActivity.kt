@@ -138,11 +138,16 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
 
-        ImageCacheManager.instance.loadCacheImage(
-            this@ProductDetailActivity,
-            binding.ivProductImage,
-            pModel.imgUrl[0]
-        )
+        try {
+            ImageCacheManager.instance.loadCacheImage(
+                this@ProductDetailActivity,
+                binding.ivProductImage,
+                pModel.imgUrl[0]
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName, app)
         if (pModel.description != null) {
             binding.tvDescription.text = Utility.convertLanguage(pModel.description, app)
@@ -508,7 +513,7 @@ class ProductDetailActivity : AppCompatActivity() {
                                                     product.imgUrl[0],
                                                     vPrice,
                                                     vDiscount,
-                                                    vUnitQuantity,
+                                                    vUnitQuantity.toString(),
                                                     vUnit,
                                                     totalMaxQuantity
                                                 )
@@ -542,7 +547,7 @@ class ProductDetailActivity : AppCompatActivity() {
                                 product.imgUrl[0],
                                 vPrice,
                                 vDiscount,
-                                vUnitQuantity,
+                                vUnitQuantity.toString(),
                                 vUnit,
                                 totalMaxQuantity
                             )

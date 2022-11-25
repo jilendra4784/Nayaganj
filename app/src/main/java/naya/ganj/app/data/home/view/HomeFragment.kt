@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,10 +88,16 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     }
 
     private fun getHomeData() {
+        val userID: String
         val jsonObject = JsonObject()
         jsonObject.addProperty("index", 1);
-
-        homeViewModel.getHomeData(app.user.getUserDetails()?.userId, jsonObject)
+        Log.e("TAG", "getHomeData: " + app.user.getUserDetails()?.userId)
+        userID = if (app.user.getUserDetails()?.userId == null) {
+            ""
+        } else {
+            app.user.getUserDetails()?.userId!!
+        }
+        homeViewModel.getHomeData(userID, jsonObject)
             .observe(requireActivity()) { response ->
                 when (response) {
                     is NetworkResult.Success -> {

@@ -170,7 +170,8 @@ class AddAddressActivity : AppCompatActivity() {
 
         if (isUpdateAddress) {
             jsonObject.addProperty(Constant.addressId, addressId)
-            viewModel.updateAddressRequest(jsonObject).observe(this) {
+
+            viewModel.updateAddressRequest(app.user.getUserDetails()?.userId,jsonObject).observe(this) {
                 binding.btnAddAddress.isEnabled = true
                 it.let {
                     if (it.status) {
@@ -185,7 +186,7 @@ class AddAddressActivity : AppCompatActivity() {
                 }
             }
         } else {
-            viewModel.addAddressRequest(jsonObject).observe(this) {
+            viewModel.addAddressRequest(app.user.getUserDetails()?.userId,jsonObject).observe(this) {
                 binding.btnAddAddress.isEnabled = true
                 it.let {
                     if (it.status) {

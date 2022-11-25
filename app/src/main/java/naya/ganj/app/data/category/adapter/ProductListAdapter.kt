@@ -77,10 +77,12 @@ class ProductListAdapter(
     }
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
-
-        //ImageCacheManager.instance.loadCacheImage(context,holder.binding.ivImagview,product.imgUrl[0])
-
-        Glide.with(context).load(product.imgUrl[0]).into(holder.binding.ivImagview)
+        try {
+            Glide.with(context).load(product.imgUrl[position]).error(R.drawable.no_image)
+                .into(holder.binding.ivImagview)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         holder.binding.tvProductTitle.text =
             Utility.convertLanguage(product.productName.trimStart(), app)
@@ -130,7 +132,7 @@ class ProductListAdapter(
                         "",
                         0.0,
                         0,
-                        0,
+                        "0",
                         "",
                         0
                     ),holder.binding.tvMinus
@@ -143,7 +145,7 @@ class ProductListAdapter(
         }
         holder.binding.ivImagview.setOnClickListener {
             var variantID = ""
-            val unitQuantity: Int = holder.binding.tvUnitQuantity.text.toString().toInt()
+            val unitQuantity: String = holder.binding.tvUnitQuantity.text.toString()
             for (item in product.variant) {
                 if (item.vUnitQuantity == unitQuantity) {
                     variantID = item.vId
@@ -445,11 +447,11 @@ class ProductListAdapter(
         var variantID = ""
         var vPrice = 0.0
         var vDiscount = 0
-        var vUnitQuantity = 0
+        var vUnitQuantity = "0"
         var vUnit = ""
         var totalMaxQuantity = 0
 
-        val unitQuantity: Int = holder.binding.tvUnitQuantity.text.toString().toInt()
+        val unitQuantity: String = holder.binding.tvUnitQuantity.text.toString()
         for (item in product.variant) {
             if (item.vUnitQuantity == unitQuantity) {
                 variantID = item.vId
@@ -476,7 +478,7 @@ class ProductListAdapter(
                     // Refresh Cart List
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.INSERT, ProductDetail(
-                            product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
+                            product.id, variantID, quantity, product.productName, "",
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
                         ),textview
                     )
@@ -525,7 +527,7 @@ class ProductListAdapter(
                                 variantID,
                                 quantity,
                                 product.productName,
-                                product.imgUrl.get(0),
+                                "",
                                 vPrice,
                                 vDiscount,
                                 vUnitQuantity,

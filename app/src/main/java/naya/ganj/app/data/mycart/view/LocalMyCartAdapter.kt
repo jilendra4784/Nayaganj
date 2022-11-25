@@ -208,7 +208,7 @@ class LocalMyCartAdapter(
                         "",
                         0.0,
                         0,
-                        0,
+                        "0",
                         "",
                         0
                     ),holder.binding.tvMinus

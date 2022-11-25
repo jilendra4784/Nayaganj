@@ -12,6 +12,7 @@ import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -100,7 +101,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_ADD_ADDRESS_URL)
     suspend fun addAddressRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<AddressResponseModel>
@@ -108,7 +109,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELETE_ADDRESS_URL)
     suspend fun deleteAddressRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<AddressResponseModel>
@@ -116,7 +117,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_UPDATE_ADDRESS_URL)
     suspend fun updateAddressRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<AddressResponseModel>
@@ -124,7 +125,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_SET_ADDRESS_URL)
     suspend fun setAddress(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<AddressResponseModel>
@@ -136,6 +137,26 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<OrderPlacedModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.PAYTM_PURCHASE)
+    suspend fun paytmPurchaseRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<JSONObject>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.VALIDATE_TRANSACTION)
+    suspend fun verifyTransactionStatus(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ValidateTransResponse>
+
+
+
 
     @Headers("Content-Type: application/json")
     @GET(URLConstant.URL_MY_ORDER_LIST_URL)
@@ -193,7 +214,7 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_GET_OTP_URL)
     suspend fun getOTPRequest(
-        @Header("userid") userid: String,
+        @Header("userid") userid: String?,
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>

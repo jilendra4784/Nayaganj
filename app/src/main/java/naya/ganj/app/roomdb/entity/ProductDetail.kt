@@ -12,7 +12,7 @@ data class ProductDetail(
     val imageUrl: String,
     val vPrice: Double,
     val vDiscount: Int,
-    val vUnitQuantity: Int,
+    val vUnitQuantity: String,
     val vUnit: String,
     val totalVariantQuantity: Int
 ) {

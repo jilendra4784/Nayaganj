@@ -30,7 +30,7 @@ data class LoginResponseModel(
         @SerializedName("role")
         val role: String,
         @SerializedName("userId")
-        val userId: String,
+        var userId: String,
         @SerializedName("wallet")
         val wallet: Int
     ) {

@@ -3,7 +3,6 @@ package naya.ganj.app.roomdb.entity
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 
 @Dao
 interface ProductDao {
@@ -39,7 +38,7 @@ interface ProductDao {
         pImage: String,
         pPrice: Double,
         pDiscount: Int,
-        vUQuantity: Int,
+        vUQuantity: String,
         pUnit: String,
         totalQuantity: Int,
         productId: String,

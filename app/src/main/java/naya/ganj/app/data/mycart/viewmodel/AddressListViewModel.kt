@@ -23,17 +23,17 @@ class AddressListViewModel(val repo: AddressListRespositry) : ViewModel() {
         return mutableLiveData
     }
 
-    fun deleteAddressRequest(jsonObject: JsonObject): LiveData<AddressResponseModel> {
+    fun deleteAddressRequest(userId: String?,jsonObject: JsonObject): LiveData<AddressResponseModel> {
         viewModelScope.launch {
-            val result = repo.deleteAddressRequest(jsonObject)
+            val result = repo.deleteAddressRequest(userId,jsonObject)
             mutableDeleteData.value = result.body()
         }
         return mutableDeleteData
     }
 
-    fun setAddress(jsonObject: JsonObject): LiveData<AddressResponseModel> {
+    fun setAddress(userId: String?, jsonObject: JsonObject): LiveData<AddressResponseModel> {
         viewModelScope.launch {
-            val result = repo.setAddress(jsonObject)
+            val result = repo.setAddress(userId,jsonObject)
             mutableDeleteData.value = result.body()
         }
         return mutableDeleteData

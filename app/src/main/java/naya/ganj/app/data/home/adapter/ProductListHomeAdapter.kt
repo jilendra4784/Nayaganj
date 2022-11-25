@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
@@ -31,7 +32,6 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
-import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -62,33 +62,47 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        ImageCacheManager.instance.loadCacheImage(context,holder.binding.imageView11,product[position].imgUrl[0])
+        try {
+            //ImageCacheManager.instance.loadCacheImage(context,holder.binding.imageView11,product[position].imgUrl[0])
+            Glide.with(context).load(product[position].imgUrl[0]).error(R.drawable.no_image)
+                .into(holder.binding.imageView11)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
-        holder.binding.tvDescription.text = Utility.convertLanguage(product[position].description, app)
+        holder.binding.tvDescription.text =
+            Utility.convertLanguage(product[position].description, app)
 
-        if(app.user.getAppLanguage()==1){
-            holder.binding.tvTitle.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
-            holder.binding.tvDescription.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
+        if (app.user.getAppLanguage() == 1) {
+            holder.binding.tvTitle.typeface =
+                Typeface.createFromAsset(context.assets, "agrawide.ttf")
+            holder.binding.tvDescription.typeface =
+                Typeface.createFromAsset(context.assets, "agrawide.ttf")
         }
 
-        holder.binding.llVariantLayout.setOnClickListener{
-            showVariantDialog(product[position].variant,holder,product.get(holder.adapterPosition).id)
+        holder.binding.llVariantLayout.setOnClickListener {
+            showVariantDialog(
+                product[position].variant,
+                holder,
+                product.get(holder.adapterPosition).id
+            )
         }
 
-        holder.binding.ivImageview.setOnClickListener{
+        holder.binding.ivImageview.setOnClickListener {
 
-            val unit=holder.binding.tvUnitQuantity.text.toString()
-            Log.e("TAG", "onBindViewHolder: "+unit )
+            val unit = holder.binding.tvUnitQuantity.text.toString()
+            Log.e("TAG", "onBindViewHolder: " + unit)
 
-            var variantId=""
-            for(item in product[position].variant){
-                if(item.vUnitQuantity.toString() == unit){
-                    variantId=item.vId
+            var variantId = ""
+            for (item in product[position].variant) {
+                if (item.vUnitQuantity.toString() == unit) {
+                    variantId = item.vId
                 }
             }
 
-            val intent= Intent(context,ProductDetailActivity::class.java)
-            intent.putExtra(Constant.productId,product[position].id)
+            val intent = Intent(context, ProductDetailActivity::class.java)
+            intent.putExtra(Constant.productId, product[position].id)
             intent.putExtra(Constant.variantId,variantId)
             context.startActivity(intent)
 
@@ -137,7 +151,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         "",
                         0.0,
                         0,
-                        0,
+                        "0",
                         "",
                         0
                     ),holder.binding.tvMinus
@@ -440,7 +454,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         var variantID = ""
         var vPrice = 0.0
         var vDiscount = 0
-        var vUnitQuantity = 0
+        var vUnitQuantity = "0"
         var vUnit = ""
         var totalMaxQuantity = 0
 
@@ -452,7 +466,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         }
 
         for (item in product.variant) {
-            if (item.vUnitQuantity == unitQuantity) {
+            if (item.vUnitQuantity == unitQuantity.toString()) {
                 variantID = item.vId
                 vPrice = item.vPrice.toDouble()
                 vDiscount = item.vDiscount

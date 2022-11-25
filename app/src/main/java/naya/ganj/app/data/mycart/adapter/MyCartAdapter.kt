@@ -9,27 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.JsonObject
+import com.bumptech.glide.Glide
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
-import naya.ganj.app.data.mycart.model.ApiResponseModel
 import naya.ganj.app.data.mycart.model.MyCartModel
 import naya.ganj.app.data.mycart.model.UpdatedCart
 import naya.ganj.app.databinding.MycartAdapterLayoutBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
-import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.CartModel
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.roomdb.entity.SavedAmountModel
 import naya.ganj.app.utility.Constant
-import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.DecimalFormat
 
 
@@ -97,43 +90,46 @@ class MyCartAdapter(
                     if(Utility.equalsToZero(couponList.get(i).actualPriceAfterPromoCode.toString()))
                     {
                         holder.binding.afterCouponApplyPrice.text = "₹" + DecimalFormat("#").format((couponList.get(i).actualPriceAfterPromoCode))
-                    }
-                    else
-                    {
-                        holder.binding.afterCouponApplyPrice.text = "₹" + DecimalFormat("##.##").format((couponList.get(i).actualPriceAfterPromoCode))
+                    } else {
+                        holder.binding.afterCouponApplyPrice.text =
+                            "₹" + DecimalFormat("##.##").format((couponList.get(i).actualPriceAfterPromoCode))
                     }
                 }
             }
         }
 
-        if(couponList.size==0){
-            holder.binding.afterCouponApplyLayout.visibility=View.GONE
+        if (couponList.size == 0) {
+            holder.binding.afterCouponApplyLayout.visibility = View.GONE
         }
 
-        if (cart.discountPrice.toDouble() > 0) {
-            if(app.user.getAppLanguage()==1){
-                holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
-            }else{
-                holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
-            }
+           if (cart.discountPrice.toDouble() > 0) {
+               if(app.user.getAppLanguage()==1){
+                   holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
+               }else{
+                   holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
+               }
 
-            holder.binding.tvSaveAmount.visibility = View.VISIBLE
-            setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
-        } else {
-            holder.binding.tvSaveAmount.visibility = View.GONE
-        }
+               holder.binding.tvSaveAmount.visibility = View.VISIBLE
+               setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
+           } else {
+               holder.binding.tvSaveAmount.visibility = View.GONE
+           }
 
         holder.binding.tvPlus.setOnClickListener {
-            holder.binding.tvPlus.isEnabled=false
-            if(Utility.isAppOnLine(context,object:OnInternetCheckListener{
+            holder.binding.tvPlus.isEnabled = false
+            if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
 
                     }
-                })){
+                })) {
                 var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
 
-                if(quantity>=cart.variantQuantity){
-                    Toast.makeText(context,"Sorry! you can not add more quantity for this product",Toast.LENGTH_SHORT).show()
+                if (quantity >= cart.variantQuantity) {
+                    Toast.makeText(
+                        context,
+                        "Sorry! you can not add more quantity for this product",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
 
@@ -162,7 +158,18 @@ class MyCartAdapter(
 
                 addOremoveItemListener.onClickAddOrRemoveItem(
                     Constant.ADD,
-                    ProductDetail(cart.productId, cart.variantId, quantity, "", "", 0.0, 0, 0, "", 0),
+                    ProductDetail(
+                        cart.productId,
+                        cart.variantId,
+                        quantity,
+                        "",
+                        "",
+                        0.0,
+                        0,
+                        "0",
+                        "",
+                        0
+                    ),
                     holder.binding.tvPlus
                 )
 
@@ -201,7 +208,7 @@ class MyCartAdapter(
                             "",
                             0.0,
                             0,
-                            0,
+                            "0",
                             "",
                             0
                         ),holder.binding.tvMinus
@@ -249,7 +256,7 @@ class MyCartAdapter(
                             "",
                             0.0,
                             0,
-                            0,
+                            "0",
                             "",
                             0
                         ),holder.binding.tvMinus
@@ -300,19 +307,33 @@ class MyCartAdapter(
         cart: MyCartModel.Cart,
         holder: MycartAdapterLayoutBinding,
     ) {
+        try {
+            Glide.with(context).load(cart.img).error(R.drawable.no_image).into(holder.ivImagview)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-        ImageCacheManager.instance.loadCacheImage(context,holder.ivImagview,cart.img)
-        holder.tvProductTitle.text = Utility.convertLanguage(cart.productName,app)
-        if(app.user.getAppLanguage()==1){
-            holder.tvProductTitle.setTypeface(Typeface.createFromAsset(context.assets,"agrawide.ttf"))
+        holder.tvProductTitle.text = Utility.convertLanguage(cart.productName, app)
+
+        if (app.user.getAppLanguage() == 1) {
+            try {
+                holder.tvProductTitle.setTypeface(
+                    Typeface.createFromAsset(
+                        context.assets,
+                        "agrawide.ttf"
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         holder.tvPrice.text = cart.price.toString()
         holder.tvDiscountPrice.text = cart.actualPrice
-        holder.tvUnit.text = cart.variantUnitQuantity.toString() + cart.variantUnit
+        holder.tvUnit.text = cart.variantUnitQuantity + cart.variantUnit
         holder.tvQuantity.text = cart.quantity.toString()
 
-        if(app.user.getAppLanguage()==1){
-            holder.tvNetWet.text=context.resources.getString(R.string.net_weight_h)
+        if (app.user.getAppLanguage() == 1) {
+            holder.tvNetWet.text = context.resources.getString(R.string.net_weight_h)
         }
 
         val discountPrice: Int =
@@ -321,14 +342,14 @@ class MyCartAdapter(
         Thread {
             val isProductExist = AppDataBase.getInstance(context).productDao()
                 .isProductExist(cart.productId, cart.variantId)
-            Log.i("nayaganj_app", "setListData: isProductExist "+isProductExist )
+            Log.i("nayaganj_app", "setListData: isProductExist " + isProductExist)
             if (isProductExist) {
                 val price = cart.price / cart.quantity
                 Thread {
                     AppDataBase.getInstance(context).productDao().syncCart(
                         cart.quantity,
                         cart.productName,
-                        cart.img,
+                        "",
                         price.toDouble(),
                         discountPrice,
                         cart.variantUnitQuantity,
@@ -350,7 +371,7 @@ class MyCartAdapter(
                         cart.variantId,
                         cart.quantity,
                         cart.productName,
-                        cart.img,
+                        "",
                         price.toDouble(),
                         discountPrice,
                         cart.variantUnitQuantity,

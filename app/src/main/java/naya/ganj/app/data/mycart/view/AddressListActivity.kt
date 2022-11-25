@@ -2,6 +2,7 @@ package naya.ganj.app.data.mycart.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,38 +77,44 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
                 }
             }))
         getAddressListRequestData()
-
     }
 
     override fun onclick(position: Int, data: String) {
         // Delete Address Request
-
         val result = data.split("@")
         val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.addressId, result[0])
         if (result[1] == "DELETE") {
-            viewModel.deleteAddressRequest(jsonObject).observe(this) {}
+            viewModel.deleteAddressRequest(app.user.getUserDetails()?.userId, jsonObject)
+                .observe(this) {}
         } else {
-            viewModel.setAddress(jsonObject).observe(this) {
+            viewModel.setAddress(app.user.getUserDetails()?.userId, jsonObject).observe(this) {
                 finish()
-                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
-
     }
 
     private fun getAddressListRequestData(){
         viewModel.getAddressList(app.user.getUserDetails()?.userId).observe(this) {
             it.let {
-                addressList = it.addressList
-                addresListAdapter = AddressListAdapter(
-                    it.addressList,
-                    this@AddressListActivity,
-                    this@AddressListActivity,
-                    addressId
-                )
-                binding.rvAddressList.layoutManager = LinearLayoutManager(this)
-                binding.rvAddressList.adapter = addresListAdapter
+                if (it.addressList.size > 0) {
+                    addressList = it.addressList
+                    addresListAdapter = AddressListAdapter(
+                        it.addressList,
+                        this@AddressListActivity,
+                        this@AddressListActivity,
+                        addressId
+                    )
+                    binding.rvAddressList.layoutManager = LinearLayoutManager(this)
+                    binding.rvAddressList.adapter = addresListAdapter
+                } else {
+                    Toast.makeText(
+                        this@AddressListActivity,
+                        "No Address Found!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

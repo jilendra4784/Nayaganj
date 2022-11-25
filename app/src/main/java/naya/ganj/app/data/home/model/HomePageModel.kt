@@ -85,7 +85,7 @@ data class HomePageModel(
                 @SerializedName("vUnit")
                 val vUnit: String,
                 @SerializedName("vUnitQuantity")
-                val vUnitQuantity: Int,
+                val vUnitQuantity: String,
 
                 @SerializedName("vQuantityInCart")
                 val vQuantityInCart: Int

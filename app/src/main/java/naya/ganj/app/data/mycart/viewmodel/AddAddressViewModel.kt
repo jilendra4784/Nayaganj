@@ -13,17 +13,17 @@ class AddAddressViewModel(var repositry: AddressListRespositry) : ViewModel() {
 
     val mutableLiveData = MutableLiveData<AddressResponseModel>()
 
-    fun addAddressRequest(jsonObject: JsonObject): LiveData<AddressResponseModel> {
+    fun addAddressRequest(userID: String?, jsonObject: JsonObject): LiveData<AddressResponseModel> {
         viewModelScope.launch {
-            val result = repositry.addAddressRequest(jsonObject)
+            val result = repositry.addAddressRequest(userID,jsonObject)
             mutableLiveData.value = result.body()
         }
         return mutableLiveData
     }
 
-    fun updateAddressRequest(jsonObject: JsonObject): LiveData<AddressResponseModel> {
+    fun updateAddressRequest(userID: String?, jsonObject: JsonObject): LiveData<AddressResponseModel> {
         viewModelScope.launch {
-            val result = repositry.updateAddressRequest(jsonObject)
+            val result = repositry.updateAddressRequest(userID,jsonObject)
             mutableLiveData.value = result.body()
         }
         return mutableLiveData

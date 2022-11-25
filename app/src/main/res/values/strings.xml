@@ -187,6 +187,7 @@
     <string name="apply">APPLY</string>
     <string name="default_notification_channel_id">NayaGanj Latest Notification</string>
     <string name="notification_channel_name">Nayaganj Latest channel</string>
-
+    <string name="mid">LTukSZ52182040597318</string>
+    <string name="transactions_failed">Transaction failed</string>
 
 </resources>

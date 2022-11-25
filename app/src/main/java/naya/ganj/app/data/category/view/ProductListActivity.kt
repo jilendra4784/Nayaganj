@@ -368,7 +368,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.productList.isNestedScrollingEnabled = false
                     binding.productList.adapter = adapter
 
-                    binding.productList.viewTreeObserver.addOnPreDrawListener(
+                   /* binding.productList.viewTreeObserver.addOnPreDrawListener(
                         object : ViewTreeObserver.OnPreDrawListener {
                             override fun onPreDraw(): Boolean {
                                 binding.productList.viewTreeObserver.removeOnPreDrawListener(this)
@@ -382,7 +382,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 }
                                 return true
                             }
-                        })
+                        })*/
 
                     binding.productList.setHasFixedSize(true)
                     binding.tvNoProduct.visibility = View.GONE

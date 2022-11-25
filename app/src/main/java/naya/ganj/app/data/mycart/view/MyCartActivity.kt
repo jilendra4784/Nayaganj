@@ -111,7 +111,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         binding.btnLoginButton.setOnClickListener {
             if (binding.btnLoginButton.text.toString() == "Checkout" || binding.btnLoginButton.text.toString() == resources.getString(R.string.checkout_h)) {
                 if (addressId == null) {
-                    startActivity(Intent(this@MyCartActivity, AddAddressActivity::class.java))
+                    startActivity(Intent(this@MyCartActivity, AddressListActivity::class.java))
                 } else {
                     lifecycleScope.launch(Dispatchers.IO) {
                         val allProduct = AppDataBase.getInstance(this@MyCartActivity).productDao()
@@ -142,20 +142,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
         binding.btnShopNow.setOnClickListener {
             finish()
-        }
-
-        if(app.user.getLoginSession()){
-            if (orderId == null) {
-                orderId = ""
-            }
-            if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
-                    override fun onInternetAvailable() {
-                        getMyCartData(orderId!!)
-                    }
-                }))
-                getMyCartData(orderId!!)
-        }else{
-            getLocalCartData()
         }
 
     }
@@ -210,25 +196,34 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
     override fun onResume() {
         super.onResume()
-        Thread {
-
-        }.start()
-
         if (app.user.getLoginSession()) {
-            if(app.user.getAppLanguage()==1){
+            if (app.user.getAppLanguage() == 1) {
                 binding.btnLoginButton.text = resources.getString(R.string.checkout_h)
-            }else{
+            } else {
                 binding.btnLoginButton.text = "Checkout"
             }
         } else {
             binding.btnLoginButton.text = "Login/SignUp"
         }
 
-        binding.tvViewOffer.isClickable=true
+        binding.tvViewOffer.isClickable = true
         //binding.changeOffers.isClickable=true
 
-        if(CHANGE_ADDRESS_VALUE != ""){
-            binding.tvAddressDetail.text=CHANGE_ADDRESS_VALUE
+        if (CHANGE_ADDRESS_VALUE != "") {
+            binding.tvAddressDetail.text = CHANGE_ADDRESS_VALUE
+        }
+        if (app.user.getLoginSession()) {
+            if (orderId == null) {
+                orderId = ""
+            }
+            if (Utility.isAppOnLine(this@MyCartActivity, object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        getMyCartData(orderId!!)
+                    }
+                }))
+                getMyCartData(orderId!!)
+        } else {
+            getLocalCartData()
         }
 
     }
@@ -315,7 +310,15 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.offerCardLayout.visibility = View.VISIBLE
-                    setAddressDetail(myCartModel.address.address)
+                    try {
+                        setAddressDetail(myCartModel.address.address)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        binding.btnChangeAddress.text = "Add Address"
+                        binding.tvAddressDetail.text = "No Address Selected"
+                        addressId = null
+                    }
+
                     binding.materialAddressCardview.visibility = View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
                     Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
@@ -334,11 +337,13 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
     }
 
     private fun setAddressDetail(address: MyCartModel.Address.Address) {
+
         addressId = myCartModel.address.id
         val addressString =
             address.houseNo + "," + address.apartName + "," + address.street + "," + address.landmark + "," +
                     address.city + "-" + address.pincode
         binding.tvAddressDetail.text = addressString
+        binding.btnChangeAddress.text = "Change Address"
     }
 
     override fun onClickAddOrRemoveItem(
