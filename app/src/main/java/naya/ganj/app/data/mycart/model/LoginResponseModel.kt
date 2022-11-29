@@ -58,7 +58,9 @@ data class LoginResponseModel(
             @SerializedName("returnAttemptLim")
             val returnAttemptLim: Int,
             @SerializedName("virtualOrderStatus")
-            val virtualOrderStatus: List<VirtualOrderStatu>
+            val virtualOrderStatus: List<VirtualOrderStatu>,
+            @SerializedName("productImgUrl")
+            val productImgUrl: String,
         ) {
             data class OrderStatu(
                 @SerializedName("CANCELLED")

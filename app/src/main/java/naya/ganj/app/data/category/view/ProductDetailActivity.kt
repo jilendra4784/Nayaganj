@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,6 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
-import naya.ganj.app.utility.ImageCacheManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -137,15 +137,15 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
-
         try {
-            ImageCacheManager.instance.loadCacheImage(
-                this@ProductDetailActivity,
-                binding.ivProductImage,
-                pModel.imgUrl[0]
-            )
+            Log.e("TAG", "ImageURL: " + app.user.getUserDetails()?.configObj?.productImgUrl)
+
+            val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + pModel.imgUrl[0]
+            Glide.with(this@ProductDetailActivity).load(imgURL).error(R.drawable.default_image)
+                .into(binding.ivProductImage)
         } catch (e: Exception) {
             e.printStackTrace()
+            binding.ivProductImage.setBackgroundResource(R.drawable.default_image)
         }
 
         binding.tvProductName.text = Utility.convertLanguage(pModel.productName, app)
@@ -463,7 +463,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
         var vPrice = 0.0
         var vDiscount = 0
-        var vUnitQuantity = 0
+        var vUnitQuantity = "0"
         var vUnit = ""
         var totalMaxQuantity = 0
 
@@ -496,28 +496,36 @@ class ProductDetailActivity : AppCompatActivity() {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status){
-                                        addremoveText.isEnabled=true
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.status) {
+                                        addremoveText.isEnabled = true
                                         binding.llMinusPlusLayout.visibility = View.VISIBLE
                                         binding.addButton.visibility = View.GONE
                                         binding.tvQuantity.text = "1"
                                         val quantity = 1
+
+                                        val imgURL = try {
+                                            product.imgUrl[0]
+                                        } catch (e: Exception) {
+                                            ""
+                                        }
+
                                         lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
-                                                ProductDetail(
-                                                    productId,
-                                                    variantId,
-                                                    quantity,
-                                                    product.productName,
-                                                    product.imgUrl[0],
-                                                    vPrice,
-                                                    vDiscount,
-                                                    vUnitQuantity.toString(),
-                                                    vUnit,
-                                                    totalMaxQuantity
+                                            AppDataBase.getInstance(this@ProductDetailActivity)
+                                                .productDao().insert(
+                                                    ProductDetail(
+                                                        productId,
+                                                        variantId,
+                                                        quantity,
+                                                        product.productName,
+                                                        imgURL,
+                                                        vPrice,
+                                                        vDiscount,
+                                                        vUnitQuantity.toString(),
+                                                        vUnit,
+                                                        totalMaxQuantity
+                                                    )
                                                 )
-                                            )
                                         }
                                     }else{
                                         Utility.serverNotResponding(this@ProductDetailActivity,response.message())
@@ -538,13 +546,18 @@ class ProductDetailActivity : AppCompatActivity() {
                     binding.tvQuantity.text = "1"
                     val quantity = 1
                     lifecycleScope.launch(Dispatchers.IO) {
+                        val imgURL = try {
+                            product.imgUrl[0]
+                        } catch (e: Exception) {
+                            ""
+                        }
                         AppDataBase.getInstance(this@ProductDetailActivity).productDao().insert(
                             ProductDetail(
                                 productId,
                                 variantId,
                                 quantity,
                                 product.productName,
-                                product.imgUrl[0],
+                                imgURL,
                                 vPrice,
                                 vDiscount,
                                 vUnitQuantity.toString(),

@@ -59,8 +59,8 @@ class PaymentOptionActivity : AppCompatActivity() {
         )[PaymentOptionsViewModel::class.java]
 
         intent.extras.let {
-            //amount = intent.getStringExtra("TOTAL_AMOUNT").toString()
-            amount = "1"
+            amount = intent.getStringExtra("TOTAL_AMOUNT").toString()
+            //amount = "1"
             addressId = intent.getStringExtra("ADDRESS_ID").toString()
             promocode = intent.getStringExtra("PROMO_CODE").toString()
             walletBalance = intent.getStringExtra("WALLET_BALANCE").toString()
@@ -152,9 +152,7 @@ class PaymentOptionActivity : AppCompatActivity() {
 
         viewmodel.orderPlaceRequest(app.user.getUserDetails()?.userId, jsonObject)
             .observe(this) { response ->
-
                 when (response) {
-
                     is NetworkResult.Success -> {
                         val it = response.data!!
                         if (it.status) {

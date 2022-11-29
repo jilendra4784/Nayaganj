@@ -68,10 +68,6 @@ class MyCartAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
-
-        Log.i("tag_nayaganj", "onBindViewHolder: couponList size: "+couponList.size +", cartList: "+ cartList.size)
-        // if Coupon applied
-
         for(i in 0 until couponList.size)
         {
             if(cart.productId.equals(couponList.get(i).productId)&&cart.variantId.equals(couponList.get(i).variantId))
@@ -103,16 +99,26 @@ class MyCartAdapter(
         }
 
            if (cart.discountPrice.toDouble() > 0) {
-               if(app.user.getAppLanguage()==1){
-                   holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + cart.discountPrice
-               }else{
-                   holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
+               if (cart.discountPrice.toDouble() == cart.price.toDouble()) {
+                   holder.binding.tvRupeeSmall.visibility = View.GONE
+                   holder.binding.tvPrice.visibility = View.GONE
+               }
+               if (app.user.getAppLanguage() == 1) {
+                   holder.binding.tvSaveAmount.text =
+                       context.resources.getString(R.string.saved_h) + " " + context.resources.getString(
+                           R.string.Rs
+                       ) + cart.discountPrice
+               } else {
+                   holder.binding.tvSaveAmount.text =
+                       "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
                }
 
                holder.binding.tvSaveAmount.visibility = View.VISIBLE
                setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
            } else {
                holder.binding.tvSaveAmount.visibility = View.GONE
+               holder.binding.tvRupeeSmall.visibility = View.GONE
+               holder.binding.tvPrice.visibility = View.GONE
            }
 
         holder.binding.tvPlus.setOnClickListener {
@@ -307,10 +313,14 @@ class MyCartAdapter(
         cart: MyCartModel.Cart,
         holder: MycartAdapterLayoutBinding,
     ) {
+        val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + cart.img
+        Log.e("TAG", "setListData: " + imgURL)
         try {
-            Glide.with(context).load(cart.img).error(R.drawable.no_image).into(holder.ivImagview)
+            Glide.with(context).load(imgURL).error(R.drawable.default_image)
+                .into(holder.ivImagview)
         } catch (e: Exception) {
             e.printStackTrace()
+            holder.ivImagview.setBackgroundResource(R.drawable.default_image)
         }
 
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName, app)

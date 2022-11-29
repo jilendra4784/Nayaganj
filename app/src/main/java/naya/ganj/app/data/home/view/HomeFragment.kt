@@ -140,13 +140,26 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.slider.startAutoCycle()
 
         // Set Category Data
+        var cateImages = arrayOf(
+            R.drawable.foodgrains_oil_masala,
+            R.drawable.bakery_cakes_dairy,
+            R.drawable.bevrages,
+            R.drawable.snacks_branded_foods,
+            R.drawable.beauty_hygiene,
+            R.drawable.all_cleaning_household,
+            R.drawable.gourmet_world_food,
+            R.drawable.all_caby_care
+        )
+
         binding.rvHomeRecyclerview.layoutManager = GridLayoutManager(requireActivity(), 3)
         binding.rvHomeRecyclerview.isNestedScrollingEnabled = false
-        binding.rvHomeRecyclerview.adapter = HomeAdapter(requireActivity(),response.data.data.category,app)
+        binding.rvHomeRecyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
         Utility.listAnimation(binding.rvHomeRecyclerview)
 
         // Set PromoBanner Slider
-        val promoBannerSlider = OfferPromoBanner(requireActivity(), response.data.data.offerPromoBanner)
+        val promoBannerSlider =
+            OfferPromoBanner(requireActivity(), response.data.data.offerPromoBanner)
         binding.promoBannerSlider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
         binding.promoBannerSlider.setSliderAdapter(promoBannerSlider)
         binding.promoBannerSlider.scrollTimeInSec = 3
@@ -154,8 +167,9 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.promoBannerSlider.startAutoCycle()
 
         // set Sub Category List
-        binding.tvSubCatTitle.text=Utility.convertLanguage(response.data.data.subCategory,app)
-        binding.subCategoryList.layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false)
+        binding.tvSubCatTitle.text = Utility.convertLanguage(response.data.data.subCategory, app)
+        binding.subCategoryList.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
         binding.subCategoryList.isNestedScrollingEnabled = false
         binding.subCategoryList.adapter = ProductListHomeAdapter(requireActivity(),response.data.data.productList,app,requireActivity(),this)
         Utility.listAnimation(binding.subCategoryList)

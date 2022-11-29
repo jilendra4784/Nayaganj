@@ -57,7 +57,7 @@ data class ProductDetailModel(
             @SerializedName("vUnit")
             val vUnit: String,
             @SerializedName("vUnitQuantity")
-            val vUnitQuantity: Int
+            val vUnitQuantity: String
         )
     }
 }

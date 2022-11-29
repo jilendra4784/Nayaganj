@@ -24,7 +24,6 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_close"
         app:zoomage_animateOnReset="true"
         app:zoomage_autoCenter="true"
-        android:src="@drawable/splash_logo"
         app:zoomage_autoResetMode="UNDER"
         app:zoomage_maxScale="8"
         app:zoomage_minScale="0.6"

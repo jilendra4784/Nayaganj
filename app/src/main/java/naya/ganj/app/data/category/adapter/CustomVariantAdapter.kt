@@ -37,7 +37,6 @@ class CustomVariantAdapter(val context: Context,val app:Nayaganj,
             holder.binding.tvQuantity.text = variantList.get(position).vUnitQuantity.toString() + " " + variantList.get(position).vUnit
             holder.binding.tvPrice.text = variantList.get(position).vPrice.toString()
 
-
             if(app.user.getAppLanguage()==1){
                 holder.binding.tvDiscountPercent.text = "(" + variantList.get(position).vDiscount + "% "+context.resources.getString(
                     R.string.off_h)+")"

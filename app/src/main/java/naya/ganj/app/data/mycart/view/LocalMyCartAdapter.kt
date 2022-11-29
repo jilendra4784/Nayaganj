@@ -42,7 +42,11 @@ class LocalMyCartAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val productDetail = listOfProduct[position]
-        Glide.with(context).load(productDetail.imageUrl).into(holder.binding.ivImageview)
+        try{
+            Glide.with(context).load(productDetail.imageUrl).error(R.drawable.default_image).into(holder.binding.ivImageview)
+        }catch (e:Exception){
+            holder.binding.ivImageview.setBackgroundResource(R.drawable.default_image)
+        }
 
         val productPrice = productDetail.vPrice * productDetail.itemQuantity
         val productDiscountPrice =

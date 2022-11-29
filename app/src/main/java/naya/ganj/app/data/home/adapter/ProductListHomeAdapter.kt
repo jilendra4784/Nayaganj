@@ -63,11 +63,13 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         try {
-            //ImageCacheManager.instance.loadCacheImage(context,holder.binding.imageView11,product[position].imgUrl[0])
-            Glide.with(context).load(product[position].imgUrl[0]).error(R.drawable.no_image)
+            var imgURL =
+                app.user.getUserDetails()?.configObj?.productImgUrl + product[position].imgUrl[0]
+            Glide.with(context).load(imgURL).error(R.drawable.default_image)
                 .into(holder.binding.imageView11)
         } catch (e: Exception) {
             e.printStackTrace()
+            holder.binding.imageView11.setBackgroundResource(R.drawable.default_image)
         }
 
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
@@ -161,7 +163,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         holder.binding.addItem.setOnClickListener {
             if(Utility.isAppOnLine(context,object: OnInternetCheckListener {
                     override fun onInternetAvailable() {
-                        updateItemToLocalDB("add", holder, product.get(holder.adapterPosition),holder.binding.addItem)
+                        updateItemToLocalDB("add", holder, product[holder.adapterPosition],holder.binding.addItem)
                     }
                 }))
                 updateItemToLocalDB("add", holder, product.get(holder.adapterPosition),holder.binding.addItem)
@@ -365,6 +367,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         } else {
                             vDiscountPrice = price
                             holder.binding.tvPrice.visibility = View.INVISIBLE
+                            holder.binding.tvRupee.visibility = View.GONE
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
@@ -394,6 +397,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         } else {
                             vDiscountPrice = price.toDouble()
                             holder.binding.tvPrice.visibility = View.INVISIBLE
+                            holder.binding.tvRupee.visibility = View.GONE
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
@@ -402,9 +406,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         }else{
                             holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
                         }
-
                          vMaxQuantity = variant[vPosition].vQuantity
-
                     }
                 }
             }.start()
@@ -427,6 +429,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             } else {
                 vDiscountPrice = price.toDouble()
                 holder.binding.tvPrice.visibility = View.INVISIBLE
+                holder.binding.tvRupee.visibility = View.GONE
             }
             holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
@@ -438,8 +441,6 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             } else {
                 holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
             }
-
-
              vMaxQuantity = variant[vPosition].vQuantity
         }
 
@@ -458,15 +459,17 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         var vUnit = ""
         var totalMaxQuantity = 0
 
-        val unitQuantity: Int = holder.binding.tvUnitQuantity.text.toString().toInt()
+        val unitQuantity: String = holder.binding.tvUnitQuantity.text.toString()
+        Log.e("TAG", "updateItemToLocalDB: " + unitQuantity)
 
-        if(unitQuantity>vMaxQuantity){
+        Log.e("TAG", "updateItemToLocalDB: " + vMaxQuantity)
+        /*if(unitQuantity>vMaxQuantity){
             Utility.showToast(context,"Sorry you can not add more item of this product.")
             return
-        }
+        }*/
 
         for (item in product.variant) {
-            if (item.vUnitQuantity == unitQuantity.toString()) {
+            if (item.vUnitQuantity == unitQuantity) {
                 variantID = item.vId
                 vPrice = item.vPrice.toDouble()
                 vDiscount = item.vDiscount
@@ -479,45 +482,64 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         when (action) {
 
             "add" -> {
-                if(Utility.isAppOnLine(context,object :OnInternetCheckListener{
+                if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                         override fun onInternetAvailable() {
 
                         }
-                    })){
+                    })) {
 
                     holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
                     holder.binding.addItem.visibility = View.GONE
                     holder.binding.tvQuantity.text = "1"
                     val quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
                     // Refresh Cart List
+
+                    val imgURL = try {
+                        product.imgUrl[0]
+                    } catch (e: Exception) {
+                        ""
+                    }
+
+
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.INSERT, ProductDetail(
-                            product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
+                            product.id, variantID, quantity, product.productName, imgURL,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
-                        ),textview
+                        ), textview
                     )
                 }
             }
             "plus" -> {
 
-                if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+                if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                         override fun onInternetAvailable() {
 
                         }
-                    })){
+                    })) {
                     var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
-                    if(quantity>=totalMaxQuantity){
-                        Toast.makeText(context,"Sorry, you can not add more quantity of this product",Toast.LENGTH_SHORT).show()
+                    Log.e("TAG", "totalMaxQuantity: "+totalMaxQuantity )
+                    if (quantity >= totalMaxQuantity) {
+                        Toast.makeText(
+                            context,
+                            "Sorry, you can not add more quantity of this product",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return
                     }
 
                     quantity++
                     holder.binding.tvQuantity.text = quantity.toString()
+
+                    var imgURL = try {
+                        product.imgUrl.get(0)
+                    } catch (e: Exception) {
+                        ""
+                    }
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.ADD, ProductDetail(
-                            product.id, variantID, quantity, product.productName, product.imgUrl.get(0),
+                            product.id, variantID, quantity, product.productName, imgURL,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
-                        ),textview
+                        ), textview
                     )
                 }
             }
@@ -535,28 +557,39 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                         holder.binding.llPlusMinusLayout.visibility = View.GONE
                         holder.binding.addItem.visibility = View.VISIBLE
 
+                        var imgURL = try {
+                            product.imgUrl.get(0)
+                        } catch (e: Exception) {
+                            ""
+                        }
+
                         onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                             Constant.REMOVE, ProductDetail(
                                 product.id,
                                 variantID,
                                 quantity,
                                 product.productName,
-                                product.imgUrl.get(0),
+                                imgURL,
                                 vPrice,
                                 vDiscount,
                                 vUnitQuantity,
                                 vUnit,
                                 totalMaxQuantity
-                            ),textview
+                            ), textview
                         )
                         return
                     }
                     holder.binding.tvQuantity.text = quantity.toString()
+                    var imgURL = try {
+                        product.imgUrl[0]
+                    } catch (e: Exception) {
+                        ""
+                    }
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.REMOVE, ProductDetail(
-                            product.id, variantID, quantity, product.productName, product.imgUrl[0],
+                            product.id, variantID, quantity, product.productName, imgURL,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
-                        ),textview
+                        ), textview
                     )
                 }
             }

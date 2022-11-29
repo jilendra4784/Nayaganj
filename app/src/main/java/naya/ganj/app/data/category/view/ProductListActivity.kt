@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -292,7 +291,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     private fun showCartLayout() {
         lifecycleScope.launch(Dispatchers.IO) {
             val listofProduct = Utility().getAllProductList(applicationContext)
-            Log.e("TAG", "showCartLayout: "+listofProduct )
             runOnUiThread {
                 if (listofProduct.isNotEmpty()) {
                     binding.llCartLayout.visibility = View.VISIBLE
@@ -367,22 +365,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         LinearLayoutManager(this@ProductListActivity)
                     binding.productList.isNestedScrollingEnabled = false
                     binding.productList.adapter = adapter
-
-                   /* binding.productList.viewTreeObserver.addOnPreDrawListener(
-                        object : ViewTreeObserver.OnPreDrawListener {
-                            override fun onPreDraw(): Boolean {
-                                binding.productList.viewTreeObserver.removeOnPreDrawListener(this)
-                                for (i in 0 until binding.productList.childCount) {
-                                    val v: View = binding.productList.getChildAt(i)
-                                    v.alpha = 0.0f
-                                    v.animate().alpha(1.0f)
-                                        .setDuration(300)
-                                        .setStartDelay((i * 50).toLong())
-                                        .start()
-                                }
-                                return true
-                            }
-                        })*/
 
                     binding.productList.setHasFixedSize(true)
                     binding.tvNoProduct.visibility = View.GONE

@@ -2,7 +2,6 @@ package naya.ganj.app.data.home.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,8 @@ import naya.ganj.app.utility.Utility
 class HomeAdapter(
     val context: Context,
     val category: List<HomePageModel.Data.Category>,
-    val app: Nayaganj
+    val app: Nayaganj,
+    val cateImages: Array<Int>
 ) :
     RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
 
@@ -33,6 +33,7 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category, app)
+        holder.binding.imageView11.setBackgroundResource(cateImages[position])
         holder.binding.cvCardview.setOnClickListener {
             val intent = Intent(context, ProductListActivity::class.java)
             intent.putExtra(Constant.CATEGORY_ID, category[position].id)

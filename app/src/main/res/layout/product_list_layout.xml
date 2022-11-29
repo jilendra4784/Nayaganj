@@ -21,7 +21,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_100sdp">
+            android:layout_height="@dimen/_110sdp">
 
             <ImageView
                 android:id="@+id/iv_imagview"
@@ -40,7 +40,7 @@
                 android:fontFamily="@font/roboto_bold"
                 android:paddingTop="@dimen/_5sdp"
                 android:transitionName="product_name"
-                android:text="product name"
+                android:text="product name fnfjnvjvjjvnjfnvjfnvjnjnjvnfj"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_product_Detail"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -104,10 +104,9 @@
 
                         <TextView
                             android:id="@+id/tv_unit_quantity"
-                            android:layout_width="@dimen/_30sdp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center|end"
-
+                            android:gravity="center"
                             android:paddingStart="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_10sdp" />
@@ -117,7 +116,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:paddingStart="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_10sdp" />
 
