@@ -551,8 +551,11 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                         for (item in listOfProduct) {
                             cartAmount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
                         }
+                        return@async cartAmount
+                    } else {
+                        return@async 0.0
                     }
-                    return@async cartAmount
+
                 }.await()
             }
             Log.e("TAG", "Cart Amount: " + cartAmount)

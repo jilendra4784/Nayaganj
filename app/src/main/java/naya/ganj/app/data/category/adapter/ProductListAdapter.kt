@@ -15,9 +15,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
@@ -77,14 +79,23 @@ class ProductListAdapter(
     }
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
-
         try {
-            val imgUrl = app.user.getUserDetails()?.configObj?.productImgUrl + product.imgUrl[0]
-            Log.e("TAG", "setUpData: imgUrl" + imgUrl)
-            Glide.with(context).load(imgUrl).error(R.drawable.default_image)
-                .into(holder.binding.ivImagview)
+            if (product.imgUrl.isNotEmpty()) {
+                val imgUrl = app.user.getUserDetails()?.configObj?.productImgUrl + product.imgUrl[0]
+                Glide.with(context).load(imgUrl).error(R.drawable.default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.binding.ivImagview)
+            } else {
+                holder.binding.ivImagview.setImageDrawable(null);
+                holder.binding.ivImagview.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.default_image
+                    )
+                )
+            }
         } catch (e: Exception) {
-            holder.binding.ivImagview.setBackgroundResource(R.drawable.default_image)
+            e.printStackTrace()
         }
 
         holder.binding.tvProductTitle.text =

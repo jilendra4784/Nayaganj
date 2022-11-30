@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.sidemenu.adapter.VirtualRecyclerviewAdapter.MyViewHolder
 import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.databinding.AdapterVirtualAdapterLayoutBinding
 import naya.ganj.app.interfaces.OnitemClickListener
-import naya.ganj.app.utility.ImageCacheManager
 
 class VirtualRecyclerviewAdapter(
     val context: Context,
     val virtualOrdersList: List<VirtualOrderModel.VirtualOrders>,
     val listener: OnitemClickListener,
-    val activity:Activity
+    val activity: Activity,
+    var app: Nayaganj
 ) : RecyclerView.Adapter<MyViewHolder>() {
 
     class MyViewHolder(val binding: AdapterVirtualAdapterLayoutBinding) :
@@ -41,11 +42,15 @@ class VirtualRecyclerviewAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val vOrderModel = virtualOrdersList.get(position)
-
         if (vOrderModel.fileName.contains(".mp3")) {
             Picasso.get().load(R.drawable.audio_icon).into(holder.binding.imagview8)
         } else {
-            ImageCacheManager.instance.loadCacheImage(context,holder.binding.imagview8,vOrderModel.fileName)
+            if(vOrderModel.fileName!=""){
+                val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + vOrderModel.fileName
+                Picasso.get().load(imgURL).error(R.drawable.default_image).into(holder.binding.imagview8)
+            }else{
+                holder.binding.imagview8.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.default_image))
+            }
         }
 
         holder.binding.imagview8.setOnClickListener {

@@ -49,6 +49,7 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
     private lateinit var handler: Handler
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bining = ActivityMyVirtualBinding.inflate(layoutInflater)
@@ -92,13 +93,13 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
                 when (response) {
                     is NetworkResult.Success -> {
                         val it = response.data!!
-                        bining.rvVirtualList.adapter =
-                            VirtualRecyclerviewAdapter(
-                                this@MyVirtualActivity,
-                                it.virtualOrdersList,
-                                this@MyVirtualActivity,
-                                this@MyVirtualActivity
-                            )
+                        bining.rvVirtualList.adapter = VirtualRecyclerviewAdapter(
+                            this@MyVirtualActivity,
+                            it.virtualOrdersList,
+                            this@MyVirtualActivity,
+                            this@MyVirtualActivity,
+                            app
+                        )
                         Utility.listAnimation(bining.rvVirtualList)
                     }
                     is NetworkResult.Error -> {

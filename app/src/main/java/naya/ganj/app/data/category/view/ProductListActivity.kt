@@ -79,9 +79,15 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     if (p0.toString().length >= 3) {
                         binding.productList.visibility = View.VISIBLE
                         if (app.user.getLoginSession()) {
-                            getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
+                            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                                getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
+                            }, 200)
+
                         } else {
-                            getProductList(p0.toString(), "", "")
+                            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                                getProductList(p0.toString(), "", "")
+                            }, 200)
+
                         }
                     } else {
                         if (p0.toString().isEmpty()) {

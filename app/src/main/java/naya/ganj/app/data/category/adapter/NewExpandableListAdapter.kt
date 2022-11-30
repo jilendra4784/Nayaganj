@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.utility.Utility
 
 
-class NewExpandableListAdapter(private var context: Context? = null,
-        private var expandableListTitle: List<String>? = null,
-        private var expandableListDetail: HashMap<String, List<String>>? = null,val app: Nayaganj
+class NewExpandableListAdapter(
+    private var context: Context? = null,
+    private var expandableListTitle: List<String>? = null,
+    private var expandableListDetail: HashMap<String, List<String>>? = null,
+    val app: Nayaganj,
+    val subCateImages: Array<Int>
 ) : BaseExpandableListAdapter() {
 
 
@@ -68,12 +72,16 @@ class NewExpandableListAdapter(private var context: Context? = null,
         var convertView: View? = convertView
         val listTitle = getGroup(listPosition) as String?
         if (convertView == null) {
-            convertView=    LayoutInflater.from(parent?.context).inflate(R.layout.list_group, parent, false)
+            convertView =
+                LayoutInflater.from(parent?.context).inflate(R.layout.list_group, parent, false)
         }
         val listTitleTextView = convertView!!.findViewById(R.id.listTitle) as TextView
 
-        val title=Utility.convertLanguage(listTitle,app)
+        val title = Utility.convertLanguage(listTitle, app)
         listTitleTextView.text = title
+
+        val ivIcon = convertView.findViewById(R.id.iv_icon) as ImageView
+        ivIcon.setImageDrawable(ContextCompat.getDrawable(context!!, subCateImages[listPosition]))
 
         val indicatorImageView = convertView.findViewById(R.id.iv_arrow_right) as ImageView
         if (isExpanded) {

@@ -34,7 +34,7 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category, app)
         holder.binding.imageView11.setBackgroundResource(cateImages[position])
-        holder.binding.cvCardview.setOnClickListener {
+        holder.binding.materialCardView.setOnClickListener {
             val intent = Intent(context, ProductListActivity::class.java)
             intent.putExtra(Constant.CATEGORY_ID, category[position].id)
             context.startActivity(intent)

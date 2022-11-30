@@ -99,7 +99,7 @@ data class OrderDetailModel(
             @SerializedName("variantUnit")
             val variantUnit: String,
             @SerializedName("variantUnitQuantity")
-            val variantUnitQuantity: Int
+            val variantUnitQuantity: String
         )
     }
 }

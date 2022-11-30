@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.NewExpandableListAdapter
 import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.category.viewmodel.CategoryViewModel
@@ -90,7 +91,17 @@ class CategoryFragment : Fragment() {
                 }
 
                 if(isAdded){
-                    adapter=NewExpandableListAdapter(requireActivity(),listOfTitle,listOfDataItems,app)
+                    val subCateImages = arrayOf(
+                        R.drawable.foodgrains_oil_masala_icon,
+                        R.drawable.bakery_cakes_dairy_icon,
+                        R.drawable.bevrages_icon,
+                        R.drawable.snacks_branded_foods_icon,
+                        R.drawable.beauty_hygiene_icon,
+                        R.drawable.all_cleaning_household_icon,
+                        R.drawable.gourmet_world_food_icon,
+                        R.drawable.all_caby_care_icon
+                    )
+                    adapter=NewExpandableListAdapter(requireActivity(),listOfTitle,listOfDataItems,app,subCateImages)
                     binding.expandablelist.setAdapter(adapter)
                 }
 
