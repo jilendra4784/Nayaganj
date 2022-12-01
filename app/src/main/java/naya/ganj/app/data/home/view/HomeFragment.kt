@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.google.gson.JsonObject
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +64,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         savedInstanceState: Bundle?
     ): View {
 
+
         homeViewModel = ViewModelProvider(
             requireActivity(),
             HomePageDataFactory(HomeRepositry(RetrofitClient.instance))
@@ -86,6 +91,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
 
         return binding.root
     }
+
 
     private fun getHomeData() {
         val userID: String
@@ -342,6 +348,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
             }
         }
     }
+
 
 
 }

@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import naya.ganj.app.Nayaganj
@@ -46,9 +50,12 @@ class CategoryFragment : Fragment() {
                     if (isAdded)
                         getCategoryData()
                 }
-            })){
+            })) {
             if (isAdded)
                 getCategoryData()
+            binding.llSearchLayout.setOnClickListener {
+                startActivity(Intent(requireActivity(), ProductListActivity::class.java))
+            }
         }
 
        /* var previousOpenGroup = -1
@@ -112,4 +119,5 @@ class CategoryFragment : Fragment() {
             }
         }
     }
+
 }

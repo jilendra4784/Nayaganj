@@ -37,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,7 +63,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
- class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var orderID: String? = null
     var notificationsBadge: View? = null
@@ -109,8 +110,30 @@ import java.util.*
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
             when (destination.id) {
-                R.id.navigation_home -> {}
-                R.id.navigation_dashboard -> {}
+                R.id.navigation_home -> {
+                    val currentNavigationFragment = supportFragmentManager.primaryNavigationFragment
+                /*    currentNavigationFragment?.apply {
+
+                        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                            duration =
+                                resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+                        }
+                        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+                            duration =
+                                resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+                        }
+                    }*/
+                    binding.include14.textView2.text = "Nayaganj"
+                    binding.include14.imageView9.visibility = View.VISIBLE
+                    binding.include14.ivCameraIcon.visibility = View.VISIBLE
+                    binding.include14.ivUserImageview.visibility = View.VISIBLE
+                }
+                R.id.navigation_dashboard -> {
+                    binding.include14.textView2.text = "Shop By Category"
+                    binding.include14.imageView9.visibility = View.GONE
+                    binding.include14.ivCameraIcon.visibility = View.GONE
+                    binding.include14.ivUserImageview.visibility = View.GONE
+                }
                 R.id.navigation_notifications -> {}
                 R.id.navigation_search -> {
                     startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
@@ -137,7 +160,6 @@ import java.util.*
                 R.id.shop_category -> {
                     isDrawerIsOpen()
                     moveToDashboard()
-
                 }
 
                 R.id.my_order -> {
@@ -274,6 +296,7 @@ import java.util.*
 
 
     private fun moveToDashboard() {
+        Log.e(TAG, "moveToDashboard: ")
         if (navController.currentDestination?.id != R.id.navigation_dashboard) {
             if (navController.currentDestination?.id == R.id.navigation_home) {
                 findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_home_to_navigation_dashboard)
@@ -281,9 +304,11 @@ import java.util.*
                 findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_notifications_to_navigation_dashboard)
             }
         }
+
     }
 
     private fun moveToHomeFragment() {
+        Log.e(TAG, "moveToHomeFragment: ")
         if (navController.currentDestination?.id != R.id.navigation_home) {
             if (navController.currentDestination?.id == R.id.navigation_notifications) {
                 findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_notifications_to_navigation_home)

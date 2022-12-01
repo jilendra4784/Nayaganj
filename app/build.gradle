@@ -105,6 +105,8 @@ dependencies {
         exclude group: "com.squareup.okhttp3", module: 'okhttp3'
     }
 
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+
 
 }
 

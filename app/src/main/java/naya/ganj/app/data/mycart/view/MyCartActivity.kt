@@ -67,6 +67,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         super.onCreate(savedInstanceState)
         binding = ActivityMyCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ADDRESS_RADIO_SELECTION = 0
 
         myCartViewModel = ViewModelProvider(this)[MyCartViewModel::class.java]
@@ -87,8 +88,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         } else {
             binding.includeToolbar.toolbarTitle.text = "My Cart"
         }
-
-
 
         binding.btnChangeAddress.setOnClickListener {
 
@@ -144,6 +143,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             finish()
         }
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (app.user.getLoginSession()) {
+                AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
+                AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
+            }
+        }
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -171,13 +176,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
 
             isCouponApplied = true//// check if coupon applied
         }
-
         CHANGE_ADDRESS_VALUE = ""
-
 
         lifecycleScope.launch(Dispatchers.IO) {
             if (app.user.getLoginSession())
                 AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+            Log.e("TAG", "getLoginSession: " + app.user.getLoginSession())
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllSavedAmount()
             AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllCartData()
             withContext(Dispatchers.Main) {
@@ -474,6 +478,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                                                 )
                                         }
                                     } else {
+                                        Log.e("TAG", "onResponse: Item Deleted")
                                         lifecycleScope.launch(Dispatchers.IO) {
                                             AppDataBase.getInstance(this@MyCartActivity)
                                                 .productDao().deleteProduct(
@@ -536,6 +541,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                 cartAmount = async {
                     val cartList = AppDataBase.getInstance(this@MyCartActivity).productDao()
                         .getCartItemList()
+                    Log.e("TAG", "calculateAmount: " + cartList)
                     if (cartList.isNotEmpty()) {
                         for (item in cartList) {
                             cartAmount += item.cartAmount

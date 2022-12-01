@@ -314,7 +314,6 @@ class MyCartAdapter(
         holder: MycartAdapterLayoutBinding,
     ) {
         val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + cart.img
-        Log.e("TAG", "setListData: " + imgURL)
         try {
             Glide.with(context).load(imgURL).error(R.drawable.default_image)
                 .into(holder.ivImagview)
@@ -322,9 +321,7 @@ class MyCartAdapter(
             e.printStackTrace()
             holder.ivImagview.setBackgroundResource(R.drawable.default_image)
         }
-
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName, app)
-
         if (app.user.getAppLanguage() == 1) {
             try {
                 holder.tvProductTitle.setTypeface(
@@ -350,6 +347,11 @@ class MyCartAdapter(
             ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
 
         Thread {
+
+            val list: List<ProductDetail> =
+                AppDataBase.getInstance(context).productDao().getProductList()
+            Log.e("TAG", "list Size: " + list)
+
             val isProductExist = AppDataBase.getInstance(context).productDao()
                 .isProductExist(cart.productId, cart.variantId)
             Log.i("nayaganj_app", "setListData: isProductExist " + isProductExist)
