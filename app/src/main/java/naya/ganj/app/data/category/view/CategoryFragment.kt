@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import naya.ganj.app.Nayaganj
@@ -118,8 +119,17 @@ class CategoryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        var ivCameraIcon = requireActivity().findViewById(R.id.iv_camera_icon) as ImageView
+        val ivCameraIcon = requireActivity().findViewById(R.id.iv_camera_icon) as ImageView
+        val tvTitle = requireActivity().findViewById(R.id.textView2) as TextView
         ivCameraIcon.visibility = View.GONE
+
+        if (app.user.getAppLanguage() == 1) {
+            tvTitle.text = resources.getString(R.string.shopby_category_h)
+        } else {
+            tvTitle.text = "Shop By Category"
+        }
+
+
     }
 
 }
