@@ -153,13 +153,7 @@ class SplashActivity : AppCompatActivity() {
                 is NetworkResult.Error ->{
                     Utility.serverNotResponding(this@SplashActivity,response.message.toString())
                 }
-
             }
-
         }
     }
-
-
-
-
 }

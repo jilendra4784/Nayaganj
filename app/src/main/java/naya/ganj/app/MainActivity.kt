@@ -37,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -123,13 +122,27 @@ class MainActivity : AppCompatActivity() {
                                 resources.getInteger(R.integer.reply_motion_duration_large).toLong()
                         }
                     }*/
-                    binding.include14.textView2.text = "Nayaganj"
+
+                    if (app.user.getAppLanguage() == 1) {
+                        binding.include14.textView2.text = resources.getString(R.string.nayaganj_h)
+                    } else {
+                        binding.include14.textView2.text = "Nayaganj"
+                    }
+
+
                     binding.include14.imageView9.visibility = View.VISIBLE
                     binding.include14.ivCameraIcon.visibility = View.VISIBLE
                     binding.include14.ivUserImageview.visibility = View.VISIBLE
                 }
                 R.id.navigation_dashboard -> {
-                    binding.include14.textView2.text = "Shop By Category"
+                    if (app.user.getAppLanguage() == 1) {
+                        binding.include14.textView2.text =
+                            resources.getString(R.string.shopby_category_h)
+                    } else {
+                        binding.include14.textView2.text = "Shop By Category"
+                    }
+
+
                     binding.include14.imageView9.visibility = View.GONE
                     binding.include14.ivCameraIcon.visibility = View.GONE
                     binding.include14.ivUserImageview.visibility = View.GONE

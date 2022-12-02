@@ -8,9 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.google.gson.JsonObject
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.Dispatchers
@@ -177,11 +173,55 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         binding.subCategoryList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
         binding.subCategoryList.isNestedScrollingEnabled = false
-        binding.subCategoryList.adapter = ProductListHomeAdapter(requireActivity(),response.data.data.productList,app,requireActivity(),this)
+        binding.subCategoryList.adapter = ProductListHomeAdapter(
+            requireActivity(),
+            response.data.data.productList,
+            app,
+            requireActivity(),
+            this
+        )
         Utility.listAnimation(binding.subCategoryList)
 
         binding.llMainLeaniearLayout.visibility = View.VISIBLE
         binding.llProgressbar.visibility = View.GONE
+
+        // Sub Category Test List   1
+        binding.rvTest1Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
+        binding.rvTest1Recyclerview.isNestedScrollingEnabled = false
+        binding.rvTest1Recyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
+        Utility.listAnimation(binding.rvTest1Recyclerview)
+
+
+        // Sub Category Test List   2
+        binding.rvTest2Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
+        binding.rvTest2Recyclerview.isNestedScrollingEnabled = false
+        binding.rvTest2Recyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
+        Utility.listAnimation(binding.rvTest2Recyclerview)
+
+
+        // Sub Category Test List   3
+        binding.rvTest3Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
+        binding.rvTest3Recyclerview.isNestedScrollingEnabled = false
+        binding.rvTest3Recyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
+        Utility.listAnimation(binding.rvTest3Recyclerview)
+
+
+        // Sub Category Test List   4
+        binding.rvTest4Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
+        binding.rvTest4Recyclerview.isNestedScrollingEnabled = false
+        binding.rvTest4Recyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
+        Utility.listAnimation(binding.rvTest4Recyclerview)
+
+        // Sub Category Test List   5
+        binding.rvTest5Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
+        binding.rvTest5Recyclerview.isNestedScrollingEnabled = false
+        binding.rvTest5Recyclerview.adapter =
+            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
+        Utility.listAnimation(binding.rvTest5Recyclerview)
     }
 
     override fun onClickAddOrRemoveItem(

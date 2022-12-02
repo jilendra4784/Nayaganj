@@ -250,13 +250,16 @@ class Utility {
 
         fun convertLanguage(mData: String?, app: Nayaganj): String? {
             val languageValue = app.user.getAppLanguage()
-            return try {
-                mData?.split('$')?.get(languageValue)
-            } catch (e: Exception) {
-                mData.toString()
+            return if (mData == null) {
+                ""
+            } else {
+                if (mData.contains("$")) {
+                    mData.split('$')[languageValue]
+                } else {
+                    mData
+                }
             }
         }
-
 
         fun showToast(context: Context,message:String){
             Toast.makeText(context,message,Toast.LENGTH_SHORT).show()

@@ -323,15 +323,17 @@ class MyCartAdapter(
         }
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName, app)
         if (app.user.getAppLanguage() == 1) {
-            try {
-                holder.tvProductTitle.setTypeface(
-                    Typeface.createFromAsset(
-                        context.assets,
-                        "agrawide.ttf"
+            if(cart.productName.contains("$")){
+                try {
+                    holder.tvProductTitle.setTypeface(
+                        Typeface.createFromAsset(
+                            context.assets,
+                            "agrawide.ttf"
+                        )
                     )
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         holder.tvPrice.text = cart.price.toString()

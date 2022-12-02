@@ -55,13 +55,15 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         app = applicationContext as Nayaganj
 
         binding.include7.ivBackArrow.setOnClickListener { finish() }
-        if(app.user.getAppLanguage()==1){
-            binding.include7.toolbarTitle.text =resources.getString(R.string.product_list_h)
-        }else{
+        if (app.user.getAppLanguage() == 1) {
+            binding.include7.toolbarTitle.text = resources.getString(R.string.product_list_h)
+        } else {
             binding.include7.toolbarTitle.text = "Product List"
         }
 
         val categoryId = intent.getStringExtra(Constant.CATEGORY_ID)
+        val categoryName = intent.getStringExtra(Constant.CATEGORY_NAME)
+        binding.include7.toolbarTitle.text = categoryName
 
         if (categoryId == null || categoryId.equals("")) {
             // It will act as a Search Activity

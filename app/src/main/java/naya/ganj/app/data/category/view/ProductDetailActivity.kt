@@ -157,7 +157,8 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         if (app.user.getAppLanguage() == 1) {
-            binding.tvProductName.setTypeface(Typeface.createFromAsset(assets, "agrawide.ttf"))
+            if (pModel.productName.contains("$"))
+                binding.tvProductName.setTypeface(Typeface.createFromAsset(assets, "agrawide.ttf"))
         }
 
         Thread {
@@ -392,7 +393,8 @@ class ProductDetailActivity : AppCompatActivity() {
         title.text = Utility.convertLanguage(productDetailModel.productDetails.productName,app)
 
         if(app.user.getAppLanguage()==1){
-            title.setTypeface(Typeface.createFromAsset(assets,"agrawide.ttf"))
+            if (productDetailModel.productDetails.productName.contains("$"))
+                title.setTypeface(Typeface.createFromAsset(assets, "agrawide.ttf"))
         }
 
         materialAlertDialogBuilder.setView(view)

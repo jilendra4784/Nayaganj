@@ -147,8 +147,6 @@ class MyOrdersDetailsActivity : AppCompatActivity() {
             }
         }
 
-
-
         binding.btnReorder.setOnClickListener {
             val intent = Intent(this@MyOrdersDetailsActivity,MyCartActivity::class.java)
             intent.putExtra(Constant.orderId, binding.tvOrderId.text.toString())

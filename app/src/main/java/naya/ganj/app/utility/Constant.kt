@@ -10,6 +10,7 @@ object Constant {
     const val PRODUCT = "products"
     const val PROMO_CODE = "promoCodeId"
     const val CATEGORY_ID = "categoryId"
+    const val CATEGORY_NAME = "categoryname"
     const val TEXT = "text"
     const val ORDER_ID = "orderId"
     const val DEVICE_TYPE = "Android"

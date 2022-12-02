@@ -41,19 +41,15 @@ class ProductDetailListAdapter(val context: Context,val products: List<OrderDeta
         if (app.user.getAppLanguage() == 1) {
             holder.binding.tvNetWet.text = context.resources.getString(R.string.net_weight_h)
             try {
-                holder.binding.tvProductTitle.setTypeface(
-                    Typeface.createFromAsset(
-                        context.assets,
-                        "agrawide.ttf"
-                    )
-                )
+                if(productItem.productName.contains("$"))
+                    holder.binding.tvProductTitle.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            holder.binding.tvProductTitle.textSize =
+           /* holder.binding.tvProductTitle.textSize =
                 context.resources.getDimension(com.intuit.sdp.R.dimen._8sdp)
             holder.binding.tvNetWet.textSize =
-                context.resources.getDimension(com.intuit.sdp.R.dimen._8sdp)
+                context.resources.getDimension(com.intuit.sdp.R.dimen._8sdp)*/
         }
         try {
             if (productItem.img != "") {
@@ -74,7 +70,7 @@ class ProductDetailListAdapter(val context: Context,val products: List<OrderDeta
         }
         holder.binding.tvProductTitle.text = Utility.convertLanguage(productItem.productName, app)
         holder.binding.tvUnit.text =
-            productItem.variantUnitQuantity.toString() + " " + productItem.variantUnit
+            productItem.variantUnitQuantity + " " + productItem.variantUnit
         holder.binding.tvPrice.text = productItem.price.toString()
         holder.binding.tvSaveAmount.text = productItem.discount.toString() + "% off"
         holder.binding.itemCount.text = productItem.quantity.toString()

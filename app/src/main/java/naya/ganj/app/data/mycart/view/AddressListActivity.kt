@@ -37,6 +37,7 @@ class AddressListActivity : AppCompatActivity(), OnitemClickListener {
         setContentView(binding.root)
         app = applicationContext as Nayaganj
 
+
         binding.include.ivBackArrow.setOnClickListener {
             finish()
             overridePendingTransition(R.anim.slide_in_left,

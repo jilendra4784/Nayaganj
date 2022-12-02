@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import naya.ganj.app.Nayaganj
@@ -68,10 +65,8 @@ class CategoryFragment : Fragment() {
 
         binding.expandablelist.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
             val intent = Intent(requireActivity(), ProductListActivity::class.java)
-            intent.putExtra(
-                Constant.CATEGORY_ID,
-                cateModel.categoryList[groupPosition].subCategoryList[childPosition].id
-            )
+            intent.putExtra(Constant.CATEGORY_ID, cateModel.categoryList[groupPosition].subCategoryList[childPosition].id)
+            intent.putExtra(Constant.CATEGORY_NAME, cateModel.categoryList[groupPosition].subCategoryList[childPosition].category)
             startActivity(intent)
             true
         }
@@ -118,6 +113,13 @@ class CategoryFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        var ivCameraIcon = requireActivity().findViewById(R.id.iv_camera_icon) as ImageView
+        ivCameraIcon.visibility = View.GONE
     }
 
 }

@@ -102,8 +102,10 @@ class ProductListAdapter(
             Utility.convertLanguage(product.productName.trimStart(), app)
         holder.binding.tvProductDetail.text = Utility.convertLanguage(product.description, app)
         if (app.user.getAppLanguage() == 1) {
-            holder.binding.tvProductTitle.typeface =
-                Typeface.createFromAsset(context.assets, "agrawide.ttf")
+            if (product.productName.contains("$")) {
+                holder.binding.tvProductTitle.typeface =
+                    Typeface.createFromAsset(context.assets, "agrawide.ttf")
+            }
         }
         Thread {
             val listOfProduct =
