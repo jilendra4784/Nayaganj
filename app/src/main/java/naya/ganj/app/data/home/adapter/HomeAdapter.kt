@@ -37,6 +37,7 @@ class HomeAdapter(
         holder.binding.materialCardView.setOnClickListener {
             val intent = Intent(context, ProductListActivity::class.java)
             intent.putExtra(Constant.CATEGORY_ID, category[position].id)
+            intent.putExtra(Constant.CATEGORY_NAME, category[position].category)
             context.startActivity(intent)
         }
     }

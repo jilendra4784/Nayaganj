@@ -5,10 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -68,43 +67,61 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         if (categoryId == null || categoryId.equals("")) {
             // It will act as a Search Activity
             binding.frameLayout.visibility = View.VISIBLE
-            binding.editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                }
-
-                override fun afterTextChanged(p0: Editable?) {
-                    if (p0.toString().length >= 3) {
-                        binding.productList.visibility = View.VISIBLE
-                        if (app.user.getLoginSession()) {
-                            Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                                getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
-                            }, 200)
-
+            binding.editText.setOnEditorActionListener { v, actionId, event ->
+                return@setOnEditorActionListener when (actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        if (binding.editText.text.toString().length >= 3) {
+                            if (app.user.getLoginSession()) {
+                                getProductList(
+                                    binding.editText.text.toString(),
+                                    app.user.getUserDetails()?.userId,
+                                    ""
+                                )
+                            } else {
+                                getProductList(binding.editText.text.toString(), "", "")
+                            }
                         } else {
-                            Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                                getProductList(p0.toString(), "", "")
-                            }, 200)
-
-                        }
-                    } else {
-                        if (p0.toString().isEmpty()) {
-                            binding.tvNoProduct.visibility = View.GONE
+                            binding.tvNoProduct.visibility = View.VISIBLE
                             binding.productList.visibility = View.GONE
                             binding.llCartLayout.visibility = View.GONE
                         }
+                        true
                     }
+                    else -> false
                 }
-            })
+            }
+            /*  binding.editText.addTextChangedListener(object : TextWatcher {
+                  override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-            if(app.user.getAppLanguage()==1){
-                binding.editText.hint=resources.getString(R.string.search_here_h)
-            }else{
-                binding.editText.hint="Search 100+ product"
+                  }
+
+                  override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                  }
+
+                  override fun afterTextChanged(p0: Editable?) {
+                      if (p0.toString().length >= 3) {
+                          if (app.user.getLoginSession()) {
+                              Log.e("TAG", "getProductListRequestData: Search" + "")
+                              getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
+                          } else {
+                              getProductList(p0.toString(), "", "")
+                          }
+                      } else {
+                          if (p0.toString().isEmpty()) {
+                              binding.tvNoProduct.visibility = View.VISIBLE
+                              binding.productList.visibility = View.GONE
+                              binding.llCartLayout.visibility = View.GONE
+                          }
+                      }
+                  }
+              })*/
+
+            if (app.user.getAppLanguage() == 1) {
+                binding.editText.hint = resources.getString(R.string.search_here_h)
+            } else {
+                binding.editText.hint = "Search 100+ product"
             }
 
         } else {
