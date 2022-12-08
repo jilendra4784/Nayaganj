@@ -1,14 +1,15 @@
 package naya.ganj.app.data.home.view
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,16 +26,12 @@ import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.category.view.ProductListActivity
-import naya.ganj.app.data.home.adapter.HomeAdapter
-import naya.ganj.app.data.home.adapter.OfferPromoBanner
-import naya.ganj.app.data.home.adapter.ProductListHomeAdapter
-import naya.ganj.app.data.home.adapter.SliderAdapter
+import naya.ganj.app.data.home.adapter.*
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.data.home.repositry.HomePageDataFactory
 import naya.ganj.app.data.home.repositry.HomeRepositry
 import naya.ganj.app.data.home.viewmodel.HomeViewModel
 import naya.ganj.app.databinding.FragmentHomeBinding
-import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
@@ -52,6 +49,16 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     lateinit var binding: FragmentHomeBinding
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
+    var cateImages = arrayOf(
+        R.drawable.foodgrains_oil_masala,
+        R.drawable.bakery_cakes_dairy,
+        R.drawable.bevrages,
+        R.drawable.snacks_branded_foods,
+        R.drawable.beauty_hygiene,
+        R.drawable.all_cleaning_household,
+        R.drawable.gourmet_world_food,
+        R.drawable.all_caby_care
+    )
 
 
     override fun onCreateView(
@@ -59,8 +66,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         homeViewModel = ViewModelProvider(
             requireActivity(),
             HomePageDataFactory(HomeRepositry(RetrofitClient.instance))
@@ -69,165 +74,292 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         app = requireActivity().applicationContext as Nayaganj
 
         binding.llMainLeaniearLayout.visibility = View.GONE
-        binding.llProgressbar.visibility = View.VISIBLE
 
-        if (Utility.isAppOnLine(requireActivity(), object : OnInternetCheckListener {
-                override fun onInternetAvailable() {
-                    getHomeData()
-                }
-            }))
-            getHomeData()
         if (app.user.getAppLanguage() == 1) {
             binding.searchEdittext.hint =
                 requireActivity().resources.getString(R.string.search_here_h)
         }
         binding.llSearchLayout.setOnClickListener {
             startActivity(Intent(requireActivity(), ProductListActivity::class.java))
+            //startActivity(Intent(requireActivity(), GlobalSearchActivity::class.java))
         }
+
+        binding.slider.requestFocus()
+        setHomePageData(1)
+
+        checkViewVisibility()
 
         return binding.root
     }
 
 
-    private fun getHomeData() {
-        val userID: String
+    private fun getJsonObject(index: Int): JsonObject {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("index", 1);
-        Log.e("TAG", "getHomeData: " + app.user.getUserDetails()?.userId)
-        userID = if (app.user.getUserDetails()?.userId == null) {
-            ""
-        } else {
-            app.user.getUserDetails()?.userId!!
-        }
-        homeViewModel.getHomeData(userID, jsonObject)
-            .observe(requireActivity()) { response ->
-                when (response) {
-                    is NetworkResult.Success -> {
-                        if (response.data!!.status) {
-                            if (isAdded) {
-                                setHomePageData(response)
+        jsonObject.addProperty("index", index)
+        return jsonObject
+    }
+
+
+    private fun setHomePageData(mIndex: Int) {
+        binding.llMainLeaniearLayout.visibility = View.VISIBLE
+        when (mIndex) {
+            1 -> {
+                val jsonObject = getJsonObject(mIndex)
+                homeViewModel.getHomeData(app.user.getUserDetails()?.userId ?: "", jsonObject)
+                    .observe(requireActivity()) { response ->
+                        when (response) {
+                            is NetworkResult.Success -> {
+                                if (response.data!!.status) {
+                                    if (isAdded) {
+                                        binding.promoBannerSlider.autoCycleDirection =
+                                            SliderView.LAYOUT_DIRECTION_LTR
+                                        binding.promoBannerSlider.setSliderAdapter(
+                                            OfferPromoBanner(
+                                                requireActivity(),
+                                                response.data.data.offerPromoBanner
+                                            )
+                                        )
+                                        binding.promoBannerSlider.scrollTimeInSec = 3
+                                        binding.promoBannerSlider.isAutoCycle = true
+                                        binding.promoBannerSlider.startAutoCycle()
+
+                                        setPromoBannerList(response.data.data, binding.slider)
+                                        setProductList(response.data.data, binding.tvProductTitle, binding.productList)
+                                        setCategoryGrid3List(response.data.data, binding.rvHomeRecyclerview)
+
+                                    }
+                                } else {
+                                    Utility.showToast(
+                                        requireActivity(),
+                                        response.message.toString()
+                                    )
+                                }
                             }
-                        } else {
-                            try {
-                                binding.llProgressbar.visibility = View.GONE
+
+                            is NetworkResult.Error -> {
                                 Utility.serverNotResponding(
                                     requireActivity(),
-                                    response.data.msg
+                                    response.message.toString()
                                 )
-                            } catch (ex: Exception) {
-                                ex.printStackTrace()
                             }
                         }
                     }
 
-                    is NetworkResult.Error -> {
-                        binding.llProgressbar.visibility = View.GONE
-                        Utility.serverNotResponding(
-                            requireActivity(),
-                            response.message.toString()
-                        )
+            }
+            2 -> {
+                val jsonObject = getJsonObject(mIndex)
+                homeViewModel.getHomeDataForIndex2(
+                    app.user.getUserDetails()?.userId ?: "",
+                    jsonObject
+                ).observe(requireActivity()) { response ->
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (response.data!!.status) {
+                                if (isAdded) {
+                                    setCategoryGrid2List(
+                                        response.data.data,
+                                        binding.tvcat2,
+                                        binding.rvcatrecyclerview2
+                                    )
+                                    setProductList(
+                                        response.data.data,
+                                        binding.tvProductTitle2,
+                                        binding.productList2
+                                    )
+                                    setPromoBannerList(response.data.data, binding.slider2)
+                                    binding.llCate2.visibility = View.VISIBLE
+                                    Utility.listAnimation(binding.rvcatrecyclerview2)
+
+                                }
+                            } else {
+                                Utility.showToast(requireActivity(), response.message.toString())
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
+                        }
                     }
                 }
             }
+            3 -> {
+                val jsonObject = getJsonObject(mIndex)
+                homeViewModel.getHomeDataForIndex3(
+                    app.user.getUserDetails()?.userId ?: "",
+                    jsonObject
+                ).observe(requireActivity()) { response ->
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (response.data!!.status) {
+                                if (isAdded) {
+                                    setCategoryGrid2List(
+                                        response.data.data,
+                                        binding.tvcat3,
+                                        binding.rvcatrecyclerview3
+                                    )
+                                    Utility.listAnimation(binding.rvcatrecyclerview3)
+                                    setProductList(
+                                        response.data.data,
+                                        binding.tvProductTitle3,
+                                        binding.productList3
+                                    )
+                                    setPromoBannerList(response.data.data, binding.slider3)
+                                    binding.llCate3.visibility = View.VISIBLE
+
+                                }
+                            } else {
+                                Utility.showToast(requireActivity(), response.message.toString())
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
+                        }
+                    }
+                }
+            }
+            4 -> {
+                val jsonObject = getJsonObject(mIndex)
+                homeViewModel.getHomeDataForIndex4(
+                    app.user.getUserDetails()?.userId ?: "",
+                    jsonObject
+                ).observe(requireActivity()) { response ->
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (response.data!!.status) {
+                                if (isAdded) {
+                                    setCategoryGrid2List(
+                                        response.data.data,
+                                        binding.tvcat4,
+                                        binding.rvcatrecyclerview4
+                                    )
+                                    setProductList(
+                                        response.data.data,
+                                        binding.tvProductTitle4,
+                                        binding.productList4
+                                    )
+                                    Utility.listAnimation(binding.rvcatrecyclerview4)
+                                    setPromoBannerList(response.data.data, binding.slider4)
+                                    binding.llCate4.visibility = View.VISIBLE
+                                }
+                            } else {
+                                Utility.showToast(requireActivity(), response.message.toString())
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
+                        }
+                    }
+                }
+            }
+            5 -> {
+                val jsonObject = getJsonObject(mIndex)
+                homeViewModel.getHomeDataForIndex5(
+                    app.user.getUserDetails()?.userId ?: "",
+                    jsonObject
+                ).observe(requireActivity()) { response ->
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (response.data!!.status) {
+                                if (isAdded) {
+                                    binding.llCate5.visibility = View.VISIBLE
+                                    binding.rvbrandrecyclerview.layoutManager =
+                                        GridLayoutManager(requireActivity(), 3)
+                                    binding.rvbrandrecyclerview.isNestedScrollingEnabled = false
+                                    binding.rvbrandrecyclerview.adapter = BrandAdapter(
+                                        requireActivity(),
+                                        response.data.data.brandList,
+                                        app
+                                    )
+                                    Utility.listAnimation(binding.rvbrandrecyclerview)
+
+                                }
+                            } else {
+                                Utility.showToast(requireActivity(), response.message.toString())
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            Utility.serverNotResponding(
+                                requireActivity(),
+                                response.message.toString()
+                            )
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
-    private fun setHomePageData(response: NetworkResult.Success<HomePageModel>) {
+    private fun setPromoBannerList(data: HomePageModel.Data, promoBannerSlider: SliderView) {
+        promoBannerSlider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+        promoBannerSlider.setSliderAdapter(SliderAdapter(requireActivity(), data.promoBanner))
+        promoBannerSlider.scrollTimeInSec = 3
+        promoBannerSlider.isAutoCycle = true
+        promoBannerSlider.startAutoCycle()
+    }
 
-        //HomePage Banner
-        val bannerSlider = SliderAdapter(requireActivity(), response.data?.data!!.promoBanner)
-        binding.slider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-        binding.slider.setSliderAdapter(bannerSlider)
-        binding.slider.scrollTimeInSec = 3
-        binding.slider.isAutoCycle = true
-        binding.slider.startAutoCycle()
 
-        // Set Category Data
-        var cateImages = arrayOf(
-            R.drawable.foodgrains_oil_masala,
-            R.drawable.bakery_cakes_dairy,
-            R.drawable.bevrages,
-            R.drawable.snacks_branded_foods,
-            R.drawable.beauty_hygiene,
-            R.drawable.all_cleaning_household,
-            R.drawable.gourmet_world_food,
-            R.drawable.all_caby_care
-        )
-
-        binding.rvHomeRecyclerview.layoutManager = GridLayoutManager(requireActivity(), 3)
-        binding.rvHomeRecyclerview.isNestedScrollingEnabled = false
-        binding.rvHomeRecyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvHomeRecyclerview)
-
-        // Set PromoBanner Slider
-        val promoBannerSlider =
-            OfferPromoBanner(requireActivity(), response.data.data.offerPromoBanner)
-        binding.promoBannerSlider.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-        binding.promoBannerSlider.setSliderAdapter(promoBannerSlider)
-        binding.promoBannerSlider.scrollTimeInSec = 3
-        binding.promoBannerSlider.isAutoCycle = true
-        binding.promoBannerSlider.startAutoCycle()
-
-        // set Sub Category List
-        binding.tvSubCatTitle.text = Utility.convertLanguage(response.data.data.subCategory, app)
-        binding.subCategoryList.layoutManager =
+    private fun setProductList(
+        data: HomePageModel.Data,
+        tvTitleTextView: TextView,
+        recyclerView: RecyclerView
+    ) {
+        tvTitleTextView.text = Utility.convertLanguage(data.productName, app)
+        recyclerView.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-        binding.subCategoryList.isNestedScrollingEnabled = false
-        binding.subCategoryList.adapter = ProductListHomeAdapter(
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = ProductListHomeAdapter(
             requireActivity(),
-            response.data.data.productList,
+            data.productList,
             app,
             requireActivity(),
             this
         )
-        Utility.listAnimation(binding.subCategoryList)
+    }
 
-        binding.llMainLeaniearLayout.visibility = View.VISIBLE
-        binding.llProgressbar.visibility = View.GONE
+    private fun setCategoryGrid2List(
+        data: HomePageModel.Data,
+        tvTitleTextView: TextView,
+        recyclerView: RecyclerView
+    ) {
+        tvTitleTextView.text = data.subCategoryName
+        recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = HomeAdapter(requireActivity(), data.subCategoryList, app, cateImages)
+        //Utility.listAnimation(recyclerView)
+    }
 
-        // Sub Category Test List   1
-        binding.rvTest1Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
-        binding.rvTest1Recyclerview.isNestedScrollingEnabled = false
-        binding.rvTest1Recyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvTest1Recyclerview)
+    private fun setCategoryGrid3List(
+        data: HomePageModel.Data,
+        recyclerView: RecyclerView
+    ) {
+        //tvTitleTextView.text = data.subCategoryName
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = GridLayoutManager(requireActivity(), 3)
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.adapter = HomeAdapter(requireActivity(), data.category, app, cateImages)
+        //recyclerView.layoutAnimation=AnimationUtils.loadLayoutAnimation(requireActivity(),R.anim.item_animation_from_bottom)
 
-
-        // Sub Category Test List   2
-        binding.rvTest2Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
-        binding.rvTest2Recyclerview.isNestedScrollingEnabled = false
-        binding.rvTest2Recyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvTest2Recyclerview)
-
-
-        // Sub Category Test List   3
-        binding.rvTest3Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
-        binding.rvTest3Recyclerview.isNestedScrollingEnabled = false
-        binding.rvTest3Recyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvTest3Recyclerview)
-
-
-        // Sub Category Test List   4
-        binding.rvTest4Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
-        binding.rvTest4Recyclerview.isNestedScrollingEnabled = false
-        binding.rvTest4Recyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvTest4Recyclerview)
-
-        // Sub Category Test List   5
-        binding.rvTest5Recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
-        binding.rvTest5Recyclerview.isNestedScrollingEnabled = false
-        binding.rvTest5Recyclerview.adapter =
-            HomeAdapter(requireActivity(), response.data.data.category, app, cateImages)
-        Utility.listAnimation(binding.rvTest5Recyclerview)
     }
 
     override fun onClickAddOrRemoveItem(
         action: String,
         productDetail: ProductDetail,
-        addremoveText:TextView
+        addremoveText: TextView
     ) {
         when (action) {
             Constant.INSERT -> {
@@ -382,13 +514,57 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     private fun setBadgeCount() {
         lifecycleScope.launch(Dispatchers.IO) {
             val list: List<ProductDetail> = Utility().getAllProductList(requireActivity())
-            withContext(Dispatchers.Main){
-               val mainActivity=requireActivity() as MainActivity
+            withContext(Dispatchers.Main) {
+                val mainActivity = requireActivity() as MainActivity
                 mainActivity.updateCartValue(list.size.toString())
             }
         }
     }
 
+    private fun checkViewVisibility() {
+        binding.nestedscrollview.isNestedScrollingEnabled=false
+        var count = 0
+        var cat2Count = 0
+        var cate3Count = 0
+        var cate4Count = 0
+
+        val scrollBounds = Rect()
+        binding.nestedscrollview.getHitRect(scrollBounds)
+        binding.nestedscrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (binding.llCate2.getLocalVisibleRect(scrollBounds)) {
+                if (!binding.llCate2.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
+                    if (count == 0)
+                        setHomePageData(2)
+                    count++
+                }
+            }
+
+            if (binding.llCate3.getLocalVisibleRect(scrollBounds)) {
+                if (!binding.llCate3.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
+                    if (cat2Count == 0)
+                        setHomePageData(3)
+                    cat2Count++
+                }
+            }
+
+            if (binding.llCate4.getLocalVisibleRect(scrollBounds)) {
+                if (!binding.llCate4.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
+                    if (cate3Count == 0)
+                        setHomePageData(4)
+                    cate3Count++
+                }
+            }
+
+            if (binding.llCate5.getLocalVisibleRect(scrollBounds)) {
+                if (!binding.llCate5.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
+                    if (cate4Count == 0)
+                        setHomePageData(5)
+                    cate4Count++
+                }
+            }
+        })
+
+    }
 
 
 }

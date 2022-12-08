@@ -38,7 +38,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ProductListHomeAdapter(val context : Context, val product: List<HomePageModel.Data.Product>, val app: Nayaganj
-, val activity: Activity, private val onclickAddOrRemoveItemListener: OnclickAddOremoveItemListener,
+                             , val activity: Activity, private val onclickAddOrRemoveItemListener: OnclickAddOremoveItemListener,
 ) :
     RecyclerView.Adapter<ProductListHomeAdapter.MyViewHolder>() {
 
@@ -68,13 +68,12 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
             Glide.with(context).load(imgURL).error(R.drawable.default_image)
                 .into(holder.binding.imageView11)
         } catch (e: Exception) {
-            e.printStackTrace()
             holder.binding.imageView11.setBackgroundResource(R.drawable.default_image)
         }
 
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
         holder.binding.tvDescription.text =
-            Utility.convertLanguage(product[position].description, app)
+            Utility.convertLanguage(product[position].description as String?, app)
 
         if (app.user.getAppLanguage() == 1) {
             holder.binding.tvTitle.typeface =
@@ -272,7 +271,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
 
         title.text = Utility.convertLanguage(product[holder.adapterPosition].productName,app)
 
-        description.text = Utility.convertLanguage(product[holder.adapterPosition].description,app)
+        description.text = Utility.convertLanguage(product[holder.adapterPosition].description as String?,app)
 
         if(app.user.getAppLanguage()==1){
             title.typeface = Typeface.createFromAsset(context.assets, "agrawide.ttf")
@@ -333,115 +332,117 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         vPosition: Int,
         updatedQuantityinCart: Int
     ) {
-        val quantityInCart: Int = if (updatedQuantityinCart > 0) {
+        val quantityInCart: Int? = if (updatedQuantityinCart > 0) {
             updatedQuantityinCart
         } else {
             variant[vPosition].vQuantityInCart
         }
-        if (quantityInCart > 0) {
-            Thread {
-                val isProductExist = AppDataBase.getInstance(context).productDao().isProductExist(
-                    product.get(holder.adapterPosition).id,
-                    variant[vPosition].vId
-                )
-                if (isProductExist) {
-                    val singleProduct = AppDataBase.getInstance(context).productDao()
-                        .getSingleProduct(
-                            product.get(holder.adapterPosition).id,
-                            variant[vPosition].vId
-                        )
-                    activity.runOnUiThread {
-                        holder.binding.addItem.visibility = View.GONE
-                        holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
-                        holder.binding.tvUnitQuantity.text = singleProduct.vUnitQuantity.toString()
-                        holder.binding.tvUnit.text = singleProduct.vUnit
-                        holder.binding.tvQuantity.text = singleProduct.itemQuantity.toString()
-                        vMaxQuantity = singleProduct.totalVariantQuantity
+        if (quantityInCart != null) {
+            if (quantityInCart > 0) {
+                Thread {
+                    val isProductExist = AppDataBase.getInstance(context).productDao().isProductExist(
+                        product.get(holder.adapterPosition).id,
+                        variant[vPosition].vId
+                    )
+                    if (isProductExist) {
+                        val singleProduct = AppDataBase.getInstance(context).productDao()
+                            .getSingleProduct(
+                                product.get(holder.adapterPosition).id,
+                                variant[vPosition].vId
+                            )
+                        activity.runOnUiThread {
+                            holder.binding.addItem.visibility = View.GONE
+                            holder.binding.llPlusMinusLayout.visibility = View.VISIBLE
+                            holder.binding.tvUnitQuantity.text = singleProduct.vUnitQuantity.toString()
+                            holder.binding.tvUnit.text = singleProduct.vUnit
+                            holder.binding.tvQuantity.text = singleProduct.itemQuantity.toString()
+                            vMaxQuantity = singleProduct.totalVariantQuantity
 
-                        val price = singleProduct.vPrice
-                        val vDiscountPrice: Double
-                        if (singleProduct.vDiscount > 0) {
-                            holder.binding.tvPrice.text = price.toString()
-                            vDiscountPrice =
-                                price - ((price * singleProduct.vDiscount) / 100)
-                        } else {
-                            vDiscountPrice = price
-                            holder.binding.tvPrice.visibility = View.INVISIBLE
-                            holder.binding.tvRupee.visibility = View.GONE
+                            val price = singleProduct.vPrice
+                            val vDiscountPrice: Double
+                            if (singleProduct.vDiscount > 0) {
+                                holder.binding.tvPrice.text = price.toString()
+                                vDiscountPrice =
+                                    price - ((price * singleProduct.vDiscount) / 100)
+                            } else {
+                                vDiscountPrice = price
+                                holder.binding.tvPrice.visibility = View.INVISIBLE
+                                holder.binding.tvRupee.visibility = View.GONE
+                            }
+                            holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
+
+                            if(app.user.getAppLanguage()==1){
+                                holder.binding.tvOffer.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                            }else{
+                                holder.binding.tvOffer.text  = singleProduct.vDiscount.toString() + "% off"
+                            }
+
+
                         }
-                        holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
+                    } else {
+                        activity.runOnUiThread {
+                            holder.binding.addItem.visibility = View.VISIBLE
+                            holder.binding.llPlusMinusLayout.visibility = View.GONE
+                            holder.binding.tvUnitQuantity.text =
+                                variant[vPosition].vUnitQuantity.toString()
+                            holder.binding.tvUnit.text = variant[vPosition].vUnit
+                            holder.binding.tvQuantity.text = quantityInCart.toString()
 
-                        if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOffer.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                        }else{
-                            holder.binding.tvOffer.text  = singleProduct.vDiscount.toString() + "% off"
+                            val price = variant[vPosition].vPrice
+                            val vDiscountPrice: Double
+                            if (variant[vPosition].vDiscount > 0) {
+                                holder.binding.tvPrice.text = price.toString()
+                                vDiscountPrice =
+                                    (price - ((price * variant[vPosition].vDiscount) / 100)).toDouble()
+                            } else {
+                                vDiscountPrice = price.toDouble()
+                                holder.binding.tvPrice.visibility = View.INVISIBLE
+                                holder.binding.tvRupee.visibility = View.GONE
+                            }
+                            holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
+
+                            if(app.user.getAppLanguage()==1){
+                                holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
+                            }else{
+                                holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
+                            }
+                            vMaxQuantity = variant[vPosition].vQuantity
                         }
-
-
                     }
+                }.start()
+            } else {
+
+                holder.binding.addItem.visibility = View.VISIBLE
+                holder.binding.llPlusMinusLayout.visibility = View.GONE
+                holder.binding.tvUnitQuantity.text =
+                    variant[vPosition].vUnitQuantity.toString()
+                holder.binding.tvUnit.text = variant[vPosition].vUnit
+                holder.binding.tvQuantity.text =
+                    variant[vPosition].vQuantityInCart.toString()
+
+                val price = variant[vPosition].vPrice
+                val vDiscountPrice: Double
+                if (variant[vPosition].vDiscount > 0) {
+                    holder.binding.tvPrice.text = price.toString()
+                    vDiscountPrice =
+                        (price - ((price * variant[vPosition].vDiscount) / 100)).toDouble()
                 } else {
-                    activity.runOnUiThread {
-                        holder.binding.addItem.visibility = View.VISIBLE
-                        holder.binding.llPlusMinusLayout.visibility = View.GONE
-                        holder.binding.tvUnitQuantity.text =
-                            variant[vPosition].vUnitQuantity.toString()
-                        holder.binding.tvUnit.text = variant[vPosition].vUnit
-                        holder.binding.tvQuantity.text = quantityInCart.toString()
-
-                        val price = variant[vPosition].vPrice
-                        val vDiscountPrice: Double
-                        if (variant[vPosition].vDiscount > 0) {
-                            holder.binding.tvPrice.text = price.toString()
-                            vDiscountPrice =
-                                (price - ((price * variant[vPosition].vDiscount) / 100)).toDouble()
-                        } else {
-                            vDiscountPrice = price.toDouble()
-                            holder.binding.tvPrice.visibility = View.INVISIBLE
-                            holder.binding.tvRupee.visibility = View.GONE
-                        }
-                        holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-
-                        if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                        }else{
-                            holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
-                        }
-                         vMaxQuantity = variant[vPosition].vQuantity
-                    }
+                    vDiscountPrice = price.toDouble()
+                    holder.binding.tvPrice.visibility = View.INVISIBLE
+                    holder.binding.tvRupee.visibility = View.GONE
                 }
-            }.start()
-        } else {
+                holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-            holder.binding.addItem.visibility = View.VISIBLE
-            holder.binding.llPlusMinusLayout.visibility = View.GONE
-            holder.binding.tvUnitQuantity.text =
-                variant[vPosition].vUnitQuantity.toString()
-            holder.binding.tvUnit.text = variant[vPosition].vUnit
-            holder.binding.tvQuantity.text =
-                variant[vPosition].vQuantityInCart.toString()
-
-            val price = variant[vPosition].vPrice
-            val vDiscountPrice: Double
-            if (variant[vPosition].vDiscount > 0) {
-                holder.binding.tvPrice.text = price.toString()
-                vDiscountPrice =
-                    (price - ((price * variant[vPosition].vDiscount) / 100)).toDouble()
-            } else {
-                vDiscountPrice = price.toDouble()
-                holder.binding.tvPrice.visibility = View.INVISIBLE
-                holder.binding.tvRupee.visibility = View.GONE
+                if (app.user.getAppLanguage() == 1) {
+                    holder.binding.tvOffer.text =
+                        variant[vPosition].vDiscount.toString() + "% " + context.resources.getString(R.string.off_h)
+                    holder.binding.netweight.text = context.resources.getString(R.string.net_weight_h)
+                    holder.binding.addItem.text = context.resources.getString(R.string.add_h)
+                } else {
+                    holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
+                }
+                vMaxQuantity = variant[vPosition].vQuantity
             }
-            holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-
-            if (app.user.getAppLanguage() == 1) {
-                holder.binding.tvOffer.text =
-                    variant[vPosition].vDiscount.toString() + "% " + context.resources.getString(R.string.off_h)
-                holder.binding.netweight.text = context.resources.getString(R.string.net_weight_h)
-                holder.binding.addItem.text = context.resources.getString(R.string.add_h)
-            } else {
-                holder.binding.tvOffer.text = variant[vPosition].vDiscount.toString() + "% off"
-            }
-             vMaxQuantity = variant[vPosition].vQuantity
         }
 
     }
@@ -503,7 +504,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
 
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.INSERT, ProductDetail(
-                            product.id, variantID, quantity, product.productName, imgURL,
+                            product.id, variantID, quantity, product.productName, imgURL as String,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
                         ), textview
                     )
@@ -537,7 +538,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                     }
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.ADD, ProductDetail(
-                            product.id, variantID, quantity, product.productName, imgURL,
+                            product.id, variantID, quantity, product.productName, imgURL as String,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
                         ), textview
                     )
@@ -569,7 +570,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                                 variantID,
                                 quantity,
                                 product.productName,
-                                imgURL,
+                                imgURL as String,
                                 vPrice,
                                 vDiscount,
                                 vUnitQuantity,
@@ -587,7 +588,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                     }
                     onclickAddOrRemoveItemListener.onClickAddOrRemoveItem(
                         Constant.REMOVE, ProductDetail(
-                            product.id, variantID, quantity, product.productName, imgURL,
+                            product.id, variantID, quantity, product.productName, imgURL as String,
                             vPrice, vDiscount, vUnitQuantity, vUnit, totalMaxQuantity
                         ), textview
                     )

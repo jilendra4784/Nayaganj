@@ -7,11 +7,7 @@ data class HomePageModel(
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("status")
-    val status: Boolean,
-    @SerializedName("msg")
-    val msg: String
-
-
+    val status: Boolean
 ) {
     data class Data(
         @SerializedName("category")
@@ -22,17 +18,25 @@ data class HomePageModel(
         val offerPromoBanner: List<OfferPromoBanner>,
         @SerializedName("productList")
         val productList: List<Product>,
+        @SerializedName("productName")
+        val productName: String,
         @SerializedName("promoBanner")
         val promoBanner: List<PromoBanner>,
         @SerializedName("status")
         val status: Boolean,
-        @SerializedName("subCategory")
-        val subCategory: String,
         @SerializedName("totalAmount")
         val totalAmount: Int,
         @SerializedName("totalAmountAfterDis")
-        val totalAmountAfterDis: Double
-    ) {
+        val totalAmountAfterDis: Int,
+        @SerializedName("subCategoryList")
+        val subCategoryList: List<Category>,
+        @SerializedName("subCategoryName")
+        val subCategoryName: String,
+        @SerializedName("brandList")
+        val brandList: List<Brand>,
+
+
+        ) {
         data class Category(
             @SerializedName("category")
             val category: String,
@@ -63,11 +67,11 @@ data class HomePageModel(
             @SerializedName("categoryId")
             val categoryId: List<String>,
             @SerializedName("description")
-            val description: String,
+            val description: Any?,
             @SerializedName("_id")
             val id: String,
             @SerializedName("imgUrl")
-            val imgUrl: List<String>,
+            val imgUrl: List<Any>,
             @SerializedName("productName")
             val productName: String,
             @SerializedName("variant")
@@ -80,16 +84,16 @@ data class HomePageModel(
                 val vId: String,
                 @SerializedName("vPrice")
                 val vPrice: Int,
+                @SerializedName("vPriority")
+                val vPriority: Int,
                 @SerializedName("vQuantity")
                 val vQuantity: Int,
+                @SerializedName("vQuantityInCart")
+                val vQuantityInCart: Int,
                 @SerializedName("vUnit")
                 val vUnit: String,
                 @SerializedName("vUnitQuantity")
-                val vUnitQuantity: String,
-
-                @SerializedName("vQuantityInCart")
-                val vQuantityInCart: Int
-
+                val vUnitQuantity: String
             )
         }
 
@@ -102,6 +106,15 @@ data class HomePageModel(
             val img: String,
             @SerializedName("type")
             val type: String
+        )
+
+        data class Brand(
+            @SerializedName("_id")
+            val id: String,
+            @SerializedName("brand")
+            val brand: String,
+            @SerializedName("imgUrl")
+            val imgUrl: String
         )
     }
 }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
-import naya.ganj.app.data.home.model.BannerModel
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.SliderLayoutBinding
 

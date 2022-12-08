@@ -2,6 +2,7 @@ package naya.ganj.app.data.home.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ class HomeAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        Log.e("nayaganj_log", "onCreateViewHolder: Home Adapter", )
         val view =
             AdapterHomeLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(view)
@@ -33,7 +35,7 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category, app)
-        holder.binding.imageView11.setBackgroundResource(cateImages[position])
+        holder.binding.ivCatImage.setBackgroundResource(cateImages[position])
         holder.binding.materialCardView.setOnClickListener {
             val intent = Intent(context, ProductListActivity::class.java)
             intent.putExtra(Constant.CATEGORY_ID, category[position].id)

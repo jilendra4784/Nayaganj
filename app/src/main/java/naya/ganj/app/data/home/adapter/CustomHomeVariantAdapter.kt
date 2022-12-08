@@ -12,10 +12,10 @@ import naya.ganj.app.databinding.CustomVariantAdapterRowBinding
 import naya.ganj.app.interfaces.OnitemClickListener
 
 class CustomHomeVariantAdapter(
-   val context: Context,
-   val variantList: List<HomePageModel.Data.Product.Variant>,
-   val app: Nayaganj,
-   val onitemClickListener: OnitemClickListener
+    val context: Context,
+    val variantList: List<HomePageModel.Data.Product.Variant>,
+    val app: Nayaganj,
+    val onitemClickListener: OnitemClickListener
 ) :RecyclerView.Adapter<MyViewHolder>() {
     class MyViewHolder(val binding: CustomVariantAdapterRowBinding):RecyclerView.ViewHolder(binding.root)
 
