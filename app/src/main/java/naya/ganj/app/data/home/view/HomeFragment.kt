@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -84,7 +86,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
             //startActivity(Intent(requireActivity(), GlobalSearchActivity::class.java))
         }
 
-        binding.slider.requestFocus()
         setHomePageData(1)
 
         checkViewVisibility()
@@ -99,7 +100,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         return jsonObject
     }
 
-
     private fun setHomePageData(mIndex: Int) {
         binding.llMainLeaniearLayout.visibility = View.VISIBLE
         when (mIndex) {
@@ -111,6 +111,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                             is NetworkResult.Success -> {
                                 if (response.data!!.status) {
                                     if (isAdded) {
+                                        requireActivity().runOnUiThread({ binding.slider.requestFocus() })
                                         binding.promoBannerSlider.autoCycleDirection =
                                             SliderView.LAYOUT_DIRECTION_LTR
                                         binding.promoBannerSlider.setSliderAdapter(
@@ -352,6 +353,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         recyclerView.layoutManager = GridLayoutManager(requireActivity(), 3)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.adapter = HomeAdapter(requireActivity(), data.category, app, cateImages)
+
         //recyclerView.layoutAnimation=AnimationUtils.loadLayoutAnimation(requireActivity(),R.anim.item_animation_from_bottom)
 
     }

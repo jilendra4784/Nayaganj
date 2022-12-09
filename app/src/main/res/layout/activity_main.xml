@@ -5,55 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/include14"
-            layout="@layout/main_toolbar" />
-
-        <fragment
-            android:id="@+id/nav_host_fragment_activity_main"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/view"
-            app:defaultNavHost="true"
-            android:layout_below="@+id/include14"
-            app:navGraph="@navigation/mobile_navigation" />
+            android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_above="@+id/nav_view"
-            android:background="@color/dark_gray" />
+            <include
+                android:id="@+id/include14"
+                layout="@layout/main_toolbar" />
 
-       <!-- <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_alignParentBottom="true"
-            app:itemBackground="@color/white"
-            android:visibility="visible"
-            app:itemIconTint="@color/bnv_tab_item_foreground"
-            app:labelVisibilityMode="labeled"
-            app:itemTextColor="@color/bnv_tab_item_foreground"
-            app:menu="@menu/bottom_nav_menu" />-->
+            <fragment
+                android:id="@+id/nav_host_fragment_activity_main"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/view"
+                app:defaultNavHost="true"
+                android:layout_below="@+id/include14"
+                app:navGraph="@navigation/mobile_navigation" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-           android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            app:itemIconTint="@color/bnv_tab_item_foreground"
-            app:itemTextColor="@color/bnv_tab_item_foreground"
-            app:menu="@menu/bottom_nav_menu"
-            android:background="@color/white"
-            app:labelVisibilityMode="labeled"/>
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_above="@+id/nav_view"
+                android:background="@color/dark_gray" />
 
-    </RelativeLayout>
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:itemIconTint="@color/bnv_tab_item_foreground"
+                app:itemTextColor="@color/bnv_tab_item_foreground"
+                app:menu="@menu/bottom_nav_menu"
+                android:background="@color/white"
+                app:labelVisibilityMode="labeled"/>
+
+        </RelativeLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/side_navigation"
@@ -66,6 +61,7 @@
         app:menu="@menu/navigation_menu"
 
         app:itemIconTint="@color/purple_500"/>
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

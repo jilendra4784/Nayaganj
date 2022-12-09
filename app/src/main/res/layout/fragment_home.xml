@@ -114,22 +114,10 @@
                         android:textSize="@dimen/_15sdp"
                         android:textStyle="bold" />
 
-
-                   <!-- <GridView
-                        android:id="@+id/rv_home_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:horizontalSpacing="6dp"
-                        android:numColumns="3"
-                        android:verticalSpacing="6dp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        />-->
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_home_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:layout_marginTop="@dimen/_10sdp" />
 
 
@@ -191,7 +179,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/product_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    />
 
             </com.google.android.material.card.MaterialCardView>
 

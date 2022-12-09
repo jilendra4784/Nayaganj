@@ -183,8 +183,6 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
                 }))
                 updateItemToLocalDB("minus", holder, product.get(holder.adapterPosition),holder.binding.tvMinus)
         }
-
-
     }
 
 

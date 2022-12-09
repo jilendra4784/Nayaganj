@@ -50,7 +50,6 @@
                     android:id="@+id/tv_offer"
                     android:layout_width="@dimen/_60sdp"
                     android:layout_height="wrap_content"
-                    android:text="50% off"
                     android:gravity="center"
                     android:fontFamily="@font/poppins_regular"
                     android:textSize="@dimen/_10sdp"
@@ -66,7 +65,7 @@
                 android:layout_height="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Kali Mirchmfkvmkfvmfmv"
+
                 android:textSize="@dimen/_12sdp"
                 android:textStyle="bold"
                 android:paddingStart="@dimen/_5sdp"
@@ -80,7 +79,7 @@
                 android:paddingStart="@dimen/_5sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:fontFamily="@font/poppins_regular"
-                android:text="Description  cns jilla jhbjhbhbdbj"
+
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_20sdp"
                     android:gravity="center|start"
-                    android:text="Net Wt:"
+                    android:text="@string/net_wt"
                     android:textSize="@dimen/_10sdp" />
 
                 <RelativeLayout
@@ -118,7 +117,6 @@
                         android:layout_height="match_parent"
                         android:gravity="center|end"
                         android:paddingStart="@dimen/_10sdp"
-                        android:text="20"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp" />
 
@@ -129,7 +127,6 @@
                         android:layout_toEndOf="@+id/tv_unit_quantity"
                         android:gravity="center"
                         android:paddingStart="@dimen/_5sdp"
-                        android:text="KG"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp" />
 
@@ -166,7 +163,6 @@
                     android:layout_toEndOf="@+id/tv_rupee_symbol"
                     android:fontFamily="@font/roboto_bold"
                     android:paddingStart="@dimen/_2sdp"
-                    android:text="50"
                     android:textSize="@dimen/_10sdp" />
 
 
@@ -190,7 +186,6 @@
                     android:layout_marginStart="@dimen/_2sdp"
                     android:layout_toEndOf="@id/tv_rupee"
                     android:paddingTop="@dimen/_1sdp"
-                    android:text="60000"
                     android:textColor="@color/red"
                     android:textSize="@dimen/_10sdp" />
 
