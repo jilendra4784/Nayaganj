@@ -2,17 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:transitionGroup="true"
+    android:id="@+id/linearLayout"
+    android:focusableInTouchMode="true"
     tools:context=".data.home.view.HomeFragment">
 
     <LinearLayout
         android:id="@+id/ll_search_layout"
         android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/purple_500">
+            android:background="@color/purple_500"
+        android:focusableInTouchMode="true">
 
             <RelativeLayout
                 android:id="@+id/home_search_layout"
@@ -83,6 +86,8 @@
                     app:sliderIndicatorMargin="15dp"
                     app:sliderIndicatorOrientation="horizontal"
                     app:sliderIndicatorPadding="3dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     app:sliderIndicatorRadius="2dp"
                     app:sliderIndicatorSelectedColor="#5A5A5A"
                     app:sliderIndicatorUnselectedColor="#FFF"
@@ -118,6 +123,7 @@
                         android:id="@+id/rv_home_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layoutAnimation="@anim/layout_animation"
                         android:layout_marginTop="@dimen/_10sdp" />
 
 
@@ -162,7 +168,6 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="@dimen/_5sdp"
-                android:text="Sub Category"
                 android:textSize="@dimen/_15sdp"
                 android:textStyle="bold" />
 
@@ -215,7 +220,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_bold"
                             android:padding="@dimen/_5sdp"
-                            android:text="Test"
                             android:textSize="@dimen/_15sdp"
                             android:textStyle="bold" />
 
@@ -241,7 +245,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:fontFamily="@font/poppins_regular"
                     android:padding="@dimen/_5sdp"
-                    android:text="Sub Category"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold" />
                 <com.google.android.material.card.MaterialCardView
@@ -259,29 +262,24 @@
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
-                    app:strokeWidth="0dp">
 
-                    <com.smarteist.autoimageslider.SliderView
-                        android:id="@+id/slider2"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        app:sliderAnimationDuration="600"
-                        app:sliderAutoCycleDirection="back_and_forth"
-                        app:sliderIndicatorAnimationDuration="600"
-                        app:sliderIndicatorEnabled="true"
-                        app:sliderIndicatorGravity="center_horizontal|bottom"
-                        app:sliderIndicatorMargin="15dp"
-                        app:sliderIndicatorOrientation="horizontal"
-                        app:sliderIndicatorPadding="3dp"
-                        app:sliderIndicatorRadius="2dp"
-                        app:sliderIndicatorSelectedColor="#5A5A5A"
-                        app:sliderIndicatorUnselectedColor="#FFF"
-                        app:sliderScrollTimeInSec="1" />
-                </com.google.android.material.card.MaterialCardView>
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/slider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sliderAnimationDuration="600"
+                    app:sliderAutoCycleDirection="back_and_forth"
+                    app:sliderIndicatorAnimationDuration="600"
+                    app:sliderIndicatorEnabled="true"
+                    app:sliderIndicatorGravity="center_horizontal|bottom"
+                    app:sliderIndicatorMargin="15dp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="2dp"
+                    app:sliderIndicatorRadius="1dp"
+                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorUnselectedColor="#FFF"
+                    app:sliderScrollTimeInSec="1" />
 
 
             </LinearLayout>
@@ -316,7 +314,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_bold"
                             android:padding="@dimen/_5sdp"
-                            android:text="Test"
                             android:textSize="@dimen/_15sdp"
                             android:textStyle="bold" />
 
@@ -342,7 +339,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:fontFamily="@font/poppins_regular"
                     android:padding="@dimen/_5sdp"
-                    android:text="Sub Category"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold" />
                 <com.google.android.material.card.MaterialCardView
@@ -415,7 +411,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_bold"
                             android:padding="@dimen/_5sdp"
-                            android:text="Test"
                             android:textSize="@dimen/_15sdp"
                             android:textStyle="bold" />
 
@@ -464,7 +459,6 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:fontFamily="@font/poppins_regular"
                     android:padding="@dimen/_5sdp"
-                    android:text="Sub Category"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="bold" />
                 <com.google.android.material.card.MaterialCardView

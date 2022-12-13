@@ -21,16 +21,10 @@ class HomeAdapter(
 ) :
     RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: AdapterHomeLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+    class MyViewHolder(val binding: AdapterHomeLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        Log.e("nayaganj_log", "onCreateViewHolder: Home Adapter", )
-        val view =
-            AdapterHomeLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyViewHolder(view)
+        return MyViewHolder(AdapterHomeLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

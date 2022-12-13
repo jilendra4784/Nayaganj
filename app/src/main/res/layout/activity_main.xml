@@ -38,11 +38,13 @@
                 android:id="@+id/nav_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:elevation="@dimen/_10sdp"
                 android:layout_alignParentBottom="true"
                 app:itemIconTint="@color/bnv_tab_item_foreground"
                 app:itemTextColor="@color/bnv_tab_item_foreground"
                 app:menu="@menu/bottom_nav_menu"
                 android:background="@color/white"
+                app:itemBackground="@color/white"
                 app:labelVisibilityMode="labeled"/>
 
         </RelativeLayout>
