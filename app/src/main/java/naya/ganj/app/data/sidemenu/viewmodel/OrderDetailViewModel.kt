@@ -8,9 +8,11 @@ import naya.ganj.app.data.sidemenu.model.OrderDetailModel
 import naya.ganj.app.data.sidemenu.repositry.SideMenuDataRepositry
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
+import naya.ganj.app.data.mycart.model.ApiResponseModel
 
 class OrderDetailViewModel(val repositry: SideMenuDataRepositry) : ViewModel() {
     private val mutableLiveData = MutableLiveData<OrderDetailModel>()
+    private val mutableCancelLiveData = MutableLiveData<ApiResponseModel>()
 
     fun getOrderDetailRequest(userId:String,jsonObject: JsonObject): LiveData<OrderDetailModel> {
         viewModelScope.launch {
@@ -19,4 +21,14 @@ class OrderDetailViewModel(val repositry: SideMenuDataRepositry) : ViewModel() {
         }
         return mutableLiveData
     }
+
+    fun changeOrderStatusRequest(userId:String,jsonObject: JsonObject): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result = repositry.changeOrderStatusRequest(userId,jsonObject)
+            mutableCancelLiveData.value = result.body()
+        }
+        return mutableCancelLiveData
+    }
+
+
 }

@@ -3,6 +3,7 @@ package naya.ganj.app.data.sidemenu.repositry
 import naya.ganj.app.retrofit.ApiInterface
 import naya.ganj.app.utility.Constant
 import com.google.gson.JsonObject
+import okhttp3.RequestBody
 
 class SideMenuDataRepositry(val api : ApiInterface) {
 
@@ -19,5 +20,8 @@ class SideMenuDataRepositry(val api : ApiInterface) {
 
    suspend fun sendRetailerRequest(userid:String?,jsonObject: JsonObject)=api.sendRetailerRequest(userid,Constant.DEVICE_TYPE,jsonObject)
 
+   suspend fun changeOrderStatusRequest(userId:String,jsonObject: JsonObject) =api.changeOrderStatusRequest(userId,Constant.DEVICE_TYPE,jsonObject)
+
+   suspend fun sendReturnRequest(userId:String?,jsonObject: RequestBody) =api.sendReturnRequest(userId,Constant.DEVICE_TYPE,jsonObject)
 
 }

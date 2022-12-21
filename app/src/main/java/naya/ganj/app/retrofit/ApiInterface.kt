@@ -189,6 +189,27 @@ interface ApiInterface {
     ): Response<OrderDetailModel>
 
     @Headers("Content-Type: application/json")
+    @POST(URLConstant.changeOrderStatus)
+    suspend fun changeOrderStatusRequest(
+        @Header("userid") userid: String,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.ReturnOrderURL)
+    suspend fun sendReturnRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: RequestBody
+    ): Response<ApiResponseModel>
+
+
+
+
+
+    @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_UPDATE_USER_DETAIL_URL)
     suspend fun updateUserDetailRequest(
         @Header("userid") userid: String?,

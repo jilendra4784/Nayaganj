@@ -84,4 +84,24 @@ interface ProductDao {
     @Query("SELECT EXISTS(SELECT * FROM cartmodel WHERE productId = :productId and variantId=:variantId)")
     fun isCartItemIsExist(productId: String, variantId: Int): Boolean
 
+    // Return Product Detail
+
+    @Insert
+    fun insertReturnProduct(returnProduct: ReturnProduct)
+
+    @Query("SELECT * FROM returnproduct")
+    fun getReturnProductList(): List<ReturnProduct>
+
+    @Query("delete from returnproduct where productId=:productId and variantId=:variantId")
+    fun deleteReturnProduct(productId: String, variantId: String)
+
+    @Query("DELETE FROM returnproduct")
+    fun deleteAllReturnItem()
+
+    @Query("SELECT EXISTS(SELECT * FROM returnproduct WHERE productId = :productId and variantId=:variantId)")
+    fun isReturnExist(productId: String, variantId: String): Boolean
+
+    @Query("update returnproduct set itemQuantity=:quantiy where productId=:productId and variantId=:variantId")
+    fun updateReturnProduct(productId: String, variantId: String, quantiy: Int)
+
 }

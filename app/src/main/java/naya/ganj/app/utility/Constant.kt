@@ -33,6 +33,7 @@ object Constant {
     const val promoCodeId = "promoCodeId"
     const val cashBackAmount = "cashBackAmount"
     const val orderId = "orderId"
+
     const val paymentMode="paymentMode"
     const val amount="amount"
     const val orderStatus = "orderStatus"

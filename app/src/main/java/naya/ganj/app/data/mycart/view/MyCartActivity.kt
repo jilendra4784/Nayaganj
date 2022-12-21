@@ -294,7 +294,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                 cartList = it.cartList
                 myCartModel = it
                 if (it.cartList.size > 0) {
-                    Log.i("nayaganj", "getMyCartData: called" + it.cartList.size)
                     myCartAdapter = MyCartAdapter(
                         this@MyCartActivity,
                         it.cartList,
@@ -309,8 +308,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                     binding.nestedscrollview.isNestedScrollingEnabled = false
                     binding.rvMycartList.adapter = myCartAdapter
                     binding.progressBar.visibility = View.GONE
-
-                    //Utility.listAnimation(binding.rvMycartList)
 
                     binding.mainConstraintLayout.visibility = View.VISIBLE
                     binding.offerCardLayout.visibility = View.VISIBLE

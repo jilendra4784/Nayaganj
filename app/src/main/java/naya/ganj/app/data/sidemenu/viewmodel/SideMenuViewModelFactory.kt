@@ -18,6 +18,8 @@ class SideMenuViewModelFactory constructor(val repo: SideMenuDataRepositry) :
             VirtualOrderViewModel(this.repo) as T
         }else if (modelClass.isAssignableFrom(RetailerViewModel::class.java)) {
             RetailerViewModel(this.repo) as T
+        }else if (modelClass.isAssignableFrom(ReturnOrderViewModel::class.java)) {
+            ReturnOrderViewModel(this.repo) as T
         }else {
             throw IllegalArgumentException("ViewModel Not Found")
         }

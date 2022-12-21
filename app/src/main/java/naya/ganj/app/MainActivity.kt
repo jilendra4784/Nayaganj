@@ -9,9 +9,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
+import android.os.*
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -89,6 +87,7 @@ class MainActivity : AppCompatActivity() {
     var filePath: String? = null
     var audioFile: String? = null
     var isImageOrderRequest = false
+    private var doubleBackToExitPressedOnce = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -233,6 +232,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        doubleBackToExitPressedOnce = false
 
         setUIDataForLoginUser()
         setBadgeCount()
@@ -913,4 +913,14 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
+    }
 }

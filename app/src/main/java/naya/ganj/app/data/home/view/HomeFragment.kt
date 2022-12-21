@@ -60,7 +60,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         R.drawable.all_caby_care
     )
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,7 +118,12 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                 binding.promoBannerSlider.startAutoCycle()
 
                                 setPromoBannerList(response.data.data, binding.slider)
-                                setProductList(response.data.data, binding.tvProductTitle, binding.productList)
+                                setProductList(
+                                    response.data.data,
+                                    binding.tvProductTitle,
+                                    binding.productList,
+                                    0
+                                )
                                 setCategoryGrid3List(response.data.data, binding.rvHomeRecyclerview)
 
                             }
@@ -153,20 +157,34 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     private fun setProductList(
         data: HomePageModel.Data,
         tvTitleTextView: TextView,
-        recyclerView: RecyclerView
+        recyclerView: RecyclerView,
+        mApiIndex: Int
     ) {
         tvTitleTextView.text = Utility.convertLanguage(data.productName, app)
-        recyclerView.layoutManager =
-            LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = ProductListHomeAdapter(
-            requireActivity(),
-            data.productList,
-            app,
-            requireActivity(),
-            this
-        )
+        if (mApiIndex == 4) {
+            recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+            recyclerView.adapter = ProductListHomeAdapterNew(
+                requireActivity(),
+                data.productList,
+                app,
+                requireActivity(),
+                this
+            )
+        } else {
+            recyclerView.layoutManager =
+                LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+            recyclerView.adapter = ProductListHomeAdapter(
+                requireActivity(),
+                data.productList,
+                app,
+                requireActivity(),
+                this
+            )
+        }
+
+
         recyclerView.scheduleLayoutAnimation()
     }
 
@@ -389,7 +407,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                             setProductList(
                                                 response.data.data,
                                                 binding.tvProductTitle2,
-                                                binding.productList2
+                                                binding.productList2, 0
                                             )
                                             setPromoBannerList(response.data.data, binding.slider2)
                                             binding.llCate2.visibility = View.VISIBLE
@@ -438,7 +456,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                             setProductList(
                                                 response.data.data,
                                                 binding.tvProductTitle3,
-                                                binding.productList3
+                                                binding.productList3, 0
                                             )
                                             setPromoBannerList(response.data.data, binding.slider3)
                                             binding.llCate3.visibility = View.VISIBLE
@@ -482,7 +500,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                             setProductList(
                                                 response.data.data,
                                                 binding.tvProductTitle4,
-                                                binding.productList4
+                                                binding.productList4, 4
                                             )
                                             Utility.listAnimation(binding.rvcatrecyclerview4)
                                             setPromoBannerList(response.data.data, binding.slider4)

@@ -25,6 +25,7 @@ import naya.ganj.app.data.category.model.CheckProductInCartModel
 import naya.ganj.app.data.category.view.ProductDetailActivity
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.ProductListHomeAdapterBinding
+import naya.ganj.app.databinding.ProductListHomeAdapterNewBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.interfaces.OnitemClickListener
@@ -37,13 +38,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProductListHomeAdapter(val context : Context, val product: List<HomePageModel.Data.Product>, val app: Nayaganj
-                             , val activity: Activity, private val onclickAddOrRemoveItemListener: OnclickAddOremoveItemListener,
-) : RecyclerView.Adapter<ProductListHomeAdapter.MyViewHolder>() {
+class ProductListHomeAdapterNew(val context : Context, val product: List<HomePageModel.Data.Product>, val app: Nayaganj
+                                , val activity: Activity, private val onclickAddOrRemoveItemListener: OnclickAddOremoveItemListener,
+) : RecyclerView.Adapter<ProductListHomeAdapterNew.MyViewHolder>() {
 
     var vMaxQuantity=0
 
-    class MyViewHolder(val binding: ProductListHomeAdapterBinding) :
+    class MyViewHolder(val binding: ProductListHomeAdapterNewBinding) :
         RecyclerView.ViewHolder(binding.root) {
     }
 
@@ -56,7 +57,7 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         viewType: Int
     ): MyViewHolder {
         val view =
-            ProductListHomeAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ProductListHomeAdapterNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(view)
     }
 

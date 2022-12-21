@@ -71,6 +71,7 @@ data class OrderDetailModel(
             val type: String
         )
 
+
         data class Product(
             @SerializedName("categoryId")
             val categoryId: String,

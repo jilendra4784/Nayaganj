@@ -36,7 +36,10 @@ class MyOrderActivity : AppCompatActivity() {
         }else{
             binding.include4.toolbarTitle.text = "My Order List"
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         getMyOrderList()
     }
 

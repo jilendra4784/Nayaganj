@@ -46,7 +46,7 @@ object PermissionUtils {
     /**
      * Function to show the "enable GPS" Dialog box
      */
-    fun showGPSNotEnabledDialog(context: Context) {
+    fun sendToLocationSetting(context: Context) {
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.enable_gps))
             .setMessage(context.getString(R.string.required_for_this_app))

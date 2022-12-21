@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -180,6 +181,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
     }
 
     private fun deliverProductDialog(orderId: String, paymentMode: String) {
+        Log.e("TAG", "deliverProductDialog: "+"" )
         var paymentModeStatus = ""
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

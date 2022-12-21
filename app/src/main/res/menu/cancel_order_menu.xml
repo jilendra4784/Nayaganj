@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/cancel_order"
+        app:showAsAction="always|withText"
+        android:visible="false"
+        android:title="Cancel Order" />
+
+    <item
+        android:id="@+id/return_product"
+        android:visible="false"
+        app:showAsAction="ifRoom|withText"
+        android:title="Return Product" />
+
+</menu>

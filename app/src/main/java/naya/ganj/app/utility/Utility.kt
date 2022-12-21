@@ -153,7 +153,6 @@ class Utility {
 
 
     companion object {
-
         fun serverNotResponding(context: Context, errorMessage: String) {
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.server_error_dialog)
@@ -288,10 +287,5 @@ class Utility {
         {
             return text.contains(".0")
         }
-
-
     }
-
-
-
 }

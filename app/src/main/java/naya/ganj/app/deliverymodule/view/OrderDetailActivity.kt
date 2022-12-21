@@ -161,11 +161,7 @@ class OrderDetailActivity : AppCompatActivity() {
                         binding.statusButton.visibility = View.VISIBLE
                         binding.statusButton.text = orderStatusValueAfterSplit[1]
                         changeOrderStatus = orderStatusValueAfterSplit[0]
-                        binding.statusButton.setBackgroundColor(
-                            Color.parseColor(
-                                orderStatusValueAfterSplit[2]
-                            )
-                        )
+                        binding.statusButton.setBackgroundColor(Color.parseColor(orderStatusValueAfterSplit[2]))
                     } else {
                         binding.statusButton.visibility = View.GONE
                     }
@@ -176,11 +172,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
                     if (rescheduleStatusAfterSplit[3].toInt() == 1) {
                         binding.reschedule.visibility = View.VISIBLE
-                        binding.reschedule.setBackgroundColor(
-                            Color.parseColor(
-                                rescheduleStatusAfterSplit[2]
-                            )
-                        )
+                        binding.reschedule.setBackgroundColor(Color.parseColor(rescheduleStatusAfterSplit[2]))
                         binding.reschedule.setText(rescheduleStatusAfterSplit[1])
                     } else {
                         binding.reschedule.visibility = View.GONE
@@ -399,6 +391,4 @@ class OrderDetailActivity : AppCompatActivity() {
                 }
             }
         }
-
-
 }

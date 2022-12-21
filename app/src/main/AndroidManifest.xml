@@ -28,6 +28,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ReturnProductActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".GlobalSearchActivity"
             android:exported="false">
             <meta-data
@@ -106,6 +113,12 @@
         <activity
             android:name=".data.category.view.ProductDetailActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".data.sidemenu.view.ReturnProductActivity"
+            android:exported="false" />
+
+
         <activity
             android:name=".SplashActivity"
             android:exported="true">
