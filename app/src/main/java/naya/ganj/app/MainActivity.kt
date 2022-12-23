@@ -216,18 +216,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.sideNavigation.getHeaderView(0).setOnClickListener {
-            if (!app.user.getLoginSession()) {
-                startActivity(
-                    Intent(
-                        this@MainActivity,
-                        LoginActivity::class.java
-                    )
-                )
+            if (!app.user.getLoginSession()) { startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
         }
 
         binding.navView.setOnItemReselectedListener {  }
-
+        binding.include14.llSearchLayout.setOnClickListener{
+                startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
+        }
     }
 
     override fun onResume() {
@@ -236,6 +232,13 @@ class MainActivity : AppCompatActivity() {
 
         setUIDataForLoginUser()
         setBadgeCount()
+        LocationService.getInstance().startLocationUpdate(this@MainActivity,binding.include14.tvLocation)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocationService.getInstance().stopLocation()
     }
 
     private fun setUIDataForLoginUser() {

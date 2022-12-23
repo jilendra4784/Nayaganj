@@ -172,10 +172,10 @@ class ProductDetailActivity : AppCompatActivity() {
                     val vDiscountPrice: Double =
                         price - ((price * item.vDiscount) / 100)
                     binding.tvPrice.text = resources.getString(R.string.Rs) + price.toString()
-                    binding.tvDiscountPrice.text =
-                        resources.getString(R.string.Rs) + vDiscountPrice.toString()
+                    binding.tvDiscountPrice.text = resources.getString(R.string.Rs) + vDiscountPrice.toString()
                     binding.tvQuantity.text = item.itemQuantity.toString()
                     binding.tvUnit.text = item.vUnitQuantity.toString() + item.vUnit
+
 
                     if(app.user.getAppLanguage()==1){
                         binding.tvOff.text = item.vDiscount.toString() + "% "+resources.getString(R.string.off_h)
@@ -188,7 +188,11 @@ class ProductDetailActivity : AppCompatActivity() {
                     binding.addButton.visibility = View.GONE
                     binding.llMinusPlusLayout.visibility = View.VISIBLE
 
-
+                    // if price
+                    if(item.vDiscount==0){
+                        binding.tvOff.visibility=View.INVISIBLE
+                        binding.tvPrice.visibility=View.INVISIBLE
+                    }
                 }
             } else {
                 runOnUiThread {
@@ -210,6 +214,11 @@ class ProductDetailActivity : AppCompatActivity() {
                                 binding.tvNetWet.text=resources.getString(R.string.net_weight_h)
                             }else{
                                 binding.tvOff.text = item.vDiscount.toString() + "% off"
+                            }
+
+                            if(item.vDiscount==0){
+                                binding.tvOff.visibility=View.INVISIBLE
+                                binding.tvPrice.visibility=View.INVISIBLE
                             }
 
                             if (item.vQuantityInCart > 0) {
@@ -760,11 +769,10 @@ class ProductDetailActivity : AppCompatActivity() {
             binding.tvPrice.visibility = View.GONE
         }
 
-        var vMaxQuantity = variant.get(position).vQuantity
-        binding.tvPrice.text = price.toString()
-        binding.tvDiscountPrice.text = vDiscountPrice.toString()
-        binding.tvUnit.text =
-            variant.get(position).vUnitQuantity.toString() + variant.get(position).vUnit
+        var vMaxQuantity = variant[position].vQuantity
+        binding.tvPrice.text =resources.getString(R.string.Rs)+ price.toString()
+        binding.tvDiscountPrice.text =resources.getString(R.string.Rs)+ vDiscountPrice.toString()
+        binding.tvUnit.text = variant.get(position).vUnitQuantity + variant.get(position).vUnit
 
         if (response.body()!!.status) {
             binding.tvQuantity.text = response.body()!!.productQuantity.toString()
@@ -785,7 +793,7 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 supportFinishAfterTransition()
                 return true

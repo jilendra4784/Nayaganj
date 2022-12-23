@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -32,7 +33,7 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.location.Address;
 
 class Utility {
 
@@ -167,10 +168,18 @@ class Utility {
             errorTitle.text = errorMessage
 
             got_it.setOnClickListener {
-                dialog.dismiss()
+                try{
+                    dialog.dismiss()
+                }catch (_:Exception){
+
+                }
+            }
+            try{
+                dialog.show()
+            }catch (_:Exception){
+
             }
 
-            dialog.show()
         }
 
         fun isAppOnLine(context: Context, internetCheckListener: OnInternetCheckListener): Boolean {
@@ -288,4 +297,7 @@ class Utility {
             return text.contains(".0")
         }
     }
+
+
+
 }

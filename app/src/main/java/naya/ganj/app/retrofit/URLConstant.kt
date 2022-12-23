@@ -46,6 +46,7 @@ object URLConstant {
     const val URL_SET_DELIVERY_BOY_LOCATION_URL = "setdeliveryBoyLocation"
     const val changeOrderStatus = "changeOrderStatus"
     const val ReturnOrderURL = "setReturnProduct"
+    const val URL_RESCHUDULE = "reschedule"
 
 
     // PAYTM

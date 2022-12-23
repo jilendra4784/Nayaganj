@@ -74,16 +74,12 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
 
         binding.llMainLeaniearLayout.visibility = View.GONE
 
-        if (app.user.getAppLanguage() == 1) {
-            binding.searchEdittext.hint =
-                requireActivity().resources.getString(R.string.search_here_h)
-        }
-        binding.llSearchLayout.setOnClickListener {
-            startActivity(Intent(requireActivity(), ProductListActivity::class.java))
-            //startActivity(Intent(requireActivity(), GlobalSearchActivity::class.java))
-        }
         setHomePageData()
         checkViewVisibility()
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            setHomePageData()
+            binding.swipeRefreshLayout.isRefreshing=false
+        }
 
         return binding.root
     }

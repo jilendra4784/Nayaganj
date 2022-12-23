@@ -261,7 +261,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialAddress_cardview"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_70sdp"
+                android:layout_height="@dimen/_75sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/_10sdp"
@@ -284,7 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/btn_change_Address"
-                        android:text="Delvery Addrress" />
+                        android:text="Delivery Addrress" />
 
                     <TextView
                         android:id="@+id/tv_address_detail"
@@ -296,7 +296,9 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
                         android:layout_marginTop="9dp"
-                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textSize="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
                         android:text="No Address Selected" />
 
                     <com.google.android.material.button.MaterialButton

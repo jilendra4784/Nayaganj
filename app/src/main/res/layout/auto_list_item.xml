@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="@color/white"
-    android:maxLines="1"
     android:padding="@dimen/_10sdp"
+    android:fontFamily="@font/poppins_regular"
     android:text="Jilla"
     android:textSize="@dimen/_10sdp"
     android:singleLine="true" />

@@ -29,7 +29,7 @@
             android:id="@+id/all_offer"
             android:title="@string/all_offers"
             android:icon="@drawable/offer"
-            android:visible="true" />
+            android:visible="false" />
         <item
             android:id="@+id/share_App"
             android:title="@string/share_app"
@@ -39,7 +39,7 @@
             android:id="@+id/refer_earn"
             android:title="@string/refer_and_earn"
             android:icon="@drawable/refer_earn"
-            android:visible="true" />
+            android:visible="false" />
         <item
             android:id="@+id/customer_support"
             android:title="@string/customer_support"

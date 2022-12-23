@@ -10,529 +10,495 @@
     android:focusableInTouchMode="true"
     tools:context=".data.home.view.HomeFragment">
 
-    <LinearLayout
-        android:id="@+id/ll_search_layout"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/purple_500"
-        android:focusableInTouchMode="true">
+        android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/home_search_layout"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="@dimen/_10sdp"
-                android:background="@drawable/edittext_round_corner">
-
-                <ImageView
-                    android:id="@+id/back_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_2sdp"
-                    android:paddingLeft="@dimen/_5sdp"
-                    android:paddingRight="@dimen/_5sdp"
-                    android:src="@drawable/search"
-                    android:visibility="visible"
-                    app:tint="@color/gray" />
-
-                <TextView
-                    android:id="@+id/search_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/back_button"
-                    android:backgroundTint="@color/white"
-                    android:drawableTint="@color/gray"
-                    android:gravity="center_vertical"
-                    android:hint="Search 100+ products"
-                    android:textSize="@dimen/_12sdp" />
-
-            </RelativeLayout>
-
-    </LinearLayout>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedscrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-        <LinearLayout
-            android:id="@+id/ll_main_leaniear_layout"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedscrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_50sdp"
-            android:orientation="vertical"
-            android:visibility="visible">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
+                android:id="@+id/ll_main_leaniear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5sdp"
-                app:strokeWidth="0dp">
+                android:layout_marginBottom="@dimen/_50sdp"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/slider"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:sliderAnimationDuration="600"
-                    app:sliderAutoCycleDirection="back_and_forth"
-                    app:sliderIndicatorAnimationDuration="600"
-                    app:sliderIndicatorEnabled="true"
-                    app:sliderIndicatorGravity="center_horizontal|bottom"
-                    app:sliderIndicatorMargin="15dp"
-                    app:sliderIndicatorOrientation="horizontal"
-                    app:sliderIndicatorPadding="3dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    app:sliderIndicatorRadius="2dp"
-                    app:sliderIndicatorSelectedColor="#5A5A5A"
-                    app:sliderIndicatorUnselectedColor="#FFF"
-                    app:sliderScrollTimeInSec="1" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:strokeWidth="0dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/_5sdp"
-                app:cardElevation="@dimen/_5sdp"
-                app:cardUseCompatPadding="true"
-                app:strokeColor="@color/light_gray_color"
-                app:strokeWidth="@dimen/_2sdp">
+                    <com.smarteist.autoimageslider.SliderView
+                        android:id="@+id/slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        app:sliderAnimationDuration="600"
+                        app:sliderAutoCycleDirection="back_and_forth"
+                        app:sliderIndicatorAnimationDuration="600"
+                        app:sliderIndicatorEnabled="true"
+                        app:sliderIndicatorGravity="center_horizontal|bottom"
+                        app:sliderIndicatorMargin="15dp"
+                        app:sliderIndicatorOrientation="horizontal"
+                        app:sliderIndicatorPadding="3dp"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        app:sliderIndicatorRadius="1dp"
+                        app:sliderIndicatorSelectedColor="#5A5A5A"
+                        app:sliderIndicatorUnselectedColor="#FFF"
+                        app:sliderScrollTimeInSec="1" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:cardElevation="@dimen/_5sdp"
+                    app:cardUseCompatPadding="true"
+                    app:strokeColor="@color/light_gray_color"
+                    app:strokeWidth="@dimen/_2sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Shop By Category"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_home_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layoutAnimation="@anim/layout_animation"
+                            android:layout_marginTop="@dimen/_10sdp" />
+
+
+                    </LinearLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:strokeWidth="0dp">
+
+                    <com.smarteist.autoimageslider.SliderView
+                        android:id="@+id/promo_banner_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        app:sliderAnimationDuration="600"
+                        app:sliderAutoCycleDirection="back_and_forth"
+                        app:sliderIndicatorAnimationDuration="600"
+                        app:sliderIndicatorEnabled="true"
+                        app:sliderIndicatorGravity="center_horizontal|bottom"
+                        app:sliderIndicatorMargin="15dp"
+                        app:sliderIndicatorOrientation="horizontal"
+                        app:sliderIndicatorPadding="3dp"
+                        app:sliderIndicatorRadius="1dp"
+                        app:sliderIndicatorSelectedColor="#5A5A5A"
+                        app:sliderIndicatorUnselectedColor="#FFF"
+                        app:sliderScrollTimeInSec="1" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/light_gray_color" />
+
+                <TextView
+                    android:id="@+id/tvProductTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/light_gray_color"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="@dimen/_1sdp"
+                    app:cardUseCompatPadding="true"
+                    android:visibility="visible"
+                    app:strokeWidth="0dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/product_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!--Cate And Product List 2-->
 
                 <LinearLayout
+                    android:id="@+id/ll_cate2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                    >
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="@dimen/_5sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeColor="@color/light_gray_color"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvcat2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_bold"
+                                android:padding="@dimen/_5sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:textStyle="bold" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvcatrecyclerview2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10sdp" />
+
+
+                        </LinearLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_gray_color" />
+                    <TextView
+                        android:id="@+id/tvProductTitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:padding="@dimen/_5sdp"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/light_gray_color"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="@dimen/_1sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeWidth="0dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/product_list2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.smarteist.autoimageslider.SliderView
+                        android:id="@+id/slider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        app:sliderAnimationDuration="600"
+                        app:sliderAutoCycleDirection="back_and_forth"
+                        app:sliderIndicatorAnimationDuration="600"
+                        app:sliderIndicatorEnabled="true"
+                        app:sliderIndicatorGravity="center_horizontal|bottom"
+                        app:sliderIndicatorMargin="15dp"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        app:sliderIndicatorOrientation="horizontal"
+                        app:sliderIndicatorPadding="2dp"
+                        app:sliderIndicatorRadius="1dp"
+                        app:sliderIndicatorSelectedColor="#5A5A5A"
+                        app:sliderIndicatorUnselectedColor="#FFF"
+                        app:sliderScrollTimeInSec="1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_cate3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <!--Cate And Product List 3-->
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="@dimen/_5sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeColor="@color/light_gray_color"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvcat3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_bold"
+                                android:padding="@dimen/_5sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:textStyle="bold" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvcatrecyclerview3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10sdp" />
+
+
+                        </LinearLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_gray_color" />
+                    <TextView
+                        android:id="@+id/tvProductTitle3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:padding="@dimen/_5sdp"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/light_gray_color"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="@dimen/_1sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeWidth="0dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/product_list3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        app:strokeWidth="0dp">
+
+                        <com.smarteist.autoimageslider.SliderView
+                            android:id="@+id/slider3"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:sliderAnimationDuration="600"
+                            app:sliderAutoCycleDirection="back_and_forth"
+                            app:sliderIndicatorAnimationDuration="600"
+                            app:sliderIndicatorEnabled="true"
+                            app:sliderIndicatorGravity="center_horizontal|bottom"
+                            app:sliderIndicatorMargin="15dp"
+                            app:sliderIndicatorOrientation="horizontal"
+                            app:sliderIndicatorPadding="3dp"
+                            app:sliderIndicatorRadius="1dp"
+                            app:sliderIndicatorSelectedColor="#5A5A5A"
+                            app:sliderIndicatorUnselectedColor="#FFF"
+                            app:sliderScrollTimeInSec="1" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_cate4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!--Cate And Product List 4-->
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="@dimen/_5sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeColor="@color/light_gray_color"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvcat4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_bold"
+                                android:padding="@dimen/_5sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:textStyle="bold" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvcatrecyclerview4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10sdp" />
+
+
+                        </LinearLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        app:strokeWidth="0dp">
+
+                        <com.smarteist.autoimageslider.SliderView
+                            android:id="@+id/slider4"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:sliderAnimationDuration="600"
+                            app:sliderAutoCycleDirection="back_and_forth"
+                            app:sliderIndicatorAnimationDuration="600"
+                            app:sliderIndicatorEnabled="true"
+                            app:sliderIndicatorGravity="center_horizontal|bottom"
+                            app:sliderIndicatorMargin="15dp"
+                            app:sliderIndicatorOrientation="horizontal"
+                            app:sliderIndicatorPadding="3dp"
+                            app:sliderIndicatorRadius="1dp"
+                            app:sliderIndicatorSelectedColor="#5A5A5A"
+                            app:sliderIndicatorUnselectedColor="#FFF"
+                            app:sliderScrollTimeInSec="1" />
+                    </com.google.android.material.card.MaterialCardView>
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Shop By Category"
-                        android:textSize="@dimen/_15sdp"
-                        android:textStyle="bold" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_home_recyclerview"
+                        android:layout_height="1dp"
+                        android:background="@color/light_gray_color" />
+                    <TextView
+                        android:id="@+id/tvProductTitle4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layoutAnimation="@anim/layout_animation"
-                        android:layout_marginTop="@dimen/_10sdp" />
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:padding="@dimen/_5sdp"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="@dimen/_1sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeWidth="0dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/product_list4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_cate5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!--Cate And Product List 5-->
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="@dimen/_5sdp"
+                        app:cardUseCompatPadding="true"
+                        app:strokeColor="@color/gray"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            >
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:text="Shop By Brand"
+                                android:textSize="@dimen/_15sdp"
+                                android:padding="@dimen/_10sdp"
+                                android:textStyle="bold" />
+
+
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvbrandrecyclerview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                />
+
+
+                        </LinearLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
 
 
                 </LinearLayout>
 
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5sdp"
-                app:strokeWidth="0dp">
-
-                <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/promo_banner_slider"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:sliderAnimationDuration="600"
-                    app:sliderAutoCycleDirection="back_and_forth"
-                    app:sliderIndicatorAnimationDuration="600"
-                    app:sliderIndicatorEnabled="true"
-                    app:sliderIndicatorGravity="center_horizontal|bottom"
-                    app:sliderIndicatorMargin="15dp"
-                    app:sliderIndicatorOrientation="horizontal"
-                    app:sliderIndicatorPadding="3dp"
-                    app:sliderIndicatorRadius="2dp"
-                    app:sliderIndicatorSelectedColor="#5A5A5A"
-                    app:sliderIndicatorUnselectedColor="#FFF"
-                    app:sliderScrollTimeInSec="1" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/light_gray_color" />
-
-            <TextView
-                android:id="@+id/tvProductTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:fontFamily="@font/poppins_regular"
-                android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_15sdp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/light_gray_color"
-                app:cardCornerRadius="0dp"
-                app:cardElevation="@dimen/_1sdp"
-                app:cardUseCompatPadding="true"
-                android:visibility="visible"
-                app:strokeWidth="0dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/product_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!--Cate And Product List 2-->
-
-            <LinearLayout
-                android:id="@+id/ll_cate2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-
-                >
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="@dimen/_5sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeColor="@color/light_gray_color"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvcat2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_bold"
-                            android:padding="@dimen/_5sdp"
-                            android:textSize="@dimen/_15sdp"
-                            android:textStyle="bold" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvcatrecyclerview2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_10sdp" />
-
-
-                    </LinearLayout>
-
-
-                </com.google.android.material.card.MaterialCardView>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/light_gray_color" />
-                <TextView
-                    android:id="@+id/tvProductTitle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:padding="@dimen/_5sdp"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/light_gray_color"
-                    app:cardCornerRadius="0dp"
-                    app:cardElevation="@dimen/_1sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeWidth="0dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/product_list2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/slider2"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:sliderAnimationDuration="600"
-                    app:sliderAutoCycleDirection="back_and_forth"
-                    app:sliderIndicatorAnimationDuration="600"
-                    app:sliderIndicatorEnabled="true"
-                    app:sliderIndicatorGravity="center_horizontal|bottom"
-                    app:sliderIndicatorMargin="15dp"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
-                    app:sliderIndicatorOrientation="horizontal"
-                    app:sliderIndicatorPadding="2dp"
-                    app:sliderIndicatorRadius="1dp"
-                    app:sliderIndicatorSelectedColor="#5A5A5A"
-                    app:sliderIndicatorUnselectedColor="#FFF"
-                    app:sliderScrollTimeInSec="1" />
-
-
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_cate3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <!--Cate And Product List 3-->
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="@dimen/_5sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeColor="@color/light_gray_color"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvcat3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_bold"
-                            android:padding="@dimen/_5sdp"
-                            android:textSize="@dimen/_15sdp"
-                            android:textStyle="bold" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvcatrecyclerview3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_10sdp" />
+        </androidx.core.widget.NestedScrollView>
 
 
-                    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-                </com.google.android.material.card.MaterialCardView>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/light_gray_color" />
-                <TextView
-                    android:id="@+id/tvProductTitle3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:padding="@dimen/_5sdp"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/light_gray_color"
-                    app:cardCornerRadius="0dp"
-                    app:cardElevation="@dimen/_1sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeWidth="0dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/product_list3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
-                    app:strokeWidth="0dp">
-
-                    <com.smarteist.autoimageslider.SliderView
-                        android:id="@+id/slider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        app:sliderAnimationDuration="600"
-                        app:sliderAutoCycleDirection="back_and_forth"
-                        app:sliderIndicatorAnimationDuration="600"
-                        app:sliderIndicatorEnabled="true"
-                        app:sliderIndicatorGravity="center_horizontal|bottom"
-                        app:sliderIndicatorMargin="15dp"
-                        app:sliderIndicatorOrientation="horizontal"
-                        app:sliderIndicatorPadding="3dp"
-                        app:sliderIndicatorRadius="2dp"
-                        app:sliderIndicatorSelectedColor="#5A5A5A"
-                        app:sliderIndicatorUnselectedColor="#FFF"
-                        app:sliderScrollTimeInSec="1" />
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_cate4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!--Cate And Product List 4-->
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="@dimen/_5sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeColor="@color/light_gray_color"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvcat4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_bold"
-                            android:padding="@dimen/_5sdp"
-                            android:textSize="@dimen/_15sdp"
-                            android:textStyle="bold" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvcatrecyclerview4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_10sdp" />
-
-
-                    </LinearLayout>
-
-
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
-                    app:strokeWidth="0dp">
-
-                    <com.smarteist.autoimageslider.SliderView
-                        android:id="@+id/slider4"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        app:sliderAnimationDuration="600"
-                        app:sliderAutoCycleDirection="back_and_forth"
-                        app:sliderIndicatorAnimationDuration="600"
-                        app:sliderIndicatorEnabled="true"
-                        app:sliderIndicatorGravity="center_horizontal|bottom"
-                        app:sliderIndicatorMargin="15dp"
-                        app:sliderIndicatorOrientation="horizontal"
-                        app:sliderIndicatorPadding="3dp"
-                        app:sliderIndicatorRadius="2dp"
-                        app:sliderIndicatorSelectedColor="#5A5A5A"
-                        app:sliderIndicatorUnselectedColor="#FFF"
-                        app:sliderScrollTimeInSec="1" />
-                </com.google.android.material.card.MaterialCardView>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/light_gray_color" />
-                <TextView
-                    android:id="@+id/tvProductTitle4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:padding="@dimen/_5sdp"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="#8B8000"
-                    app:cardCornerRadius="0dp"
-                    app:cardElevation="@dimen/_1sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeWidth="0dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/product_list4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_cate5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!--Cate And Product List 5-->
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="0dp"
-                    app:cardElevation="@dimen/_5sdp"
-                    app:cardUseCompatPadding="true"
-                    app:strokeColor="@color/gray"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_regular"
-                            android:text="Shop By Brand"
-                            android:textSize="@dimen/_15sdp"
-                            android:padding="@dimen/_10sdp"
-                            android:textStyle="bold" />
-
-
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvbrandrecyclerview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            />
-
-
-                    </LinearLayout>
-
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

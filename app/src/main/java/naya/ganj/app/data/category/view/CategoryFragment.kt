@@ -51,9 +51,7 @@ class CategoryFragment : Fragment() {
             })) {
             if (isAdded)
                 getCategoryData()
-            binding.llSearchLayout.setOnClickListener {
-                startActivity(Intent(requireActivity(), ProductListActivity::class.java))
-            }
+
         }
 
        /* var previousOpenGroup = -1
@@ -70,6 +68,20 @@ class CategoryFragment : Fragment() {
             intent.putExtra(Constant.CATEGORY_NAME, cateModel.categoryList[groupPosition].subCategoryList[childPosition].category)
             startActivity(intent)
             true
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            if(Utility.isAppOnLine(requireActivity(),object : OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        if (isAdded)
+                            getCategoryData()
+                    }
+                })) {
+                if (isAdded)
+                    getCategoryData()
+
+            }
+            binding.swipeRefreshLayout.isRefreshing=false
         }
     }
 

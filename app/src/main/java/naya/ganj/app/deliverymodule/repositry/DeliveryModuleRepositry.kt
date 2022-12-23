@@ -19,5 +19,7 @@ class DeliveryModuleRepositry(val apiInterface: ApiInterface) {
 
     suspend fun setDeliveryBoyLocationRequest(userId: String?, jsonObject: JsonObject) = apiInterface.setDeliveryBoyLocationRequest(userId, Constant.DEVICE_TYPE, jsonObject)
 
+    suspend fun sendReschduleRequest(userId: String?, jsonObject: JsonObject) = apiInterface.sendReschduleRequest(userId, Constant.DEVICE_TYPE, jsonObject)
+
 }
 

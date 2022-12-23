@@ -7,50 +7,6 @@
     android:transitionGroup="true"
     tools:context=".data.category.view.CategoryFragment">
 
-    <LinearLayout
-        android:id="@+id/ll_search_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/purple_500"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <RelativeLayout
-            android:id="@+id/home_search_layout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="@dimen/_10sdp"
-            android:background="@drawable/edittext_round_corner">
-
-            <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/_2sdp"
-                android:layout_marginRight="@dimen/_2sdp"
-                android:paddingLeft="@dimen/_5sdp"
-                android:paddingRight="@dimen/_5sdp"
-                android:src="@drawable/search"
-                android:visibility="visible"
-                app:tint="@color/gray" />
-
-            <TextView
-                android:id="@+id/search_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/back_button"
-                android:backgroundTint="@color/white"
-                android:drawableTint="@color/gray"
-                android:gravity="center_vertical"
-                android:hint="Search 100+ products"
-                android:textSize="@dimen/_12sdp" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -62,18 +18,27 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="visible"/>
 
-    <ExpandableListView
-        android:id="@+id/expandablelist"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:childDivider="@null"
-        android:divider="@null"
-        android:groupIndicator="@null"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_search_layout" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ExpandableListView
+            android:id="@+id/expandablelist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:childDivider="@null"
+            android:divider="@null"
+            android:groupIndicator="@null"
+            android:visibility="visible"
+
+            />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

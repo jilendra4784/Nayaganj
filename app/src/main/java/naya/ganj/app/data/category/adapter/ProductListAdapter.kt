@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -74,6 +75,7 @@ class ProductListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        setFadeAnimation(holder.itemView)
         val product = productList[holder.adapterPosition]
         setUpData(holder, product, holder.adapterPosition)
     }
@@ -608,5 +610,12 @@ class ProductListAdapter(
                 }
             }
         }
+    }
+
+    fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 500
+        anim.backgroundColor=context.resources.getColor(R.color.gray)
+        view.startAnimation(anim)
     }
 }

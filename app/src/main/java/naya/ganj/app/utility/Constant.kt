@@ -51,6 +51,8 @@ object Constant {
     const val isListActivity = "islistactivity"
     const val categoryId = "categoryId"
     const val text="text"
+    const val type="type"
+    const val Return="return"
 
     const val INSERT = "insert"
     const val ADD = "add"

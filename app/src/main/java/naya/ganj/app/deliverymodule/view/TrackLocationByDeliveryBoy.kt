@@ -321,7 +321,7 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
             .setPriority(PRIORITY_HIGH_ACCURACY)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient?.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
+            fusedLocationProviderClient?.requestLocationUpdates(mLocationRequest!!, mLocationCallback, Looper.myLooper())
         }
     }
 

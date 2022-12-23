@@ -60,7 +60,7 @@
     <string name="address_detail">Address Detail</string>
     <string name="house_no">House No.</string>
     <string name="street_details">Street Details</string>
-    <string name="enter_city">Enter city</string>
+    <string name="enter_city">Select city</string>
     <string name="pin_code">Pin Code</string>
     <string name="select_address_type">Select Address Type</string>
     <string name="area_details">Area Details</string>
@@ -191,5 +191,6 @@
     <string name="mid">LTukSZ52182040597318</string>
     <string name="transactions_failed">Transaction failed</string>
     <string name="exit_press_back_twice_message">Press again to exit</string>
+    <string name="reschedule">You have Reschedule order successfully</string>
 
 </resources>

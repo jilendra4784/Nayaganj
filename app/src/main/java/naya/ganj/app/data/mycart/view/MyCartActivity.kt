@@ -758,4 +758,5 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             ) { dialogInterface, i -> dialogInterface.dismiss() }
             .show()
     }
+
 }

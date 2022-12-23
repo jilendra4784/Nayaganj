@@ -3,6 +3,7 @@ package naya.ganj.app.deliverymodule.view
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -73,35 +74,60 @@ class OrderDetailActivity : AppCompatActivity() {
 
             val intent=Intent(this,TrackLocationByDeliveryBoy::class.java)
             intent.putExtra("name",binding.tvName.text.toString())
-            intent.putExtra("address",binding.tvAddress.text.toString())
-            intent.putExtra("mobileNumber",binding.tvContactNumber.text.toString())
-            intent.putExtra(Constant.orderId,orderId)
-            intent.putExtra(Constant.lat,lat)
-            intent.putExtra(Constant.long,long)
-            intent.putExtra(Constant.orderStatus,orderStatus)
-            intent.putExtra("paymentMode",paymentMode)
+            intent.putExtra("address", binding.tvAddress.text.toString())
+            intent.putExtra("mobileNumber", binding.tvContactNumber.text.toString())
+            intent.putExtra(Constant.orderId, orderId)
+            intent.putExtra(Constant.lat, lat)
+            intent.putExtra(Constant.long, long)
+            intent.putExtra(Constant.orderStatus, orderStatus)
+            intent.putExtra("paymentMode", paymentMode)
             startActivity(intent)
 
         }
 
-        if(Utility.isAppOnLine(this@OrderDetailActivity,object : OnInternetCheckListener {
+        binding.reschedule.setOnClickListener {
+            sendReschduleApi(orderId, orderType)
+        }
+
+        if (Utility.isAppOnLine(this@OrderDetailActivity, object : OnInternetCheckListener {
                 override fun onInternetAvailable() {
                     getOrderDetail(orderId, orderType)
                 }
             }))
-        getOrderDetail(orderId, orderType)
+            getOrderDetail(orderId, orderType)
+
+    }
+
+    private fun sendReschduleApi(orderId: String, orderType: String) {
+
+        val jsonObject = JsonObject()
+        try {
+            jsonObject.addProperty(Constant.orderId, orderId)
+            jsonObject.addProperty(Constant.type, Constant.Return)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        viewModel.sendReschduleRequest(app.user.getUserDetails()?.userId,jsonObject).observe(this){
+            if(it!=null &&it.status){
+                Toast.makeText(this@OrderDetailActivity, resources?.getString(R.string.reschedule), Toast.LENGTH_SHORT).show()
+                getOrderDetail(orderId,orderType)
+            }else{
+                Toast.makeText(this@OrderDetailActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
     private fun getOrderDetail(orderId: String?, type: String?) {
 
-            val jsonObject = JsonObject()
-            jsonObject.addProperty(Constant.orderId, orderId)
-            jsonObject.addProperty(Constant.Type, orderType)
-            viewModel.getOrderDetail(app.user.getUserDetails()?.userId, jsonObject)
-                .observe(this@OrderDetailActivity) {
-                    if (it != null) {
-                        setUIData(it)
+        val jsonObject = JsonObject()
+        jsonObject.addProperty(Constant.orderId, orderId)
+        jsonObject.addProperty(Constant.Type, orderType)
+        viewModel.getOrderDetail(app.user.getUserDetails()?.userId, jsonObject)
+            .observe(this@OrderDetailActivity) {
+                if (it != null) {
+                    setUIData(it)
                     }
                 }
         }
@@ -158,12 +184,12 @@ class OrderDetailActivity : AppCompatActivity() {
                     val orderStatusValueAfterSplit = orderStatusValue.split(',')
 
                     if (orderStatusValueAfterSplit[3].toInt() == 1) {
-                        binding.statusButton.visibility = View.VISIBLE
+                        binding.statusCardview.visibility = View.VISIBLE
                         binding.statusButton.text = orderStatusValueAfterSplit[1]
                         changeOrderStatus = orderStatusValueAfterSplit[0]
                         binding.statusButton.setBackgroundColor(Color.parseColor(orderStatusValueAfterSplit[2]))
                     } else {
-                        binding.statusButton.visibility = View.GONE
+                        binding.statusCardview.visibility = View.GONE
                     }
 
                     // For ReSchedule Order
@@ -171,11 +197,12 @@ class OrderDetailActivity : AppCompatActivity() {
                     val rescheduleStatusAfterSplit = rescheduleStatus.split(',')
 
                     if (rescheduleStatusAfterSplit[3].toInt() == 1) {
-                        binding.reschedule.visibility = View.VISIBLE
+                        binding.rescheduleCardview.visibility = View.VISIBLE
                         binding.reschedule.setBackgroundColor(Color.parseColor(rescheduleStatusAfterSplit[2]))
                         binding.reschedule.setText(rescheduleStatusAfterSplit[1])
                     } else {
-                        binding.reschedule.visibility = View.GONE
+
+                        binding.rescheduleCardview.visibility = View.GONE
                     }
 
                 } catch (e: Exception) {
@@ -184,15 +211,17 @@ class OrderDetailActivity : AppCompatActivity() {
 
                 // Refund Status
                 try {
+
                     val refundValue = it.orderDetails.buttonIndex.split('|')[2]
                     val refundAfterSplit = refundValue.split(',')
 
                     if (refundAfterSplit[3].toInt() == 1) {
-                        binding.statusButton.visibility = View.VISIBLE
+                        binding.statusCardview.visibility = View.VISIBLE
                         binding.statusButton.text = refundAfterSplit[1]
                         binding.statusButton.setBackgroundColor(Color.parseColor(refundAfterSplit[2]))
                     } else {
                         binding.statusButton.visibility = View.GONE
+                        binding.statusCardview.visibility = View.GONE
                     }
 
                 } catch (e: Exception) {
@@ -304,7 +333,10 @@ class OrderDetailActivity : AppCompatActivity() {
             }
 
             orderStatus=it.orderDetails.orderStatus
+        }else{
+
         }
+
     }
 
     private fun returnproductApi(userId: String?, changeOrderStatus: String) {
@@ -315,25 +347,21 @@ class OrderDetailActivity : AppCompatActivity() {
 
             viewModel.returnProducApiRequest(userId, jsonObject).observe(this) {
                 if (it.status) {
-                    if (changeOrderStatus.equals(
-                            Constant.RETURNCOLLECTED,
-                            ignoreCase = true
-                        ) || changeOrderStatus.equals(
-                            Constant.RETURNCOLLECTEDORRETURNPARTIALCOLLECTED,
-                            ignoreCase = true
-                        )
+                    if (changeOrderStatus.equals(Constant.RETURNCOLLECTED, ignoreCase = true) || changeOrderStatus.equals(Constant.RETURNCOLLECTEDORRETURNPARTIALCOLLECTED, ignoreCase = true)
                     ) {
                         Toast.makeText(
                             this@OrderDetailActivity,
                             "You have collected product from the customer successfully",
                             Toast.LENGTH_SHORT
                         ).show()
-                        val intent = Intent(
+                        /*val intent = Intent(
                             this@OrderDetailActivity,
                             DeliveryBoyDashboardActivity::class.java
                         )
                         startActivity(intent)
-                        finish()
+                        finish()*/
+                        startActivity(intent);
+                        finish();
                     } else if (changeOrderStatus.equals(
                             Constant.RETURNSUCCESS,
                             ignoreCase = true
@@ -347,12 +375,14 @@ class OrderDetailActivity : AppCompatActivity() {
                             "You have returned product successfully",
                             Toast.LENGTH_SHORT
                         ).show()
-                        val intent = Intent(
+                        /*val intent = Intent(
                             this@OrderDetailActivity,
                             DeliveryBoyDashboardActivity::class.java
                         )
                         startActivity(intent)
-                        finish()
+                        finish()*/
+                        startActivity(getIntent());
+                        finish();
                     }
                 } else {
                     Toast.makeText(this@OrderDetailActivity, it.msg, Toast.LENGTH_SHORT).show()

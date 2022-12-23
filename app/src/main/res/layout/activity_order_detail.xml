@@ -378,12 +378,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_20sdp"
-            app:cornerRadius="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_product_list"
             app:layout_constraintVertical_bias="0.74"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="@dimen/_3sdp"
             app:strokeWidth="0dp">
 
             <LinearLayout
@@ -391,29 +393,68 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/status_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_40sdp"
-                    android:background="@color/red"
-                    android:gravity="center"
-                    android:text="Refund"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/reschedule_cardview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:rippleColor="@color/colorPrimary"
+                    android:visibility="gone"
+                    >
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/reschedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_40sdp"
-                    android:background="@color/red"
-                    android:gravity="center"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/reschedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:background="@color/red"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Reschedule"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="wrap_content" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/status_cardview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Reschedule"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:rippleColor="@color/colorPrimary"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/status_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:background="@color/red"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Refund"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                         />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+
+
+
+
+
 
             </LinearLayout>
 

@@ -393,4 +393,15 @@ interface ApiInterface {
         @Body jsonObject: JsonObject
     ): Response<ApiResponseModel>
 
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_RESCHUDULE)
+    suspend fun sendReschduleRequest(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: JsonObject
+    ): Response<ApiResponseModel>
+
+
+
+
 }

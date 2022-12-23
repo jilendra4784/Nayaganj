@@ -137,6 +137,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                                     )
                                 }else{
                                     binding.llEmptyStockLayout.visibility=View.VISIBLE
+                                    binding.rvDeliveryOrdersList.visibility = View.GONE
                                 }
                             } else {
                                 if (result != null && result.ordersList.isNotEmpty()) {
@@ -151,6 +152,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                                     )
                                 }else{
                                     binding.llEmptyStockLayout.visibility=View.VISIBLE
+                                    binding.rvDeliveryOrdersList.visibility = View.GONE
                                 }
                             }
                         }
@@ -261,7 +263,7 @@ class OrdersFragment : Fragment(), OrdersAdapter.chnageOrderStatus {
                     } else {
                         Toast.makeText(
                             activity?.applicationContext!!,
-                            "Order is not delivered!",
+                            it.msg,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

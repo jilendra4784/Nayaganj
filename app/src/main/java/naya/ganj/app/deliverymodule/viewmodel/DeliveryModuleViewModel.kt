@@ -17,6 +17,7 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
     val mutableLiveData = MutableLiveData<ApiResponseModel>()
     val changeOrderStatusAPI = MutableLiveData<ApiResponseModel>()
     val refundMutableData = MutableLiveData<ApiResponseModel>()
+    val reschudule = MutableLiveData<ApiResponseModel>()
 
     val orderDetailLiveData = MutableLiveData<DeliveryOrderDetailModel>()
 
@@ -74,6 +75,16 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
 
         return refundMutableData
     }
+
+    fun sendReschduleRequest(userId:String?,jsonObject: JsonObject): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result=repositry.sendReschduleRequest(userId,jsonObject)
+            reschudule.value=result.body()
+        }
+
+        return reschudule
+    }
+
 
 
 
