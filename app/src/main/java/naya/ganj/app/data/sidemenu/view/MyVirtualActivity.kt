@@ -93,20 +93,29 @@ class MyVirtualActivity : AppCompatActivity(), OnitemClickListener {
                 when (response) {
                     is NetworkResult.Success -> {
                         val it = response.data!!
-                        bining.rvVirtualList.adapter = VirtualRecyclerviewAdapter(
-                            this@MyVirtualActivity,
-                            it.virtualOrdersList,
-                            this@MyVirtualActivity,
-                            this@MyVirtualActivity,
-                            app
-                        )
-                        Utility.listAnimation(bining.rvVirtualList)
+                        if(it.virtualOrdersList.isNotEmpty()){
+                            bining.rvVirtualList.adapter = VirtualRecyclerviewAdapter(
+                                this@MyVirtualActivity,
+                                it.virtualOrdersList,
+                                this@MyVirtualActivity,
+                                this@MyVirtualActivity,
+                                app
+                            )
+                            Utility.listAnimation(bining.rvVirtualList)
+                            bining.rvVirtualList.visibility= View.VISIBLE
+                            bining.tvNodata.visibility= View.GONE
+                        }else{
+                            bining.rvVirtualList.visibility= View.GONE
+                            bining.tvNodata.visibility= View.VISIBLE
+                        }
+
                     }
                     is NetworkResult.Error -> {
                         Utility.serverNotResponding(
                             this@MyVirtualActivity,
                             response.message.toString()
                         )
+                        bining.tvNodata.visibility= View.VISIBLE
                     }
                 }
             }

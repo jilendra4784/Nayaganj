@@ -143,6 +143,7 @@ class OrderDetailActivity : AppCompatActivity() {
             binding.tvOrderOn.text=it.orderDetails.created
             binding.tvPaymentStatus.text=it.orderDetails.paymentStatus
             binding.tvPaymentMode.text=if(it.orderDetails.paymentMode == "COD") "Cash On Delivery" else it.orderDetails.paymentMode
+            paymentMode=it.orderDetails.paymentMode
             binding.tvTotalItems.text=it.orderDetails.products.size.toString()
             binding.tvTotalItemAmount.text=resources.getString(R.string.Rs)+ it.orderDetails.itemTotal.toString()
             binding.tvDeliveryCharges.text=if(it.orderDetails.deliverCharges<=0) "Free" else resources.getString(R.string.Rs)+it.orderDetails.deliverCharges.toString()
@@ -234,7 +235,7 @@ class OrderDetailActivity : AppCompatActivity() {
                 binding.cvCardview.visibility = View.VISIBLE
             }
             binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
-            binding.rvProductList.adapter = DeliveredOrderDetailAdapter(it.orderDetails.products)
+            binding.rvProductList.adapter = DeliveredOrderDetailAdapter(app,it.orderDetails.products)
             binding.statusButton.setOnClickListener {
 
                 val builder = AlertDialog.Builder(this@OrderDetailActivity)

@@ -1,6 +1,7 @@
 package naya.ganj.app.data.sidemenu.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,11 +47,21 @@ class MyOrderActivity : AppCompatActivity() {
     private fun getMyOrderList() {
         if (app.user.getLoginSession()) {
             viewModel.getMyOrderList(app.user.getUserDetails()!!.userId).observe(this) {
-                binding.rvMyOrderList.layoutManager = LinearLayoutManager(this@MyOrderActivity)
-                binding.rvMyOrderList.adapter =
-                    MyOrderListAdapter(this@MyOrderActivity, it.ordersList)
-                binding.rvMyOrderList.isNestedScrollingEnabled = false
-                Utility.listAnimation(binding.rvMyOrderList)
+                if(it!=null && it.ordersList.isNotEmpty()){
+                    binding.rvMyOrderList.layoutManager = LinearLayoutManager(this@MyOrderActivity)
+                    binding.rvMyOrderList.adapter =
+                        MyOrderListAdapter(this@MyOrderActivity, it.ordersList)
+                    binding.rvMyOrderList.isNestedScrollingEnabled = false
+                    Utility.listAnimation(binding.rvMyOrderList)
+
+                    binding.rvMyOrderList.visibility= View.VISIBLE
+                    binding.tvNodata.visibility= View.GONE
+                }else{
+                    binding.rvMyOrderList.visibility= View.GONE
+                    binding.tvNodata.visibility= View.VISIBLE
+
+                }
+
             }
         }
     }

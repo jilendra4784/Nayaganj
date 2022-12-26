@@ -131,6 +131,7 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         binding.deliverNow.setOnClickListener {
+            Log.e("TAG", "setUIData: paymentMode"+paymentMode+", orderStatus"+orderStatus )
             if (paymentMode.equals("COD", ignoreCase = true) && orderStatus.split("|")[0] == Constant.DISPATCHED) {
                 deliverProductDialog(orderId, "DELIVERED")
             } else {
@@ -317,11 +318,11 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
     private fun setUpLocationListener(){
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        mLocationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+        mLocationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
             .setPriority(PRIORITY_HIGH_ACCURACY)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient?.requestLocationUpdates(mLocationRequest!!, mLocationCallback, Looper.myLooper())
+            fusedLocationProviderClient.requestLocationUpdates(mLocationRequest!!, mLocationCallback, Looper.myLooper())
         }
     }
 
