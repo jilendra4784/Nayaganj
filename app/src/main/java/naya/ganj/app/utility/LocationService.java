@@ -43,8 +43,8 @@ public class LocationService {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(500);
-        locationRequest.setFastestInterval(3000);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(30000);
 
         locationCallback = new LocationCallback() {
             @Override

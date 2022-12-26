@@ -163,12 +163,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.home -> {
                     isDrawerIsOpen()
                     moveToHomeFragment()
-
                 }
                 R.id.myaccount -> {
                     startActivity(Intent(this@MainActivity, MyAccountActivity::class.java))
                 }
-
                 R.id.shop_category -> {
                     isDrawerIsOpen()
                     moveToDashboard()
