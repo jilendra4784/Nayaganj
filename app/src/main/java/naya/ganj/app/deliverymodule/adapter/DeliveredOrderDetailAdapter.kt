@@ -9,9 +9,10 @@ import naya.ganj.app.Nayaganj
 
 import naya.ganj.app.databinding.ProductDetailAdapterRowBinding
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
+import naya.ganj.app.deliverymodule.model.Product
 
 
-class DeliveredOrderDetailAdapter(val app:Nayaganj,val products: List<DeliveryOrderDetailModel.OrderDetails.Product>) :
+class DeliveredOrderDetailAdapter(val app:Nayaganj,val products: List<Product>) :
     RecyclerView.Adapter<DeliveredOrderDetailAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: ProductDetailAdapterRowBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -31,7 +32,7 @@ class DeliveredOrderDetailAdapter(val app:Nayaganj,val products: List<DeliveryOr
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val productItem: DeliveryOrderDetailModel.OrderDetails.Product = products.get(position)
+        val productItem: Product = products.get(position)
 
         val imgURL=app.user.getUserDetails()?.configObj?.productImgUrl+productItem.img
         Picasso.get().load(imgURL).into(holder.binding.ivImagview)

@@ -20,6 +20,7 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
     val reschudule = MutableLiveData<ApiResponseModel>()
 
     val orderDetailLiveData = MutableLiveData<DeliveryOrderDetailModel>()
+    val modifyItemsLiveData = MutableLiveData<ApiResponseModel>()
 
 
     fun getOrderDetail(userId:String?,jsonObject: JsonObject): LiveData<DeliveryOrderDetailModel> {
@@ -28,6 +29,14 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
             orderDetailLiveData.value=result.body()
         }
         return orderDetailLiveData
+    }
+
+    fun modifyReturnProductApi(userId:String?,requestBody:  RequestBody): LiveData<ApiResponseModel> {
+        viewModelScope.launch {
+            val result=repositry.modifyReturnProductApi(userId,requestBody)
+            modifyItemsLiveData.value=result.body()
+        }
+        return modifyItemsLiveData
     }
 
 
@@ -84,8 +93,5 @@ class DeliveryModuleViewModel(val repositry: DeliveryModuleRepositry): ViewModel
 
         return reschudule
     }
-
-
-
 
 }

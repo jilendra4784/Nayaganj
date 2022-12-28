@@ -17,11 +17,12 @@ class SideMenuDataRepositry(val api : ApiInterface) {
 
    suspend fun getMyVirtualOrderList(userid:String?)=api.getMyVirtualOrderList(userid,Constant.DEVICE_TYPE)
 
-
    suspend fun sendRetailerRequest(userid:String?,jsonObject: JsonObject)=api.sendRetailerRequest(userid,Constant.DEVICE_TYPE,jsonObject)
 
    suspend fun changeOrderStatusRequest(userId:String,jsonObject: JsonObject) =api.changeOrderStatusRequest(userId,Constant.DEVICE_TYPE,jsonObject)
 
    suspend fun sendReturnRequest(userId:String?,jsonObject: RequestBody) =api.sendReturnRequest(userId,Constant.DEVICE_TYPE,jsonObject)
+
+   suspend fun getWalletBalance(userId:String?) =api.getWalletBalance(userId,Constant.DEVICE_TYPE)
 
 }

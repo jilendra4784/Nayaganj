@@ -153,7 +153,6 @@ class TrackLocationByDeliveryBoy : AppCompatActivity(), OnMapReadyCallback {
         builder.setMessage("Have you reached Customer location & Ready to Deliver Product.")
         builder.setPositiveButton("Yes")
         { _, _ ->
-
             ChangeStatusApi(orderId, orderStatus)
         }
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/root"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/_60sdp"
+            android:paddingLeft="@dimen/_5sdp"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/dismiss_bottom"
+                android:layout_width="@dimen/_20sdp"
+                android:src="@drawable/ic_close_icon"
+                android:layout_centerVertical="true"
+                android:layout_height="@dimen/_20sdp">
+
+            </ImageView>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/select_address"
+            android:layout_width="wrap_content"
+            android:text="Return Product"
+            android:textSize="@dimen/_16sdp"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/total_return_item"
+            android:layout_width="wrap_content"
+            android:text="1 item"
+            android:visibility="gone"
+            android:textSize="@dimen/_12sdp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/address_recycleview"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_below="@+id/text"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="400dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <TextView
+        android:layout_below="@+id/address_recycleview"
+        android:id="@+id/place_order_button"
+        android:layout_width="match_parent"
+        android:text="Submit"
+        android:padding="@dimen/_8sdp"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/_12sdp"
+        android:gravity="center"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@color/red"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content">
+    </TextView>
+
+
+</RelativeLayout>

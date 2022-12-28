@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="exit_press_back_twice_message">Press again to exit</string>
+    <string name="send_referral_link_via">" Send a referral link to your friends via SMS/Email/WhatsApp etc"</string>
+    <string name="refer_earn_upto"><![CDATA["Refer now &amp; earn upto ₹ 100 "]]></string>
 </resources>

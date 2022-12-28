@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(sendIntent)
                 }
                 R.id.refer_earn -> {
-                    showMessage(item.title.toString())
+                    startActivity(Intent(this@MainActivity,ReferAndEarnActivity::class.java))
                 }
                 R.id.customer_support -> {
                     startActivity(Intent(this@MainActivity, CustomerSupportActivity::class.java))

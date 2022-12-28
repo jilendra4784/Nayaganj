@@ -3,25 +3,41 @@ package naya.ganj.app.deliverymodule.view
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.databinding.ActivityOrderDetailBinding
 import naya.ganj.app.deliverymodule.adapter.DeliveredOrderDetailAdapter
+import naya.ganj.app.deliverymodule.adapter.ReturnProductModifyAdapter
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
+import naya.ganj.app.deliverymodule.model.Product
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleFactory
 import naya.ganj.app.deliverymodule.repositry.DeliveryModuleRepositry
 import naya.ganj.app.deliverymodule.viewmodel.DeliveryModuleViewModel
 import naya.ganj.app.interfaces.OnInternetCheckListener
+import naya.ganj.app.interfaces.ProductSelectListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.roomdb.entity.AppDataBase
+import naya.ganj.app.roomdb.entity.ReturnProduct
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Utility
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -29,7 +45,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 
-class OrderDetailActivity : AppCompatActivity() {
+class OrderDetailActivity : AppCompatActivity(), ProductSelectListener {
 
     lateinit var binding: ActivityOrderDetailBinding
     lateinit var viewModel: DeliveryModuleViewModel
@@ -39,10 +55,13 @@ class OrderDetailActivity : AppCompatActivity() {
     private var changeOrderStatus = ""
     lateinit var refundJsonArray: JSONArray
     private var orderId = ""
-    private var lat=""
-    private var long=""
-    private var paymentMode=""
-    private var orderStatus=""
+    private var lat = ""
+    private var long = ""
+    private var paymentMode = ""
+    private var orderStatus = ""
+    var totalProductQty = 0
+    private var productList: List<Product>? = ArrayList()
+    var totalReturnItems: TextView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,17 +154,22 @@ class OrderDetailActivity : AppCompatActivity() {
 
     private fun setUIData(it: DeliveryOrderDetailModel) {
         if (it.orderDetails.products.isNotEmpty()) {
-            binding.tvName.text = it.orderDetails.address.firstName +" "+ it.orderDetails.address.lastName
-            binding.tvAddressType.text=it.orderDetails.address.nickName
-            binding.tvAddress.text=it.orderDetails.address.houseNo+" "+it.orderDetails.address.apartName+" "+it.orderDetails.address.landmark+" "+it.orderDetails.address.city+"-"+it.orderDetails.address.pincode
+            productList = it.orderDetails.products
+            binding.tvName.text =
+                it.orderDetails.address.firstName + " " + it.orderDetails.address.lastName
+            binding.tvAddressType.text = it.orderDetails.address.nickName
+            binding.tvAddress.text =
+                it.orderDetails.address.houseNo + " " + it.orderDetails.address.apartName + " " + it.orderDetails.address.landmark + " " + it.orderDetails.address.city + "-" + it.orderDetails.address.pincode
 
-            binding.tvOrderId.text=it.orderDetails.id
-            binding.tvOrderOn.text=it.orderDetails.created
-            binding.tvPaymentStatus.text=it.orderDetails.paymentStatus
-            binding.tvPaymentMode.text=if(it.orderDetails.paymentMode == "COD") "Cash On Delivery" else it.orderDetails.paymentMode
-            paymentMode=it.orderDetails.paymentMode
-            binding.tvTotalItems.text=it.orderDetails.products.size.toString()
-            binding.tvTotalItemAmount.text=resources.getString(R.string.Rs)+ it.orderDetails.itemTotal.toString()
+            binding.tvOrderId.text = it.orderDetails.id
+            binding.tvOrderOn.text = it.orderDetails.created
+            binding.tvPaymentStatus.text = it.orderDetails.paymentStatus
+            binding.tvPaymentMode.text =
+                if (it.orderDetails.paymentMode == "COD") "Cash On Delivery" else it.orderDetails.paymentMode
+            paymentMode = it.orderDetails.paymentMode
+            binding.tvTotalItems.text = it.orderDetails.products.size.toString()
+            binding.tvTotalItemAmount.text =
+                resources.getString(R.string.Rs) + it.orderDetails.itemTotal.toString()
             binding.tvDeliveryCharges.text=if(it.orderDetails.deliverCharges<=0) "Free" else resources.getString(R.string.Rs)+it.orderDetails.deliverCharges.toString()
             binding.tvTotalAmount.text=resources.getString(R.string.Rs)+it.orderDetails.totalAmount.toString()
             binding.tvPaymentReceived.text=resources.getString(R.string.payment_received)+" "+resources.getString(R.string.Rs)+it.orderDetails.paymentRecieveByDelBoy.toString()
@@ -234,10 +258,12 @@ class OrderDetailActivity : AppCompatActivity() {
                 binding.tvRefundAmount.visibility = View.VISIBLE
                 binding.cvCardview.visibility = View.VISIBLE
             }
-            binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
-            binding.rvProductList.adapter = DeliveredOrderDetailAdapter(app,it.orderDetails.products)
-            binding.statusButton.setOnClickListener {
 
+            binding.rvProductList.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
+            binding.rvProductList.adapter = DeliveredOrderDetailAdapter(app, productList!!)
+
+
+            binding.statusButton.setOnClickListener {
                 val builder = AlertDialog.Builder(this@OrderDetailActivity)
                 builder.setIcon(ContextCompat.getDrawable(this, R.drawable.my_order))
 
@@ -255,19 +281,21 @@ class OrderDetailActivity : AppCompatActivity() {
                     { dialogInterface, which ->
                         if(Utility.isAppOnLine(this@OrderDetailActivity,object : OnInternetCheckListener {
                                 override fun onInternetAvailable() {
-                                    returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
+                                    returnproductApi(
+                                        app.user.getUserDetails()?.userId,
+                                        changeOrderStatus
+                                    )
                                 }
                             }))
 
                             returnproductApi(app.user.getUserDetails()?.userId, changeOrderStatus)
                     }
 
-                    // builder.setNegativeButton("Modify") { dialogInterface, which ->showProductBottomSheetDialog() }
                     builder.setNeutralButton("No") { dialogInterface, which -> }
 
-                    /*  if (totalProductQty > 1) {
-                          builder.setNegativeButton("Modify") { dialogInterface, which -> showProductBottomSheetDialog() }
-                      }*/
+                    if (totalProductQty > 1) {
+                        builder.setNegativeButton("Modify") { dialogInterface, which -> showProductBottomSheetDialog() }
+                    }
 
                     val alertDialog: AlertDialog = builder.create()
                     alertDialog.setCancelable(true)
@@ -314,11 +342,13 @@ class OrderDetailActivity : AppCompatActivity() {
             }
 
             for (item in it.orderDetails.products) {
+                totalProductQty += item.quantity
                 val postedJSON = JSONObject()
                 postedJSON.put(Constant.productId, item.productId)
                 postedJSON.put(Constant.variantId, item.variantId)
                 postedJSON.put(Constant.quantity, item.quantity)
                 refundJsonArray.put(postedJSON)
+
             }
 
             try {
@@ -421,5 +451,144 @@ class OrderDetailActivity : AppCompatActivity() {
                         .show()
                 }
             }
+    }
+
+    private fun showProductBottomSheetDialog() {
+
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
+        bottomSheetDialog.setContentView(R.layout.return_product_deliveryboy_bottom_sheet_dialog)
+        val dismiss_bottom =
+            bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_bottom) as ImageView
+        totalReturnItems =
+            bottomSheetDialog.findViewById<TextView>(R.id.total_return_item) as TextView
+        val submit = bottomSheetDialog.findViewById<TextView>(R.id.place_order_button) as TextView
+
+        val address_recycleview =
+            bottomSheetDialog.findViewById<RecyclerView>(R.id.address_recycleview)!!
+        address_recycleview.layoutManager = LinearLayoutManager(this@OrderDetailActivity)
+
+        val adapter = ReturnProductModifyAdapter(this@OrderDetailActivity, app, this, productList)
+        address_recycleview.adapter = adapter
+
+        bottomSheetDialog.setCancelable(false)
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dismiss_bottom.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            lifecycleScope.launch(Dispatchers.IO) {
+                AppDataBase.getInstance(this@OrderDetailActivity).productDao().deleteAllReturnItem()
+            }
         }
+        bottomSheetDialog.show()
+
+        submit.setOnClickListener {
+            if (refundJsonArray.length() > 0) {
+                modifyReturnProductApi()
+            } else {
+                Toast.makeText(this, "Please modify the product quantity", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    override fun onSelectProduct(productId: String, variantId: String, itemQuantity: Int) {
+        var itemCount=0
+        lifecycleScope.launch(Dispatchers.IO) {
+            val isProductExist = AppDataBase.getInstance(this@OrderDetailActivity).productDao()
+                .isReturnExist(productId, variantId)
+            if (!isProductExist) {
+                val returnProduct = ReturnProduct(productId, variantId, itemQuantity)
+                AppDataBase.getInstance(this@OrderDetailActivity).productDao()
+                    .insertReturnProduct(returnProduct)
+            } else {
+                AppDataBase.getInstance(this@OrderDetailActivity).productDao()
+                    .updateReturnProduct(productId, variantId, itemQuantity)
+            }
+
+
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val list: List<ReturnProduct> =
+                    AppDataBase.getInstance(this@OrderDetailActivity).productDao()
+                        .getReturnProductList()
+                Log.e("TAG", "onSelectProduct: List Size: "+list.size )
+                withContext(Dispatchers.Main) {
+                    if (list.isNotEmpty()) {
+                        for(item in list){
+                            itemCount+=item.itemQuantity
+                        }
+                        totalReturnItems?.text=itemCount.toString()
+
+                        if (itemCount==1) {
+                            totalReturnItems?.text = "$itemCount Item"
+                        } else {
+                            totalReturnItems?.text = "$itemCount Items"
+                        }
+                        totalReturnItems?.visibility = View.VISIBLE
+                    } else {
+                        totalReturnItems?.visibility = View.GONE
+                    }
+                }
+            }
+        },500)
+
+    }
+
+    private fun modifyReturnProductApi() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val list: List<ReturnProduct> =
+                AppDataBase.getInstance(this@OrderDetailActivity).productDao()
+                    .getReturnProductList()
+
+            val jsonArray = JSONArray()
+            for (item in list) {
+                val itemsData = JSONObject()
+                itemsData.put(Constant.PRODUCT_ID, item.productId)
+                itemsData.put(Constant.VARIANT_ID, item.variantId)
+                itemsData.put(Constant.QUANTITY, item.itemQuantity)
+                jsonArray.put(itemsData)
+            }
+
+            val obj = JSONObject()
+            obj.put(Constant.productsArr, jsonArray)
+            obj.put(Constant.orderId, orderId)
+
+            val myreqbody = JSONObject(obj.toString()).toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+            withContext(Dispatchers.Main) {
+                viewModel.modifyReturnProductApi(app.user.getUserDetails()?.userId, myreqbody)
+                    .observe(this@OrderDetailActivity) {
+                        if (it != null) {
+                            if (it.status) {
+                                Toast.makeText(
+                                    this@OrderDetailActivity,
+                                    "Order Modify Successfully.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                remoAllModifiedProduct()
+                                finish()
+
+                            } else {
+                                Toast.makeText(this@OrderDetailActivity, it.msg, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        remoAllModifiedProduct()
+    }
+
+    fun remoAllModifiedProduct(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            AppDataBase.getInstance(this@OrderDetailActivity).productDao().deleteAllReturnItem()
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ import naya.ganj.app.data.category.model.*
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.data.mycart.model.*
 import naya.ganj.app.data.sidemenu.model.MyOrderListModel
+import naya.ganj.app.data.sidemenu.model.MyWalletModel
 import naya.ganj.app.data.sidemenu.model.OrderDetailModel
 import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
@@ -206,6 +207,14 @@ interface ApiInterface {
     ): Response<ApiResponseModel>
 
 
+    @Headers("Content-Type: application/json")
+    @GET(URLConstant.WALLET_URL)
+    suspend fun getWalletBalance(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String
+    ): Response<MyWalletModel>
+
+
 
 
 
@@ -351,6 +360,15 @@ interface ApiInterface {
         @Header("devicetype") d: String,
         @Body jsonObject: JsonObject
     ): Response<DeliveryOrderDetailModel>
+
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.URL_MODIFY_ITEMS_URL)
+    suspend fun modifyReturnProductApi(
+        @Header("userid") userid: String?,
+        @Header("devicetype") d: String,
+        @Body jsonObject: RequestBody
+    ): Response<ApiResponseModel>
+
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.URL_DELIVERED_ORDERS_PAYMENT_REQUEST_URL)

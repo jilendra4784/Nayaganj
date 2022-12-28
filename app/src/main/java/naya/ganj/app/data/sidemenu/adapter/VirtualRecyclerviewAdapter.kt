@@ -46,7 +46,7 @@ class VirtualRecyclerviewAdapter(
             Picasso.get().load(R.drawable.audio_icon).into(holder.binding.imagview8)
         } else {
             if(vOrderModel.fileName!=""){
-                val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + vOrderModel.fileName
+                val imgURL =  vOrderModel.fileName
                 Picasso.get().load(imgURL).error(R.drawable.default_image).into(holder.binding.imagview8)
             }else{
                 holder.binding.imagview8.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.default_image))

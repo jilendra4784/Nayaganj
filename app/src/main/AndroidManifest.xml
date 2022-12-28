@@ -28,14 +28,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".MapActivity"
+            android:name=".data.sidemenu.view.WalletBalanceActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ReturnProductActivity"
+            android:name=".data.sidemenu.view.ReferAndEarnActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".data.mycart.view.MapActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".data.sidemenu.view.ReturnProductActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -119,9 +133,6 @@
             android:exported="false" />
         <activity
             android:name=".data.category.view.ProductDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".data.sidemenu.view.ReturnProductActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"

@@ -47,7 +47,9 @@ data class HomePageModel(
             @SerializedName("parentId")
             val parentId: String,
             @SerializedName("time")
-            val time: String
+            val time: String,
+            @SerializedName("imgUrl")
+            val imgUrl: List<String>,
         )
 
         data class OfferPromoBanner(

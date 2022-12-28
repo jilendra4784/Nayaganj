@@ -16,13 +16,6 @@ class AboutUsActivity : AppCompatActivity() {
 
         binding.include9.ivBackArrow.setOnClickListener { finish() }
         binding.include9.toolbarTitle.text = "About Us"
-
-        setData()
     }
 
-    private fun setData() {
-        if (app.user.getAppLanguage() == 1) {
-            // Set for Hindi Language
-        }
-    }
 }

@@ -42,6 +42,7 @@ class MyAccountActivity : AppCompatActivity() {
         binding.cvMyOrder.setOnClickListener { startActivity(Intent(this@MyAccountActivity, MyOrderActivity::class.java)) }
         binding.cvMyVirtualOrder.setOnClickListener{startActivity(Intent(this@MyAccountActivity, MyVirtualActivity::class.java))}
         binding.cvMyaddress.setOnClickListener{startActivity(Intent(this@MyAccountActivity, AddressListActivity::class.java))}
+        binding.tvWallet.setOnClickListener{startActivity(Intent(this@MyAccountActivity, WalletBalanceActivity::class.java))}
         binding.cvCustomerSupport.setOnClickListener{startActivity(Intent(this@MyAccountActivity, CustomerSupportActivity::class.java))}
         binding.cvAboutUs.setOnClickListener{startActivity(Intent(this@MyAccountActivity, AboutUsActivity::class.java))}
         binding.cvLogout.setOnClickListener{ showLogoutDialog() }

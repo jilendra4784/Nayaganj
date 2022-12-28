@@ -192,5 +192,9 @@
     <string name="transactions_failed">Transaction failed</string>
     <string name="exit_press_back_twice_message">Press again to exit</string>
     <string name="reschedule">You have Reschedule order successfully</string>
+    <string name="share_link">Share Link</string>
+    <string name="send_referral_link_via">" Send a referral link to your friends via SMS/Email/WhatsApp etc"</string>
+    <string name="refer_earn_upto"><![CDATA["Refer now &amp; earn upto ₹ 100 "]]></string>
+    <string name="referral_money">Your Referral Money</string>
 
 </resources>

@@ -20,7 +20,6 @@ object URLConstant {
     const val URL_MY_ORDER_LIST_URL = "ordersList"
     const val URL_MY_VIRTUAL_ORDER_LIST_URL = "getVirtualOrdersList"
     const val URL_RETAILER_URL = "saveRetailer"
-
     const val URL_ORDER_DETAIL_URL = "orderDetails"
     const val URL_GET_OTP_URL = "sendOtp"
     const val URL_LOGIN_URL = "login"
@@ -32,10 +31,8 @@ object URLConstant {
     const val URL_PLACE_VIRTUAL_ORDER_URL = "virtualOrders"
     const val URL_COUPON_URL = "getPromoCodeList"
     const val URL_APPLY_COUPON_URL = "getPromoCodeAmount"
-    const val URL_HOME_BANNER_URL = "getpromoBanner"
     const val URL_HOME_PAGE_URL = "homePage"
-
-    // Delivery Orders
+    const val WALLET_URL = "getWalletBalance"
     const val URL_DELIVERY_ORDERS_URL = "deliveryOrderList"
     const val URL_DELIVERED_ORDERS_URL = "deliveryOrderHistoryList"
     const val URL_DELIVERED_ORDERS_DETAIL_URL = "deliveryOrderDetails"
@@ -47,12 +44,9 @@ object URLConstant {
     const val changeOrderStatus = "changeOrderStatus"
     const val ReturnOrderURL = "setReturnProduct"
     const val URL_RESCHUDULE = "reschedule"
-
-
-    // PAYTM
-
     const val PAYTM_PURCHASE = "paytmPurchase"
     const val VALIDATE_TRANSACTION = "validateTxn"
+    const val URL_MODIFY_ITEMS_URL = "modifyReturnProduct"
 
 
 }

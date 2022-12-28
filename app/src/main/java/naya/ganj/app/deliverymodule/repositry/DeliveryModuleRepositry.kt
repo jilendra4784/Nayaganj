@@ -21,5 +21,6 @@ class DeliveryModuleRepositry(val apiInterface: ApiInterface) {
 
     suspend fun sendReschduleRequest(userId: String?, jsonObject: JsonObject) = apiInterface.sendReschduleRequest(userId, Constant.DEVICE_TYPE, jsonObject)
 
+    suspend fun modifyReturnProductApi(userId:String?,jsonObject: RequestBody)=apiInterface.modifyReturnProductApi(userId,Constant.DEVICE_TYPE,jsonObject)
 }
 

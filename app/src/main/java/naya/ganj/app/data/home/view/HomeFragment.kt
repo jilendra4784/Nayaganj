@@ -1,6 +1,5 @@
 package naya.ganj.app.data.home.view
 
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
@@ -23,9 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
-import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
-import naya.ganj.app.data.category.view.ProductListActivity
 import naya.ganj.app.data.home.adapter.*
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.data.home.repositry.HomePageDataFactory
@@ -49,16 +46,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     lateinit var binding: FragmentHomeBinding
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
-    var cateImages = arrayOf(
-        R.drawable.foodgrains_oil_masala,
-        R.drawable.bakery_cakes_dairy,
-        R.drawable.bevrages,
-        R.drawable.snacks_branded_foods,
-        R.drawable.beauty_hygiene,
-        R.drawable.all_cleaning_household,
-        R.drawable.gourmet_world_food,
-        R.drawable.all_caby_care
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -193,7 +180,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = HomeAdapter(requireActivity(), data.subCategoryList, app, cateImages)
+        recyclerView.adapter = HomeAdapter(requireActivity(), data.subCategoryList, app)
         recyclerView.scheduleLayoutAnimation()
         //Utility.listAnimation(recyclerView)
     }
@@ -205,7 +192,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(requireActivity(), 3)
         recyclerView.isNestedScrollingEnabled = false
-        recyclerView.adapter = HomeAdapter(requireActivity(), data.category, app, cateImages)
+        recyclerView.adapter = HomeAdapter(requireActivity(), data.category, app)
     }
 
     override fun onClickAddOrRemoveItem(
