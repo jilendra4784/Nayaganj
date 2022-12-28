@@ -44,7 +44,7 @@ class ReferAndEarnActivity : AppCompatActivity() {
     {
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse("https://www.example.com/?userId="+app.user.getUserDetails()?.userId))
-            .setDomainUriPrefix("https://nayaganj.page.link")
+            .setDomainUriPrefix("https://nayaganjapp.page.link")
             //Setting parameters
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
             .buildShortDynamicLink()

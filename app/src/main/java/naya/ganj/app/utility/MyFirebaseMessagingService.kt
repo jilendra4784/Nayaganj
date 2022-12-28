@@ -55,7 +55,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         //Add Any key-value to pass extras to intent
         intent.putExtra("pushnotification", title)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val mNotifyManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -74,7 +74,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         //For Android Version lower than orio.
         val mBuilder = NotificationCompat.Builder(this, channelId)
         mBuilder.setContentTitle(title)
-            .setContentText("(919) 555-1234")
+            .setContentText(messageBody)
             .setSmallIcon(R.drawable.notification_alert)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.notification_alert))
             .setAutoCancel(false)

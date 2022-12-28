@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -406,10 +407,10 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                                 }
 
                                 is NetworkResult.Error -> {
-                                    Utility.serverNotResponding(
+                                    try{Utility.serverNotResponding(
                                         requireActivity(),
                                         response.message.toString()
-                                    )
+                                    )}catch (_:Exception){}
                                 }
                             }
                         }

@@ -3,6 +3,7 @@ package naya.ganj.app
 import android.content.Intent
 import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,9 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
+import naya.ganj.app.data.mycart.view.OfferBottomSheetDetail.Companion.TAG
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.deliverymodule.view.DeliveryBoyDashboardActivity
 import naya.ganj.app.interfaces.OnInternetCheckListener
@@ -27,6 +30,7 @@ import naya.ganj.app.utility.MyViewModelFactory
 import naya.ganj.app.utility.NetworkResult
 import naya.ganj.app.utility.Utility
 import java.util.*
+
 
 class SplashActivity : AppCompatActivity() {
 
@@ -66,7 +70,29 @@ class SplashActivity : AppCompatActivity() {
             })){
             getDeviceId()
             getToken()
+            getDynamicLink()
         }
+    }
+
+    private fun getDynamicLink() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener(
+                this
+            ) { pendingDynamicLinkData ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    Log.e(TAG, "getDynamicLink: "+deepLink )
+                    val offerKey = deepLink!!.getQueryParameter("userId")
+                    Log.e(TAG, "offerKey: "+offerKey )
+                }
+
+            }
+            .addOnFailureListener(
+                this
+            ) { e -> Log.w(TAG, "getDynamicLink:onFailure", e) }
     }
 
     private fun getToken() {

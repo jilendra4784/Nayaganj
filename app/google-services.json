@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "765482972179",
-    "project_id": "nayaganj-latestapp",
-    "storage_bucket": "nayaganj-latestapp.appspot.com"
+    "project_number": "832828133422",
+    "project_id": "nayaganjapp",
+    "storage_bucket": "nayaganjapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:765482972179:android:908714d4d54c4d3fa23be6",
+        "mobilesdk_app_id": "1:832828133422:android:5342d7cfb54875b9734fbf",
         "android_client_info": {
           "package_name": "naya.ganj.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "765482972179-itpfphoi9f02vnfj3t8g3apg9pkt8dnu.apps.googleusercontent.com",
+          "client_id": "832828133422-vgg3v4ljomhfvf671v7mbilp3c37ugis.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDwecrtGMQzyVTiMdvDzgc2mBthgZ60FrM"
+          "current_key": "AIzaSyCNTVXI3l9N3uP2p-i3TyOS2JLeZvlV4Eo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "765482972179-itpfphoi9f02vnfj3t8g3apg9pkt8dnu.apps.googleusercontent.com",
+              "client_id": "832828133422-vgg3v4ljomhfvf671v7mbilp3c37ugis.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
