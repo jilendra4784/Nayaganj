@@ -3,12 +3,17 @@ package naya.ganj.app.data.sidemenu.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.revesoft.revechatsdk.model.VisitorInfo
 import com.revesoft.revechatsdk.ui.activity.ReveChatActivity
 import com.revesoft.revechatsdk.utils.ReveChat
+import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.ActivityCustomerSupportBinding
 
@@ -22,7 +27,6 @@ class CustomerSupportActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityCustomerSupportBinding.inflate(layoutInflater)
         setContentView(binding.root)
         app = applicationContext as Nayaganj
@@ -47,6 +51,7 @@ class CustomerSupportActivity : AppCompatActivity() {
         }
 
         binding.toolbar.ivChatIcon.visibility = View.VISIBLE
+
         binding.toolbar.ivChatIcon.setOnClickListener {
             Log.e("TAG", "onCreate: " + userName + "," + mNumber + "," + deviceToken)
             ReveChat.init("4447722")
@@ -58,6 +63,17 @@ class CustomerSupportActivity : AppCompatActivity() {
             ReveChat.setDeviceTokenId(deviceToken)
             startActivity(Intent(this, ReveChatActivity::class.java))
         }
+        getToken();
+    }
+    private fun getToken() {
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            deviceToken = task.result
+            Log.e("TAG", "deviceToken:   "+ deviceToken )
+
+        })
     }
 }

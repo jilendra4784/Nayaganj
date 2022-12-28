@@ -36,6 +36,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.JsonObject
+import com.revesoft.revechatsdk.model.VisitorInfo
+import com.revesoft.revechatsdk.ui.activity.ReveChatActivity
+import com.revesoft.revechatsdk.utils.ReveChat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
