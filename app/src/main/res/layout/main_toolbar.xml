@@ -70,6 +70,7 @@
                 app:layout_constraintStart_toEndOf="@+id/textView2"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.514"
+                android:visibility="gone"
                 app:tint="@color/white" />
 
             <de.hdodenhof.circleimageview.CircleImageView

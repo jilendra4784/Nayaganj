@@ -64,7 +64,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         val categoryName = intent.getStringExtra(Constant.CATEGORY_NAME)
         binding.include7.toolbarTitle.text = categoryName
 
-        if (categoryId == null || categoryId.equals("")) {
+        if (categoryId == null || categoryId == "") {
             // It will act as a Search Activity
             binding.frameLayout.visibility = View.VISIBLE
 

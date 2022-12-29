@@ -285,56 +285,69 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         binding.mainConstraintLayout.visibility = View.GONE
         val jsonObject = JsonObject()
         jsonObject.addProperty(Constant.ORDER_ID, orderId)
-        myCartViewModel.getMyCartData(
-            this@MyCartActivity,
-            app.user.getUserDetails()!!.userId,
-            jsonObject
-        )
-            .observe(this@MyCartActivity) {
-                cartList = it.cartList
-                myCartModel = it
-                if (it.cartList.size > 0) {
-                    myCartAdapter = MyCartAdapter(
-                        this@MyCartActivity,
-                        it.cartList,
-                        couponList,
-                        this@MyCartActivity,
-                        this@MyCartActivity,
-                        app,
-                        promoId,
-                        this
-                    )
-                    binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
-                    binding.nestedscrollview.isNestedScrollingEnabled = false
-                    binding.rvMycartList.adapter = myCartAdapter
-                    binding.progressBar.visibility = View.GONE
 
-                    binding.mainConstraintLayout.visibility = View.VISIBLE
-                    binding.offerCardLayout.visibility = View.VISIBLE
-                    try {
-                        setAddressDetail(myCartModel.address.address)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        binding.btnChangeAddress.text = "Add Address"
-                        binding.tvAddressDetail.text = "No Address Selected"
-                        addressId = null
+        RetrofitClient.instance.getMyCartData(app.user.getUserDetails()!!.userId, Constant.DEVICE_TYPE, jsonObject)
+            .enqueue(object : Callback<MyCartModel> {
+                override fun onResponse(
+                    call: Call<MyCartModel>,
+                    response: Response<MyCartModel>
+                ) {
+                    if(response.isSuccessful){
+                        cartList = response.body()!!.cartList
+                        myCartModel = response.body()!!
+                        if (response.body()!!.cartList.size > 0) {
+                            myCartAdapter = MyCartAdapter(
+                                this@MyCartActivity,
+                                response.body()!!.cartList,
+                                couponList,
+                                this@MyCartActivity,
+                                this@MyCartActivity,
+                                app,
+                                promoId,
+                                this@MyCartActivity
+                            )
+                            binding.rvMycartList.layoutManager = LinearLayoutManager(this@MyCartActivity)
+                            binding.nestedscrollview.isNestedScrollingEnabled = false
+                            binding.rvMycartList.adapter = myCartAdapter
+                            binding.progressBar.visibility = View.GONE
+
+                            binding.mainConstraintLayout.visibility = View.VISIBLE
+                            binding.offerCardLayout.visibility = View.VISIBLE
+                            try {
+                                setAddressDetail(myCartModel.address.address)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                binding.btnChangeAddress.text = "Add Address"
+                                binding.tvAddressDetail.text = "No Address Selected"
+                                addressId = null
+                            }
+
+                            binding.materialAddressCardview.visibility = View.VISIBLE
+                            Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
+                            Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
+                        } else {
+                            binding.progressBar.visibility = View.GONE
+                            binding.emptyCartLayout.visibility = View.VISIBLE
+                            Thread {
+                                AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                    .deleteAllSavedAmount()
+                                AppDataBase.getInstance(this@MyCartActivity).productDao()
+                                    .deleteAllCartData()
+                                AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
+                            }.start()
+                        }
+                    }else{
+                        Utility.showToast(this@MyCartActivity,response.message())
                     }
-
-                    binding.materialAddressCardview.visibility = View.VISIBLE
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
-                } else {
-                    binding.progressBar.visibility = View.GONE
-                    binding.emptyCartLayout.visibility = View.VISIBLE
-                    Thread {
-                        AppDataBase.getInstance(this@MyCartActivity).productDao()
-                            .deleteAllSavedAmount()
-                        AppDataBase.getInstance(this@MyCartActivity).productDao()
-                            .deleteAllCartData()
-                        AppDataBase.getInstance(this@MyCartActivity).productDao().deleteAllProduct()
-                    }.start()
                 }
-        }
+
+                override fun onFailure(call: Call<MyCartModel>, t: Throwable) {
+                    Utility.serverNotResponding(this@MyCartActivity,t.message.toString())
+                }
+            })
+
+
+
     }
 
     private fun setAddressDetail(address: MyCartModel.Address.Address) {

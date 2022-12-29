@@ -40,6 +40,7 @@ import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
+import naya.ganj.app.utility.ImageManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -138,13 +139,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
     private fun setProductData(pModel: ProductDetailModel.ProductDetails) {
         try {
-            Log.e("TAG", "ImageURL: " + app.user.getUserDetails()?.configObj?.productImgUrl)
-
-            val imgURL = app.user.getUserDetails()?.configObj?.productImgUrl + pModel.imgUrl[0]
-            Glide.with(this@ProductDetailActivity).load(imgURL).error(R.drawable.default_image)
-                .into(binding.ivProductImage)
+            ImageManager.onLoadingImage(app,this@ProductDetailActivity,pModel.imgUrl[0].toString(),binding.ivProductImage)
         } catch (e: Exception) {
-            e.printStackTrace()
             binding.ivProductImage.setBackgroundResource(R.drawable.default_image)
         }
 

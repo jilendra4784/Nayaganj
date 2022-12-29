@@ -53,6 +53,8 @@ import naya.ganj.app.databinding.BottomAudioDialogBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.retrofit.URLConstant
+import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.*
 import retrofit2.Call
@@ -131,9 +133,12 @@ class MainActivity : AppCompatActivity() {
                         binding.include14.textView2.text = "Nayaganj"
                     }
 
-
+                    if(app.user.getLoginSession()){
+                        binding.include14.ivCameraIcon.visibility = View.VISIBLE
+                    }else{
+                        binding.include14.ivCameraIcon.visibility = View.GONE
+                    }
                     binding.include14.imageView9.visibility = View.VISIBLE
-                    binding.include14.ivCameraIcon.visibility = View.VISIBLE
                     binding.include14.ivUserImageview.visibility = View.VISIBLE
                 }
                 R.id.navigation_dashboard -> {
@@ -283,6 +288,7 @@ class MainActivity : AppCompatActivity() {
         val llUserInfoLayout = binding.sideNavigation.getHeaderView(0)
             .findViewById(R.id.ll_user_info_layout) as LinearLayout
 
+
         if (app.user.getLoginSession()) {
             if (app.user.getUserDetails()?.name.equals("")) {
                 userName.text = resources.getString(R.string.user_name)
@@ -358,6 +364,10 @@ class MainActivity : AppCompatActivity() {
                 yes
             ) { dialogInterface, i ->
                 isDrawerIsOpen()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    AppDataBase.getInstance(this@MainActivity).productDao().deleteAllProduct()
+                }
+                URLConstant.BaseImageUrl=app.user.getUserDetails()?.configObj?.productImgUrl.toString()
                 app.user.clearSharedPreference()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

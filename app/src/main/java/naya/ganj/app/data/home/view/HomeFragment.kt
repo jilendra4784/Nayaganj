@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import naya.ganj.app.data.home.viewmodel.HomeViewModel
 import naya.ganj.app.databinding.FragmentHomeBinding
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.retrofit.RetrofitClient
+import naya.ganj.app.retrofit.URLConstant
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
@@ -59,7 +61,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
         )[HomeViewModel::class.java]
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         app = requireActivity().applicationContext as Nayaganj
-
+        if(app.user.getLoginSession()){URLConstant.BaseImageUrl=""}
         binding.llMainLeaniearLayout.visibility = View.GONE
 
         setHomePageData()
@@ -353,11 +355,13 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
 
     private fun setBadgeCount() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val list: List<ProductDetail> = Utility().getAllProductList(requireActivity())
-            withContext(Dispatchers.Main) {
-                val mainActivity = requireActivity() as MainActivity
-                mainActivity.updateCartValue(list.size.toString())
-            }
+            try{
+                val list: List<ProductDetail> = Utility().getAllProductList(requireActivity())
+                withContext(Dispatchers.Main) {
+                    val mainActivity = requireActivity() as MainActivity
+                    mainActivity.updateCartValue(list.size.toString())
+                }
+            }catch (_:Exception){}
         }
     }
 
@@ -556,5 +560,7 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     override fun onResume() {
         super.onResume()
         binding.linearLayout.postDelayed({ binding.slider.requestFocus() },100)
+        Log.e("TAG", "onResume: ", )
+
     }
 }

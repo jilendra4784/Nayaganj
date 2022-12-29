@@ -9,6 +9,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import naya.ganj.app.R
 import naya.ganj.app.databinding.AdapterLocalMycartLayoutBinding
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
+import naya.ganj.app.retrofit.URLConstant
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.roomdb.entity.SavedAmountModel
@@ -43,7 +44,7 @@ class LocalMyCartAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val productDetail = listOfProduct[position]
         try{
-            Glide.with(context).load(productDetail.imageUrl).error(R.drawable.default_image).into(holder.binding.ivImageview)
+            Glide.with(context).load(URLConstant.BaseImageUrl+productDetail.imageUrl).error(R.drawable.default_image).into(holder.binding.ivImageview)
         }catch (e:Exception){
             holder.binding.ivImageview.setBackgroundResource(R.drawable.default_image)
         }

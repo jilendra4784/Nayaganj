@@ -19,17 +19,19 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
+import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.view.OfferBottomSheetDetail.Companion.TAG
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
 import naya.ganj.app.deliverymodule.view.DeliveryBoyDashboardActivity
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.retrofit.RetrofitClient
-import naya.ganj.app.utility.Constant
-import naya.ganj.app.utility.MyViewModelFactory
-import naya.ganj.app.utility.NetworkResult
-import naya.ganj.app.utility.Utility
+import naya.ganj.app.retrofit.URLConstant
+import naya.ganj.app.utility.*
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
+import javax.security.auth.callback.Callback
 
 
 class SplashActivity : AppCompatActivity() {
@@ -104,20 +106,55 @@ class SplashActivity : AppCompatActivity() {
             deviceToken = task.result
             Log.e("TAG", "deviceToken:   "+ deviceToken )
             if (app.user.getLoginSession()) {
-
+                URLConstant.BaseImageUrl=""
                 app.user.getUserDetails()?.userId?.let {
                         autoLoginAPi(it, deviceId, deviceToken)
                 }
 
             } else {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
 
-                }, 3000)
+                Utility.isAppOnLine(this@SplashActivity,object:OnInternetCheckListener{
+                    override fun onInternetAvailable() {
+                        sendConfigRequest()
+                    }
+                })
+                sendConfigRequest()
             }
         })
+    }
+
+    private fun sendConfigRequest() {
+
+        val jsonObject=JsonObject()
+        jsonObject.addProperty("required",true)
+
+        RetrofitClient.instance.sendConfigRequest(jsonObject).enqueue(object :
+            retrofit2.Callback<ConfigModel> {
+            override fun onResponse(
+                call: Call<ConfigModel>,
+                response: Response<ConfigModel>
+            ) {
+                if(response.isSuccessful){
+                    if(response.body()!!.status){
+                        URLConstant.BaseImageUrl=response.body()!!.configData.productImgUrl
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+
+                        }, 2000)
+                    }
+                }else{
+                    Utility.showToast(this@SplashActivity,response.message())
+                }
+
+            }
+
+            override fun onFailure(call: Call<ConfigModel>, t: Throwable) {
+                Utility.serverNotResponding(this@SplashActivity,t.message.toString())
+            }
+        })
+
     }
 
     private fun getDeviceId() {

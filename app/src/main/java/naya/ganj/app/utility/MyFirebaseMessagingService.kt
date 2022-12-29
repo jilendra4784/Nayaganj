@@ -20,6 +20,7 @@ import naya.ganj.app.SplashActivity
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Log.e(TAG, "onMessageReceived: ", )
         Log.d(
             "firebasemessage_data",
             "" + remoteMessage.data.toString() + " " + remoteMessage.data.size

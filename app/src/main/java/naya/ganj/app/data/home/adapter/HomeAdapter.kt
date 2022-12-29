@@ -13,6 +13,7 @@ import naya.ganj.app.data.category.view.ProductListActivity
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.AdapterHomeLayoutBinding
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.ImageManager
 import naya.ganj.app.utility.Utility
 
 class HomeAdapter(
@@ -31,8 +32,11 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.tvTitle.text = Utility.convertLanguage(category[position].category, app)
         if(category[position].imgUrl.isNotEmpty()){
-            val imgURL=app.user.getUserDetails()?.configObj?.productImgUrl+category[position].imgUrl[0]
-            Glide.with(context).load(imgURL).error(R.drawable.default_image).into(holder.binding.ivCatImage)
+            /*val imgURL=app.user.getUserDetails()?.configObj?.productImgUrl+category[position].imgUrl[0]
+            Glide.with(context).load(imgURL).error(R.drawable.default_image).into(holder.binding.ivCatImage)*/
+
+            ImageManager.onLoadingImage(app,context, category[position].imgUrl[0],holder.binding.ivCatImage)
+
         }
         holder.binding.materialCardView.setOnClickListener {
             val intent = Intent(context, ProductListActivity::class.java)

@@ -10,6 +10,7 @@ import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.databinding.BrandAdapterBinding
+import naya.ganj.app.utility.ImageManager
 
 
 class BrandAdapter(
@@ -31,12 +32,14 @@ class BrandAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val  imgURL=app.user.getUserDetails()?.configObj?.productImgUrl+brandList[position].imgUrl
-        if (imgURL != "") {
-            Glide.with(context).load(imgURL).error(R.drawable.default_image).into(holder.binding.ivCatImage)
-        } else {
-            holder.binding.ivCatImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.default_image))
-        }
+        try{
+            if(brandList[position].imgUrl.isNotEmpty()){
+                ImageManager.onLoadingImage(app,context, brandList[position].imgUrl,holder.binding.ivCatImage)
+            }else{
+                holder.binding.ivCatImage.setBackgroundResource(R.drawable.default_image)
+            }
+
+        }catch (e:Exception){e.printStackTrace()}
     }
 
     override fun getItemCount(): Int {

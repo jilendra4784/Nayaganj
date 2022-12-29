@@ -16,7 +16,7 @@ data class LoginResponseModel(
 
     data class UserDetails(
         @SerializedName("configObj")
-        val configObj: ConfigObj,
+        var configObj: ConfigObj,
         @SerializedName("deviceId")
         val deviceId: String,
         @SerializedName("deviceToken")

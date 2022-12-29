@@ -32,6 +32,7 @@ import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
 import naya.ganj.app.utility.Constant
+import naya.ganj.app.utility.ImageManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,14 +62,14 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        try {
-            var imgURL =
-                app.user.getUserDetails()?.configObj?.productImgUrl + product[position].imgUrl[0]
-            Glide.with(context).load(imgURL).error(R.drawable.default_image)
-                .into(holder.binding.imageView11)
-        } catch (e: Exception) {
-            holder.binding.imageView11.setBackgroundResource(R.drawable.default_image)
-        }
+        try{
+            if(product[position].imgUrl.isNotEmpty()){
+                ImageManager.onLoadingImage(app,context,product[position].imgUrl[0].toString(),holder.binding.imageView11)
+            }else{
+                holder.binding.imageView11.setBackgroundResource(R.drawable.default_image)
+            }
+
+        }catch (e:Exception){e.printStackTrace()}
 
         holder.binding.tvTitle.text = Utility.convertLanguage(product[position].productName, app)
         holder.binding.tvDescription.text =

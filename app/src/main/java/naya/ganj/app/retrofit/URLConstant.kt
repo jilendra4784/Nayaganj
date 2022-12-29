@@ -2,8 +2,10 @@ package naya.ganj.app.retrofit
 
 object URLConstant {
 
+    var BaseImageUrl=""
     const val Base_URL = "http://stageapis.nayaganj.com/api/"
 
+    const val CONFIG_URL = "getConfig"
     const val cate_url = "getCategorySubCategoryBoth"
     const val PRODUCT_LIST_URL = "getproductList"
     const val ADD_REMOVE_URL = "createCart"

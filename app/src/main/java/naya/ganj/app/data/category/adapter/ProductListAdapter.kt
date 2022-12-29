@@ -40,6 +40,7 @@ import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.DEVICE_TYPE
 import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
+import naya.ganj.app.utility.ImageManager
 import naya.ganj.app.utility.Utility
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,10 +84,7 @@ class ProductListAdapter(
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
         try {
             if (product.imgUrl.isNotEmpty()) {
-                val imgUrl = app.user.getUserDetails()?.configObj?.productImgUrl + product.imgUrl[0]
-                Glide.with(context).load(imgUrl).error(R.drawable.default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.binding.ivImagview)
+                ImageManager.onLoadingImage(app,context,product.imgUrl[0],holder.binding.ivImagview)
             } else {
                 holder.binding.ivImagview.setImageDrawable(null);
                 holder.binding.ivImagview.setImageDrawable(

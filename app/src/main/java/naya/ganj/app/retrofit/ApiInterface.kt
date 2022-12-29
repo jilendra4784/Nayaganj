@@ -12,6 +12,7 @@ import naya.ganj.app.data.sidemenu.model.VirtualOrderModel
 import naya.ganj.app.deliverymodule.model.DeliveredOrdersModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrderDetailModel
 import naya.ganj.app.deliverymodule.model.DeliveryOrdersModel
+import naya.ganj.app.utility.ConfigModel
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -19,10 +20,12 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiInterface {
+    @Headers("Content-Type: application/json")
+    @POST(URLConstant.CONFIG_URL)
+    fun sendConfigRequest(@Body jsonObject: JsonObject):Call<ConfigModel>
 
     @GET(URLConstant.cate_url)
     fun getAllCateData(): Call<CategoryDataModel>
-
 
     @Headers("Content-Type: application/json")
     @POST(URLConstant.PRODUCT_LIST_URL)
