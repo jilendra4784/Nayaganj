@@ -61,6 +61,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
     var codeName = ""
     var couponPrice = 0.0
     var isCouponApplied = false
+    var walletBalance=""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,15 +118,12 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                             .getProductList()
                         if (allProduct.isNotEmpty()) {
                             runOnUiThread {
-                                val intent =
-                                    Intent(this@MyCartActivity, PaymentOptionActivity::class.java)
-                                intent.putExtra(
-                                    "TOTAL_AMOUNT",
-                                    binding.tvFinalAmount.text.toString()
-                                )
+                                val fAmount=binding.tvFinalAmount.text.toString().substring(1,binding.tvFinalAmount.text.toString().length).trim()
+                                val intent = Intent(this@MyCartActivity, PaymentOptionActivity::class.java)
+                                intent.putExtra("TOTAL_AMOUNT", fAmount)
                                 intent.putExtra("ADDRESS_ID", addressId)
                                 intent.putExtra("PROMO_CODE", "")
-                                intent.putExtra("WALLET_BALANCE", "0")
+                                intent.putExtra("WALLET_BALANCE", walletBalance)
                                 startActivity(intent)
 
                             }
@@ -230,6 +228,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             getLocalCartData()
         }
 
+
     }
 
     private fun getLocalCartData() {
@@ -295,6 +294,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                     if(response.isSuccessful){
                         cartList = response.body()!!.cartList
                         myCartModel = response.body()!!
+                        walletBalance=response.body()!!.walletBalance.toString()
                         if (response.body()!!.cartList.size > 0) {
                             myCartAdapter = MyCartAdapter(
                                 this@MyCartActivity,
@@ -326,6 +326,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                             Handler(Looper.getMainLooper()).postDelayed(Runnable { calculateAmount() }, 200)
                             Handler(Looper.getMainLooper()).postDelayed(Runnable { loadSavedAmount() }, 200)
                         } else {
+                            calculateAmount()
                             binding.progressBar.visibility = View.GONE
                             binding.emptyCartLayout.visibility = View.VISIBLE
                             Thread {
@@ -345,9 +346,6 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                     Utility.serverNotResponding(this@MyCartActivity,t.message.toString())
                 }
             })
-
-
-
     }
 
     private fun setAddressDetail(address: MyCartModel.Address.Address) {

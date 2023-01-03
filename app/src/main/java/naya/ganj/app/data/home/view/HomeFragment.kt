@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +29,7 @@ import naya.ganj.app.data.home.model.HomePageModel
 import naya.ganj.app.data.home.repositry.HomePageDataFactory
 import naya.ganj.app.data.home.repositry.HomeRepositry
 import naya.ganj.app.data.home.viewmodel.HomeViewModel
+import naya.ganj.app.data.mycart.view.OfferBottomSheetDetail.Companion.TAG
 import naya.ganj.app.databinding.FragmentHomeBinding
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.retrofit.RetrofitClient
@@ -361,200 +361,203 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
                     val mainActivity = requireActivity() as MainActivity
                     mainActivity.updateCartValue(list.size.toString())
                 }
-            }catch (_:Exception){}
+            } catch (_: Exception) {
+            }
         }
     }
 
     private fun checkViewVisibility() {
-        binding.nestedscrollview.isNestedScrollingEnabled=false
-        var count = 0
-        var cat2Count = 0
-        var cate3Count = 0
-        var cate4Count = 0
-        val scrollBounds = Rect()
-        binding.nestedscrollview.getHitRect(scrollBounds)
-        binding.nestedscrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
 
-            if (binding.llCate2.getLocalVisibleRect(scrollBounds)) {
-                if (!binding.llCate2.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
-                    if (count == 0) {
-                        val jsonObject = getJsonObject(2)
-                        homeViewModel.getHomeDataForIndex2(
-                            app.user.getUserDetails()?.userId ?: "",
-                            jsonObject
-                        ).observe(requireActivity()) { response ->
-                            when (response) {
-                                is NetworkResult.Success -> {
-                                    if (response.data!!.status) {
-                                        if (isAdded) {
-                                            setCategoryGrid2List(
-                                                response.data.data,
-                                                binding.tvcat2,
-                                                binding.rvcatrecyclerview2
-                                            )
-                                            setProductList(
-                                                response.data.data,
-                                                binding.tvProductTitle2,
-                                                binding.productList2, 0
-                                            )
-                                            setPromoBannerList(response.data.data, binding.slider2)
-                                            binding.llCate2.visibility = View.VISIBLE
-                                            Utility.listAnimation(binding.rvcatrecyclerview2)
+     var count = 0
+     var cat2Count = 0
+     var cate3Count = 0
+     var cate4Count = 0
+     val scrollBounds = Rect()
+     binding.nestedscrollview.getHitRect(scrollBounds)
+     binding.nestedscrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
 
-                                        }
-                                    } else {
-                                        Utility.showToast(
-                                            requireActivity(),
-                                            response.message.toString()
-                                        )
-                                    }
-                                }
+         if (binding.llCate2.getLocalVisibleRect(scrollBounds)) {
+             if (!binding.llCate2.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.llCate2.getHeight()) {
+                 if (count == 0) {
+                     val jsonObject = getJsonObject(2)
+                     homeViewModel.getHomeDataForIndex2(
+                         app.user.getUserDetails()?.userId ?: "",
+                         jsonObject
+                     ).observe(requireActivity()) { response ->
+                         when (response) {
+                             is NetworkResult.Success -> {
+                                 if (response.data!!.status) {
+                                     if (isAdded) {
+                                         setCategoryGrid2List(
+                                             response.data.data,
+                                             binding.tvcat2,
+                                             binding.rvcatrecyclerview2
+                                         )
+                                         setProductList(
+                                             response.data.data,
+                                             binding.tvProductTitle2,
+                                             binding.productList2, 0
+                                         )
+                                         setPromoBannerList(response.data.data, binding.slider2)
+                                         binding.llCate2.visibility = View.VISIBLE
+                                         Utility.listAnimation(binding.rvcatrecyclerview2)
 
-                                is NetworkResult.Error -> {
-                                    try{Utility.serverNotResponding(
-                                        requireActivity(),
-                                        response.message.toString()
-                                    )}catch (_:Exception){}
-                                }
-                            }
-                        }
-                    }
-                    count++
-                }
-            }
+                                     }
+                                 } else {
+                                     Utility.showToast(
+                                         requireActivity(),
+                                         response.message.toString()
+                                     )
+                                 }
+                             }
 
-            if (binding.llCate3.getLocalVisibleRect(scrollBounds)) {
-                if (!binding.llCate3.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
-                    if (cat2Count == 0){
-                        val jsonObject = getJsonObject(3)
-                        homeViewModel.getHomeDataForIndex3(
-                            app.user.getUserDetails()?.userId ?: "",
-                            jsonObject
-                        ).observe(requireActivity()) { response ->
-                            when (response) {
-                                is NetworkResult.Success -> {
-                                    if (response.data!!.status) {
-                                        if (isAdded) {
-                                            setCategoryGrid2List(
-                                                response.data.data,
-                                                binding.tvcat3,
-                                                binding.rvcatrecyclerview3
-                                            )
-                                            Utility.listAnimation(binding.rvcatrecyclerview3)
-                                            setProductList(
-                                                response.data.data,
-                                                binding.tvProductTitle3,
-                                                binding.productList3, 0
-                                            )
-                                            setPromoBannerList(response.data.data, binding.slider3)
-                                            binding.llCate3.visibility = View.VISIBLE
+                             is NetworkResult.Error -> {
+                                 try{Utility.serverNotResponding(
+                                     requireActivity(),
+                                     response.message.toString()
+                                 )}catch (_:Exception){}
+                             }
+                         }
+                     }
+                 }
+                 count++
+             }
+         }
 
-                                        }
-                                    } else {
-                                        Utility.showToast(requireActivity(), response.message.toString())
-                                    }
-                                }
+         if (binding.llCate3.getLocalVisibleRect(scrollBounds)) {
+             if (!binding.llCate3.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
+                 if (cat2Count == 0){
+                     val jsonObject = getJsonObject(3)
+                     homeViewModel.getHomeDataForIndex3(
+                         app.user.getUserDetails()?.userId ?: "",
+                         jsonObject
+                     ).observe(requireActivity()) { response ->
+                         when (response) {
+                             is NetworkResult.Success -> {
+                                 if (response.data!!.status) {
+                                     if (isAdded) {
+                                         setCategoryGrid2List(
+                                             response.data.data,
+                                             binding.tvcat3,
+                                             binding.rvcatrecyclerview3
+                                         )
+                                         Utility.listAnimation(binding.rvcatrecyclerview3)
+                                         setProductList(
+                                             response.data.data,
+                                             binding.tvProductTitle3,
+                                             binding.productList3, 0
+                                         )
+                                         setPromoBannerList(response.data.data, binding.slider3)
+                                         binding.llCate3.visibility = View.VISIBLE
 
-                                is NetworkResult.Error -> {
-                                    Utility.serverNotResponding(
-                                        requireActivity(),
-                                        response.message.toString()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    cat2Count++
-                }
-            }
+                                     }
+                                 } else {
+                                     Utility.showToast(requireActivity(), response.message.toString())
+                                 }
+                             }
 
-            if (binding.llCate4.getLocalVisibleRect(scrollBounds)) {
-                if (!binding.llCate4.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
-                    if (cate3Count == 0){
-                        val jsonObject = getJsonObject(4)
-                        homeViewModel.getHomeDataForIndex4(
-                            app.user.getUserDetails()?.userId ?: "",
-                            jsonObject
-                        ).observe(requireActivity()) { response ->
-                            when (response) {
-                                is NetworkResult.Success -> {
-                                    if (response.data!!.status) {
-                                        if (isAdded) {
-                                            setCategoryGrid2List(
-                                                response.data.data,
-                                                binding.tvcat4,
-                                                binding.rvcatrecyclerview4
-                                            )
-                                            setProductList(
-                                                response.data.data,
-                                                binding.tvProductTitle4,
-                                                binding.productList4, 4
-                                            )
-                                            Utility.listAnimation(binding.rvcatrecyclerview4)
-                                            setPromoBannerList(response.data.data, binding.slider4)
-                                            binding.llCate4.visibility = View.VISIBLE
-                                        }
-                                    } else {
-                                        Utility.showToast(requireActivity(), response.message.toString())
-                                    }
-                                }
+                             is NetworkResult.Error -> {
+                                 Utility.serverNotResponding(
+                                     requireActivity(),
+                                     response.message.toString()
+                                 )
+                             }
+                         }
+                     }
+                 }
+                 cat2Count++
+             }
+         }
 
-                                is NetworkResult.Error -> {
-                                    Utility.serverNotResponding(
-                                        requireActivity(),
-                                        response.message.toString()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    cate3Count++
-                }
-            }
+         if (binding.llCate4.getLocalVisibleRect(scrollBounds)) {
+             if (!binding.llCate4.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.llCate4.getHeight()) {
+                 if (cate3Count == 0){
+                     val jsonObject = getJsonObject(4)
+                     homeViewModel.getHomeDataForIndex4(
+                         app.user.getUserDetails()?.userId ?: "",
+                         jsonObject
+                     ).observe(requireActivity()) { response ->
+                         when (response) {
+                             is NetworkResult.Success -> {
+                                 if (response.data!!.status) {
+                                     if (isAdded) {
+                                         setCategoryGrid2List(
+                                             response.data.data,
+                                             binding.tvcat4,
+                                             binding.rvcatrecyclerview4
+                                         )
+                                         setProductList(
+                                             response.data.data,
+                                             binding.tvProductTitle4,
+                                             binding.productList4, 4
+                                         )
+                                         Utility.listAnimation(binding.rvcatrecyclerview4)
+                                         setPromoBannerList(response.data.data, binding.slider4)
+                                         binding.llCate4.visibility = View.VISIBLE
+                                     }
+                                 } else {
+                                     Utility.showToast(requireActivity(), response.message.toString())
+                                 }
+                             }
 
-            if (binding.llCate5.getLocalVisibleRect(scrollBounds)) {
-                if (!binding.llCate5.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.productList.getHeight()) {
-                    if (cate4Count == 0){
+                             is NetworkResult.Error -> {
+                                 Utility.serverNotResponding(
+                                     requireActivity(),
+                                     response.message.toString()
+                                 )
+                             }
+                         }
+                     }
+                 }
+                 cate3Count++
+             }
+         }
 
-                        val jsonObject = getJsonObject(5)
-                        homeViewModel.getHomeDataForIndex5(
-                            app.user.getUserDetails()?.userId ?: "",
-                            jsonObject
-                        ).observe(requireActivity()) { response ->
-                            when (response) {
-                                is NetworkResult.Success -> {
-                                    if (response.data!!.status) {
-                                        if (isAdded) {
-                                            binding.llCate5.visibility = View.VISIBLE
-                                            binding.rvbrandrecyclerview.layoutManager =
-                                                GridLayoutManager(requireActivity(), 3)
-                                            binding.rvbrandrecyclerview.isNestedScrollingEnabled = false
-                                            binding.rvbrandrecyclerview.adapter = BrandAdapter(
-                                                requireActivity(),
-                                                response.data.data.brandList,
-                                                app
-                                            )
-                                            Utility.listAnimation(binding.rvbrandrecyclerview)
+         if (binding.llCate5.getLocalVisibleRect(scrollBounds)) {
+             if (!binding.llCate5.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.llCate5.getHeight()) {
+                 if (cate4Count == 0){
 
-                                        }
-                                    } else {
-                                        Utility.showToast(requireActivity(), response.message.toString())
-                                    }
-                                }
+                     val jsonObject = getJsonObject(5)
+                     homeViewModel.getHomeDataForIndex5(
+                         app.user.getUserDetails()?.userId ?: "",
+                         jsonObject
+                     ).observe(requireActivity()) { response ->
+                         when (response) {
+                             is NetworkResult.Success -> {
+                                 if (response.data!!.status) {
+                                     if (isAdded) {
+                                         binding.llCate5.visibility = View.VISIBLE
+                                         binding.rvbrandrecyclerview.layoutManager =
+                                             GridLayoutManager(requireActivity(), 3)
+                                         binding.rvbrandrecyclerview.isNestedScrollingEnabled = false
+                                         binding.rvbrandrecyclerview.adapter = BrandAdapter(
+                                             requireActivity(),
+                                             response.data.data.brandList,
+                                             app
+                                         )
+                                         Utility.listAnimation(binding.rvbrandrecyclerview)
 
-                                is NetworkResult.Error -> {
-                                    Utility.serverNotResponding(
-                                        requireActivity(),
-                                        response.message.toString()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    cate4Count++
-                }
-            }
-        })
+                                     }
+                                 } else {
+                                     Utility.showToast(requireActivity(), response.message.toString())
+                                 }
+                             }
+
+                             is NetworkResult.Error -> {
+                                 Utility.serverNotResponding(
+                                     requireActivity(),
+                                     response.message.toString()
+                                 )
+                             }
+                         }
+                     }
+                 }
+                 cate4Count++
+             }
+         }
+
+
+     })
     }
 
     override fun onResume() {

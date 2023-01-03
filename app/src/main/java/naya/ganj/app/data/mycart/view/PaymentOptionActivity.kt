@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,10 +40,10 @@ class PaymentOptionActivity : AppCompatActivity() {
     lateinit var viewmodel: PaymentOptionsViewModel
     lateinit var app: Nayaganj
 
-    var amount = ""
+    var amount = 0.0
     var addressId = ""
     var promocode = ""
-    var walletBalance = ""
+    var walletBalance = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,17 +60,61 @@ class PaymentOptionActivity : AppCompatActivity() {
         )[PaymentOptionsViewModel::class.java]
 
         intent.extras.let {
-            amount = intent.getStringExtra("TOTAL_AMOUNT").toString()
-            //amount = "1"
+            val tAmount = intent.getStringExtra("TOTAL_AMOUNT")!!.toString()
+            amount = tAmount.toDouble()
+            binding.edtPayable.setText(tAmount)
+            binding.tvPayableAmount.text=tAmount
+
             addressId = intent.getStringExtra("ADDRESS_ID").toString()
             promocode = intent.getStringExtra("PROMO_CODE").toString()
-            walletBalance = intent.getStringExtra("WALLET_BALANCE").toString()
+            walletBalance = intent.getStringExtra("WALLET_BALANCE")!!.toDouble()
+            Log.e("TAG", "onCreate: " + walletBalance)
             setUI()
+            setUpCashBackUI()
         }
     }
 
+    private fun setUpCashBackUI() {
+         if(walletBalance>0){
+             binding.llCashbackLayout.visibility=View.VISIBLE
+         }else{
+             binding.llCashbackLayout.visibility=View.GONE
+         }
+
+         if(amount>=walletBalance){
+             binding.tvCashbackAmount.text=amount.toString()
+         }else{
+             walletBalance=amount
+             binding.tvCashbackAmount.text=walletBalance.toString()
+         }
+
+        binding.checkbox.setOnCheckedChangeListener { p0, isChecked ->
+            if (isChecked) {
+                Log.e(TAG, "setUpCashBackUI: amount"+amount+", walletBalance"+walletBalance )
+
+                val updatedWalletBalance=binding.edtPayable.text.toString().toDouble()
+                if(walletBalance>=updatedWalletBalance){
+                    binding.llCashbackCalcLayout.visibility = View.VISIBLE
+                    binding.tvFinalAmount.text=(amount-updatedWalletBalance).toString()
+                    binding.tvCashbackAmount.text=updatedWalletBalance.toString()
+                    binding.edtPayable.isEnabled=false
+
+                }else{
+                    Toast.makeText(this@PaymentOptionActivity,"Please enter valid amount!",Toast.LENGTH_SHORT).show()
+                    binding.checkbox.isChecked=false
+                }
+
+            } else {
+                binding.llCashbackCalcLayout.visibility = View.GONE
+                binding.tvFinalAmount.text=amount.toString()
+                binding.edtPayable.isEnabled=true
+            }
+        }
+
+    }
+
     private fun setUI() {
-        binding.tvFinalAmount.text = amount
+        binding.tvFinalAmount.text = amount.toString()
         binding.radioButtonCashOnDelivery.setOnCheckedChangeListener { p0, p1 ->
             if (p1) {
                 binding.radioButtonWallet.isChecked = false
@@ -142,13 +187,18 @@ class PaymentOptionActivity : AppCompatActivity() {
     }
 
     private fun placeOrderRequest(paymentMode: Int, mode: String) {
+        var cashbackAmount=0.0
+        if(binding.checkbox.isChecked){
+             cashbackAmount=binding.edtPayable.text.toString().toDouble()
+        }
+
 
         val jsonObject = JsonObject()
 
         jsonObject.addProperty(Constant.addressId, addressId)
         jsonObject.addProperty(Constant.mode, mode)
         jsonObject.addProperty(Constant.promoCodeId, "")
-        jsonObject.addProperty(Constant.cashBackAmount, 0)
+        jsonObject.addProperty(Constant.cashBackAmount,cashbackAmount)
 
         viewmodel.orderPlaceRequest(app.user.getUserDetails()?.userId, jsonObject)
             .observe(this) { response ->
@@ -183,21 +233,26 @@ class PaymentOptionActivity : AppCompatActivity() {
     }
 
     private fun startPaytmPayment(pToken: String, orderId: String) {
+
+
+
         // for production mode use it
         val host = "https://securegw.paytm.in/"
         // val callBackUrl = "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" + orderId
 
         val callBackUrl = "http://stageapis.nayaganj.com/api/paytmPurchase"
         Log.d("callBackUrl", "" + callBackUrl)
+        val fAmount=binding.tvFinalAmount.text.toString()
+
+        Log.d("callBackUrl", "fAmount" + fAmount)
 
         val paytmOrder = PaytmOrder(
             orderId,
             resources.getString(R.string.mid),
             pToken,
-            amount,
+            fAmount,
             callBackUrl
         )
-
         val transactionManager = TransactionManager(paytmOrder, object :
             PaytmPaymentTransactionCallback {
 
@@ -266,6 +321,7 @@ class PaymentOptionActivity : AppCompatActivity() {
         transactionManager.setAppInvokeEnabled(false)
         transactionManager.setShowPaymentUrl(host + "theia/api/v1/showPaymentPage")
         transactionManager.startTransaction(this, ActivityRequestCode)
+
 
     }
 
