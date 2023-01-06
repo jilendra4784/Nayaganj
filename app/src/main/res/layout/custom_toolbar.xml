@@ -60,11 +60,11 @@
             android:layout_width="@dimen/_22sdp"
             android:visibility="gone"
             android:layout_marginRight="@dimen/_5sdp"
-            android:tint="@color/white"
             android:src="@drawable/cancel_order"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_height="@dimen/_22sdp">
+            android:layout_height="@dimen/_22sdp"
+            app:tint="@color/white">
         </ImageView>
 
 

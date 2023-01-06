@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerlayout"
@@ -18,12 +16,13 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:liftOnScroll="true">
 
                 <include
                     android:id="@+id/include14"
                     layout="@layout/main_toolbar"
-                    app:layout_scrollFlags="scroll|enterAlways" />
+                     />
 
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,31 +32,10 @@
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/view"
                 android:layout_below="@+id/appbar_layout"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/mobile_navigation" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_above="@+id/nav_view"
-                android:background="@color/dark_gray" />
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:elevation="@dimen/_10sdp"
-                android:layout_alignParentBottom="true"
-                app:itemIconTint="@color/bnv_tab_item_foreground"
-                app:itemTextColor="@color/bnv_tab_item_foreground"
-                app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-                app:menu="@menu/bottom_nav_menu"
-                android:background="@color/white"
-                app:itemBackground="@color/white"
-                app:labelVisibilityMode="labeled" />
 
         </RelativeLayout>
 
@@ -67,14 +45,27 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fontFamily="@font/poppins_medium"
-            app:itemTextAppearance="@style/TextAppearance.Material3.BodyLarge"
             app:headerLayout="@layout/header_layout"
-            app:menu="@menu/navigation_menu"
-            app:itemIconTint="@color/purple_500" />
+            app:itemIconTint="@color/purple_500"
+            app:itemTextAppearance="@style/TextAppearance.Material3.BodyLarge"
+            app:menu="@menu/navigation_menu" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 
-
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.PrimarySurface"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        app:elevation="8dp"
+        android:padding="@dimen/_8sdp"
+        app:itemIconTint="@color/bnv_tab_item_foreground"
+        app:itemRippleColor="@color/purple_500"
+        app:itemTextColor="@color/bnv_tab_item_foreground"
+        app:labelVisibilityMode="labeled"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

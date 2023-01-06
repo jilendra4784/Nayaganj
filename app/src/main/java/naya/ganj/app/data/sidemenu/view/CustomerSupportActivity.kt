@@ -3,17 +3,14 @@ package naya.ganj.app.data.sidemenu.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.revesoft.revechatsdk.model.VisitorInfo
-import com.revesoft.revechatsdk.ui.activity.ReveChatActivity
-import com.revesoft.revechatsdk.utils.ReveChat
-import naya.ganj.app.MainActivity
+import com.revesoft.revechatsdk.Utility.ReveChat
+import com.revesoft.revechatsdk.ui.ReveChatActivity
+import com.revesoft.revechatsdk.visitor.VisitorInfo
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.ActivityCustomerSupportBinding
 
@@ -44,7 +41,7 @@ class CustomerSupportActivity : AppCompatActivity() {
         binding.tvEmailAddress.setOnClickListener {
             val emailIntent = Intent(
                 Intent.ACTION_SENDTO,
-                Uri.fromParts("mailto", "info@nayaganjsupport.com", null)
+                Uri.fromParts("mailto", "nayaganj9@gmail.com", null)
             )
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "This is my subject text")
             startActivity(Intent.createChooser(emailIntent, null))
@@ -53,8 +50,8 @@ class CustomerSupportActivity : AppCompatActivity() {
         binding.toolbar.ivChatIcon.visibility = View.VISIBLE
 
         binding.toolbar.ivChatIcon.setOnClickListener {
-            Log.e("TAG", "onCreate: " + userName + "," + mNumber + "," + deviceToken)
-            ReveChat.init("4447722")
+            Log.e("TAG", "onCreate: $userName,$mNumber,$deviceToken")
+            ReveChat.init("7570386")
             val visitorInfo = VisitorInfo.Builder()
                 .name(userName).email("")
                 .phoneNumber(mNumber).build()
@@ -63,7 +60,7 @@ class CustomerSupportActivity : AppCompatActivity() {
             ReveChat.setDeviceTokenId(deviceToken)
             startActivity(Intent(this, ReveChatActivity::class.java))
         }
-        getToken();
+        getToken()
     }
     private fun getToken() {
 

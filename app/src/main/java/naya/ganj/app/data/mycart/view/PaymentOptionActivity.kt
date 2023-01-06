@@ -8,7 +8,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -83,6 +82,7 @@ class PaymentOptionActivity : AppCompatActivity() {
 
          if(amount>=walletBalance){
              binding.tvCashbackAmount.text=amount.toString()
+             binding.edtPayable.setText(walletBalance.toString())
          }else{
              walletBalance=amount
              binding.tvCashbackAmount.text=walletBalance.toString()
@@ -92,17 +92,26 @@ class PaymentOptionActivity : AppCompatActivity() {
             if (isChecked) {
                 Log.e(TAG, "setUpCashBackUI: amount"+amount+", walletBalance"+walletBalance )
 
-                val updatedWalletBalance=binding.edtPayable.text.toString().toDouble()
-                if(walletBalance>=updatedWalletBalance){
-                    binding.llCashbackCalcLayout.visibility = View.VISIBLE
-                    binding.tvFinalAmount.text=(amount-updatedWalletBalance).toString()
-                    binding.tvCashbackAmount.text=updatedWalletBalance.toString()
-                    binding.edtPayable.isEnabled=false
 
+
+                if(binding.edtPayable.text.toString().isNotEmpty()){
+                    val updatedWalletBalance=binding.edtPayable.text.toString().toDouble()
+
+                    if(walletBalance>=updatedWalletBalance){
+                        binding.llCashbackCalcLayout.visibility = View.VISIBLE
+                        binding.tvFinalAmount.text=(amount-updatedWalletBalance).toString()
+                        binding.tvCashbackAmount.text=updatedWalletBalance.toString()
+                        binding.edtPayable.isEnabled=false
+
+                    }else{
+                        Toast.makeText(this@PaymentOptionActivity,"Please enter valid amount!",Toast.LENGTH_SHORT).show()
+                        binding.checkbox.isChecked=false
+                    }
                 }else{
                     Toast.makeText(this@PaymentOptionActivity,"Please enter valid amount!",Toast.LENGTH_SHORT).show()
                     binding.checkbox.isChecked=false
                 }
+
 
             } else {
                 binding.llCashbackCalcLayout.visibility = View.GONE
@@ -213,6 +222,7 @@ class PaymentOptionActivity : AppCompatActivity() {
                                 )
                             } else {
                                 // For Paytm Transaction
+                                Log.e(TAG, "placeOrderRequest: startPaytmPayment ")
                                 startPaytmPayment(it.pToken, it.paymentOrderId)
                             }
                         } else {
@@ -233,9 +243,6 @@ class PaymentOptionActivity : AppCompatActivity() {
     }
 
     private fun startPaytmPayment(pToken: String, orderId: String) {
-
-
-
         // for production mode use it
         val host = "https://securegw.paytm.in/"
         // val callBackUrl = "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" + orderId

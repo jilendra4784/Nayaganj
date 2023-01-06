@@ -1,7 +1,10 @@
 package naya.ganj.app.data.sidemenu.view
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,10 +58,10 @@ class MyOrderActivity : AppCompatActivity() {
                     Utility.listAnimation(binding.rvMyOrderList)
 
                     binding.rvMyOrderList.visibility= View.VISIBLE
-                    binding.tvNodata.visibility= View.GONE
+                  //  binding.tvNodata.visibility= View.GONE
                 }else{
                     binding.rvMyOrderList.visibility= View.GONE
-                    binding.tvNodata.visibility= View.VISIBLE
+                    //binding.tvNodata.visibility= View.VISIBLE
 
                 }
 
