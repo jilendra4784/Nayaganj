@@ -47,7 +47,8 @@ class CustomerSupportActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(emailIntent, null))
         }
 
-        binding.toolbar.ivChatIcon.visibility = View.VISIBLE
+        //
+        //binding.toolbar.ivChatIcon.visibility = View.VISIBLE
 
         binding.toolbar.ivChatIcon.setOnClickListener {
             Log.e("TAG", "onCreate: $userName,$mNumber,$deviceToken")

@@ -199,18 +199,23 @@ class MainActivity : AppCompatActivity() {
                     startActivity(sendIntent)
                 }
                 R.id.refer_earn -> {
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity,ReferAndEarnActivity::class.java))
                 }
                 R.id.customer_support -> {
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity, CustomerSupportActivity::class.java))
                 }
                 R.id.about_us -> {
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity, AboutUsActivity::class.java))
                 }
                 R.id.privacy_policy -> {
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity, PrivacyPolicyActivity::class.java))
                 }
                 R.id.logout -> {
+                    isDrawerIsOpen()
                     showLogoutDialog()
                 }
 
