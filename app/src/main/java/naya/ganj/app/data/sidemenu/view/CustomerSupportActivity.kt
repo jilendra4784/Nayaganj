@@ -1,6 +1,7 @@
 package naya.ganj.app.data.sidemenu.view
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -41,13 +42,6 @@ class CustomerSupportActivity : AppCompatActivity() {
         }
 
         binding.tvEmailAddress.setOnClickListener {
-           /* val emailIntent = Intent(
-                Intent.ACTION_SENDTO,
-                Uri.fromParts("mailto", "nayaganj9@gmail.com", null)
-            )
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "This is my subject text")
-            startActivity(Intent.createChooser(emailIntent, null))*/
-
             if(app.user.getLoginSession()){
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("nayaganj9@gmail.com"))
@@ -59,7 +53,7 @@ class CustomerSupportActivity : AppCompatActivity() {
                     .setTitle("Login?")
                     .setMessage("Please login to connect support.")
                     .setPositiveButton(
-                        "GOT IT"
+                        "Continue"
                     ) { dialogInterface, i ->
                         run {
                             dialogInterface.dismiss()
