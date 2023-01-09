@@ -1,18 +1,20 @@
 package naya.ganj.app.data.sidemenu.view
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.messaging.FirebaseMessaging
 import com.revesoft.revechatsdk.Utility.ReveChat
 import com.revesoft.revechatsdk.ui.ReveChatActivity
 import com.revesoft.revechatsdk.visitor.VisitorInfo
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.data.mycart.view.LoginActivity
 import naya.ganj.app.databinding.ActivityCustomerSupportBinding
+import naya.ganj.app.utility.Constant
+
 
 class CustomerSupportActivity : AppCompatActivity() {
 
@@ -39,12 +41,37 @@ class CustomerSupportActivity : AppCompatActivity() {
         }
 
         binding.tvEmailAddress.setOnClickListener {
-            val emailIntent = Intent(
+           /* val emailIntent = Intent(
                 Intent.ACTION_SENDTO,
                 Uri.fromParts("mailto", "nayaganj9@gmail.com", null)
             )
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "This is my subject text")
-            startActivity(Intent.createChooser(emailIntent, null))
+            startActivity(Intent.createChooser(emailIntent, null))*/
+
+            if(app.user.getLoginSession()){
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("nayaganj9@gmail.com"))
+                intent.putExtra(Intent.EXTRA_SUBJECT, "User Id:"+app.user.getUserDetails()?.userId)
+                intent.type = "message/rfc822"
+                startActivity(Intent.createChooser(intent, "Select email"))
+            }else{
+                MaterialAlertDialogBuilder(this@CustomerSupportActivity)
+                    .setTitle("Login?")
+                    .setMessage("Please login to connect support.")
+                    .setPositiveButton(
+                        "GOT IT"
+                    ) { dialogInterface, i ->
+                        run {
+                            dialogInterface.dismiss()
+                            Constant.IS_FROM_MYCART=true
+                            startActivity(Intent(this@CustomerSupportActivity, LoginActivity::class.java))
+                        }
+                    }
+                    .setNegativeButton(
+                        "CANCEL"
+                    ) { dialogInterface, i -> }
+                    .show()
+            }
         }
 
         //

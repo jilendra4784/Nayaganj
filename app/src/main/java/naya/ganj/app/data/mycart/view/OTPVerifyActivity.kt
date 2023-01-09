@@ -104,7 +104,6 @@ class OTPVerifyActivity : AppCompatActivity() {
         jsonObject.addProperty(Constant.OTP, binding.otpViewEdittext.otp.toString())
 
         viewModel.getLoginResponse("", jsonObject).observe(this) {response->
-
             when(response){
 
                 is NetworkResult.Success->{
