@@ -12,6 +12,7 @@ import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.databinding.FragmentProfileBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
+import naya.ganj.app.retrofit.URLConstant
 import naya.ganj.app.utility.Utility
 
 class ProfileFragment : Fragment() {
@@ -59,6 +60,7 @@ class ProfileFragment : Fragment() {
                 "YES"
             ) { dialogInterface, i ->
                 dialogInterface.dismiss()
+                URLConstant.BaseImageUrl=app.user.getUserDetails()?.configObj?.productImgUrl.toString()
                 app.user.clearSharedPreference()
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -13,13 +13,11 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
-import naya.ganj.app.data.category.model.CategoryDataModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.view.OfferBottomSheetDetail.Companion.TAG
 import naya.ganj.app.data.mycart.viewmodel.LoginResponseViewModel
@@ -31,7 +29,6 @@ import naya.ganj.app.utility.*
 import retrofit2.Call
 import retrofit2.Response
 import java.util.*
-import javax.security.auth.callback.Callback
 
 
 class SplashActivity : AppCompatActivity() {
@@ -44,7 +41,6 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_splash)
 
 
@@ -90,7 +86,6 @@ class SplashActivity : AppCompatActivity() {
                     val offerKey = deepLink!!.getQueryParameter("userId")
                     Log.e(TAG, "offerKey: "+offerKey )
                 }
-
             }
             .addOnFailureListener(
                 this
