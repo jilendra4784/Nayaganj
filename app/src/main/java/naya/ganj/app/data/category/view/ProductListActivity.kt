@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.transition.Explode
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -67,10 +70,11 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         if (categoryId == null || categoryId == "") {
             // It will act as a Search Activity
             binding.frameLayout.visibility = View.VISIBLE
-
+            binding.editText.requestFocus()
             binding.editText.setOnEditorActionListener { v, actionId, event ->
                 return@setOnEditorActionListener when (actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
+                        binding.productList.visibility = View.GONE
                         if (binding.editText.text.toString().length >= 3) {
                             if (app.user.getLoginSession()) {
                                 getProductList(
@@ -83,7 +87,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                             }
                         } else {
                             binding.tvNoProduct.visibility = View.VISIBLE
-                            binding.productList.visibility = View.GONE
                             binding.llCartLayout.visibility = View.GONE
                         }
                         true
@@ -150,14 +153,19 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         userId: String?,
         cateId: String?,
     ) {
+        binding.productShimmer.showShimmer(true);
+        binding.productShimmer.visibility = View.VISIBLE
+        binding.tvNoProduct.visibility = View.GONE
 
-        if(Utility.isAppOnLine(this@ProductListActivity,object : OnInternetCheckListener {
-                override fun onInternetAvailable() {
-                    getProductListRequestData(text,userId,cateId)
-                }
-            })){
-            getProductListRequestData(text,userId,cateId)
-        }
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            if (Utility.isAppOnLine(this@ProductListActivity, object : OnInternetCheckListener {
+                    override fun onInternetAvailable() {
+                        getProductListRequestData(text, userId, cateId)
+                    }
+                })) {
+                getProductListRequestData(text, userId, cateId)
+            }
+        }, 500)
     }
 
     override fun onClickAddOrRemoveItem(
@@ -334,7 +342,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     override fun onResume() {
         super.onResume()
 
-        adapter?.notifyDataSetChanged()
+       // adapter?.notifyDataSetChanged()
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
         }.start()
@@ -347,8 +355,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         json.addProperty(Constant.TEXT, text)
         json.addProperty(Constant.pageIndex, "0")
 
-        binding.progressBar.visibility = View.VISIBLE
-        binding.productList.visibility = View.GONE
         viewModel.getProductList(this@ProductListActivity, userId, Constant.DEVICE_TYPE, json)
             .observe(this) {
                 if (it.productList.isNotEmpty()) {
@@ -381,6 +387,10 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                             }
                         }
                     }
+
+                    binding.productShimmer.stopShimmer()
+                    binding.productShimmer.visibility=View.GONE
+                    binding.productShimmer.hideShimmer()
                     adapter = ProductListAdapter(
                         this@ProductListActivity,
                         this@ProductListActivity,
@@ -395,10 +405,10 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.tvNoProduct.visibility = View.GONE
                     binding.productList.visibility = View.VISIBLE
 
-                    binding.progressBar.visibility = View.GONE
-                    binding.productList.visibility = View.VISIBLE
-
                 } else {
+                    binding.productShimmer.stopShimmer()
+                    binding.productShimmer.visibility = View.GONE
+                    binding.productShimmer.hideShimmer()
                     binding.tvNoProduct.visibility = View.VISIBLE
                     binding.productList.visibility = View.GONE
                     binding.llCartLayout.visibility = View.GONE

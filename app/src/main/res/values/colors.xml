@@ -15,5 +15,6 @@
     <color name="green_color">#20ba44</color>
     <color name="orange">#f7941d</color>
     <color name="dark_gray">#808080</color>
+    <color name="shimmer_background">#dddddd</color>
 
 </resources>

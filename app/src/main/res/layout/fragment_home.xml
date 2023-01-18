@@ -10,6 +10,7 @@
     android:focusableInTouchMode="true"
     tools:context=".data.home.view.HomeFragment">
 
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -86,7 +87,6 @@
                             android:id="@+id/rv_home_recyclerview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layoutAnimation="@anim/layout_animation"
                             android:layout_marginTop="@dimen/_10sdp" />
 
 

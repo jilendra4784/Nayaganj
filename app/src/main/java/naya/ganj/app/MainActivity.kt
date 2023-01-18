@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -35,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.MaterialSharedAxis
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,6 +93,13 @@ class MainActivity : AppCompatActivity() {
     var isImageOrderRequest = false
     private var doubleBackToExitPressedOnce = false
 
+    private val currentNavigationFragment: Fragment?
+        get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+            ?.childFragmentManager
+            ?.fragments
+            ?.first()
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,18 +120,8 @@ class MainActivity : AppCompatActivity() {
 
             when (destination.id) {
                 R.id.navigation_home -> {
-                    val currentNavigationFragment = supportFragmentManager.primaryNavigationFragment
-                /*    currentNavigationFragment?.apply {
 
-                        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
-                            duration =
-                                resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-                        }
-                        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
-                            duration =
-                                resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-                        }
-                    }*/
+                    applyTransition()
 
                     if (app.user.getAppLanguage() == 1) {
                         binding.include14.textView2.text = resources.getString(R.string.nayaganj_h)
@@ -224,16 +223,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.sideNavigation.getHeaderView(0).setOnClickListener {
-            if (!app.user.getLoginSession()) { startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            if (!app.user.getLoginSession()) {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
         }
 
-        binding.navView.setOnItemReselectedListener {  }
-        binding.include14.llSearchLayout.setOnClickListener{
-                startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
+        binding.navView.setOnItemReselectedListener { }
+        binding.include14.llSearchLayout.setOnClickListener {
+            startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
         }
 
 
+    }
+
+    private fun applyTransition() {
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
     }
 
     override fun onResume() {
@@ -242,8 +253,8 @@ class MainActivity : AppCompatActivity() {
 
         setUIDataForLoginUser()
         setBadgeCount()
-        LocationService.getInstance().startLocationUpdate(this@MainActivity,binding.include14.tvLocation)
-
+        LocationService.getInstance().startLocationUpdate(this@MainActivity, binding.include14.tvLocation)
+        applyTransition()
     }
 
     override fun onDestroy() {

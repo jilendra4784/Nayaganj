@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.transition.MaterialSharedAxis
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.NewExpandableListAdapter
@@ -28,6 +29,16 @@ class CategoryFragment : Fragment() {
 
     lateinit var adapter: NewExpandableListAdapter
     lateinit var cateModel: CategoryDataModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

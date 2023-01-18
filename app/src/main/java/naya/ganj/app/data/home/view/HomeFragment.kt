@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.MaterialSharedAxis
 import com.google.gson.JsonObject
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.MainActivity
 import naya.ganj.app.Nayaganj
+import naya.ganj.app.R
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.home.adapter.*
 import naya.ganj.app.data.home.model.HomePageModel
@@ -50,6 +52,10 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

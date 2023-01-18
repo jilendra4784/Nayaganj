@@ -14,13 +14,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.JsonObject
@@ -76,7 +74,7 @@ class ProductListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        setFadeAnimation(holder.itemView)
+        //setFadeAnimation(holder.itemView)
         val product = productList[holder.adapterPosition]
         setUpData(holder, product, holder.adapterPosition)
     }
@@ -87,12 +85,7 @@ class ProductListAdapter(
                 ImageManager.onLoadingImage(app,context,product.imgUrl[0],holder.binding.ivImagview)
             } else {
                 holder.binding.ivImagview.setImageDrawable(null);
-                holder.binding.ivImagview.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.default_image
-                    )
-                )
+                holder.binding.ivImagview.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.default_image))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -183,13 +176,40 @@ class ProductListAdapter(
             val intent = Intent(context, ProductDetailActivity::class.java)
             intent.putExtra(PRODUCT_ID, product.id)
             intent.putExtra(VARIANT_ID, variantID)
-            //context.startActivity(intent)
-            ActivityCompat.startActivity(context, intent,
-                ActivityOptionsCompat
-                    .makeScaleUpAnimation(it, 0, 0, it.width, it.height)
-                    .toBundle()
-            );
+
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                activity,
+                (holder.binding.ivImagview as View?)!!, "profile"
+            )
+            context.startActivity(intent, options.toBundle())
+
+
+
         }
+
+        holder.binding.tvProductTitle.setOnClickListener{
+            var variantID = ""
+            val unitQuantity: String = holder.binding.tvUnitQuantity.text.toString()
+            for (item in product.variant) {
+                if (item.vUnitQuantity == unitQuantity) {
+                    variantID = item.vId
+                }
+            }
+
+            holder.binding.ivImagview.transitionName="product_image"
+
+            val intent = Intent(context, ProductDetailActivity::class.java)
+            intent.putExtra(PRODUCT_ID, product.id)
+            intent.putExtra(VARIANT_ID, variantID)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                activity,
+                (holder.binding.ivImagview as View?)!!, "product_image"
+            )
+            context.startActivity(intent, options.toBundle())
+
+        }
+
+
         holder.binding.addItem.setOnClickListener {
             if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
                     override fun onInternetAvailable() {

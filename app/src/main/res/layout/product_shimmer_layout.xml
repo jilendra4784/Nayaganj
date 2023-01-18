@@ -11,9 +11,9 @@
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        app:rippleColor="@android:color/transparent"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="0dp"
+        app:rippleColor="@android:color/transparent"
         app:strokeWidth=".2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,14 +25,14 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_115sdp"
                 android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_product_title"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginBottom="@dimen/_20sdp"
-                app:cardBackgroundColor="@color/white"
+                android:background="@color/shimmer_background"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_5sdp"
                 app:cardUseCompatPadding="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_product_title"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeWidth="0dp">
 
@@ -42,18 +42,19 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="@dimen/_5sdp"
+
                     android:transitionName="product_image" />
 
                 <TextView
                     android:id="@+id/tv_off"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/custom_offer_drawable"
+                    android:background="@color/shimmer_background"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_10sdp"
-                    android:visibility="visible"
                     android:textStyle="bold"
-                    android:transitionName="product_off" />
+                    android:transitionName="product_off"
+                    android:visibility="visible" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -61,14 +62,14 @@
             <TextView
                 android:id="@+id/tv_product_title"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/shimmer_background"
                 android:fontFamily="@font/roboto_bold"
+                android:gravity="start|center"
+                android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:transitionName="product_name"
-                android:text="product name fnfjnvjvjjvnjfnvjfnvjnjnjvnfj"
-                android:maxLines="2"
-                android:gravity="start|center"
-                android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_product_Detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.107"
@@ -78,12 +79,13 @@
             <TextView
                 android:id="@+id/tv_product_Detail"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@color/shimmer_background"
                 android:maxLines="2"
-                android:transitionName="product_detail"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:paddingTop="@dimen/_5sdp"
-                android:text="Product detail Product detailProduct detailProduct detailProduct detailProduct detailProduct detailProduct detailProduct detailProduct detailProduct detail"
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:transitionName="product_detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -111,24 +113,24 @@
                     android:id="@+id/ll_product_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:transitionName="product_unit"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:transitionName="product_unit">
 
                     <TextView
                         android:id="@+id/tv_net_wet"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/_30sdp"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="@string/net_wt"
+                        android:background="@color/shimmer_background"
                         android:textSize="@dimen/_8ssp" />
 
                     <RelativeLayout
                         android:id="@+id/ll_variant_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:background="@drawable/bg_quantity">
+                        android:background="@color/shimmer_background"
+                        android:layout_marginStart="@dimen/_5sdp">
 
                         <TextView
                             android:id="@+id/tv_unit_quantity"
@@ -143,8 +145,8 @@
                             android:id="@+id/tv_unit"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:layout_toEndOf="@+id/tv_unit_quantity"
+                            android:gravity="center"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_10sdp" />
 
@@ -170,7 +172,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_bold"
-                        android:text="@string/Rs"
                         android:textSize="@dimen/_12ssp" />
 
                     <TextView
@@ -190,7 +191,6 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         android:layout_toEndOf="@+id/tv_discount_price"
                         android:paddingTop="@dimen/_1sdp"
-                        android:text="@string/Rs"
                         android:textSize="@dimen/_10sdp" />
 
 
@@ -214,11 +214,10 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/add_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/_70sdp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:background="@drawable/bg_add"
-                        android:text="Add +"
+                        android:background="@color/shimmer_background"
                         android:paddingHorizontal="@dimen/_20sdp"
                         android:paddingVertical="@dimen/_5sdp"
                         android:textColor="@color/white"
