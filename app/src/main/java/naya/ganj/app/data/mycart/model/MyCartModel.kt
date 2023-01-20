@@ -80,7 +80,7 @@ data class MyCartModel(
         @SerializedName("created")
         val created: String,
         @SerializedName("discountPrice")
-        val discountPrice: String,
+        val discountPrice: String?,
         @SerializedName("img")
         val img: String,
         @SerializedName("price")

@@ -98,7 +98,7 @@ class MyCartAdapter(
             holder.binding.afterCouponApplyLayout.visibility = View.GONE
         }
 
-           if (cart.discountPrice.toDouble() > 0) {
+           if (cart.discountPrice!=null && cart.discountPrice.toDouble() > 0) {
                if (cart.discountPrice.toDouble() == cart.price.toDouble()) {
                    holder.binding.tvRupeeSmall.visibility = View.GONE
                    holder.binding.tvPrice.visibility = View.GONE
@@ -344,9 +344,11 @@ class MyCartAdapter(
         if (app.user.getAppLanguage() == 1) {
             holder.tvNetWet.text = context.resources.getString(R.string.net_weight_h)
         }
+        var discountPrice=0;
+        if(cart.discountPrice!=null){
+             discountPrice = ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
+        }
 
-        val discountPrice: Int =
-            ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
 
         Thread {
 

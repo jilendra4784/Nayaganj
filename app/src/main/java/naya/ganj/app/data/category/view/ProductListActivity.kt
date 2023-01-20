@@ -5,11 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.transition.Explode
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
-import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
