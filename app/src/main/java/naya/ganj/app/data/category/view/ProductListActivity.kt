@@ -91,32 +91,6 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     else -> false
                 }
             }
-            /*  binding.editText.addTextChangedListener(object : TextWatcher {
-                  override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                  }
-
-                  override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                  }
-
-                  override fun afterTextChanged(p0: Editable?) {
-                      if (p0.toString().length >= 3) {
-                          if (app.user.getLoginSession()) {
-                              Log.e("TAG", "getProductListRequestData: Search" + "")
-                              getProductList(p0.toString(), app.user.getUserDetails()?.userId, "")
-                          } else {
-                              getProductList(p0.toString(), "", "")
-                          }
-                      } else {
-                          if (p0.toString().isEmpty()) {
-                              binding.tvNoProduct.visibility = View.VISIBLE
-                              binding.productList.visibility = View.GONE
-                              binding.llCartLayout.visibility = View.GONE
-                          }
-                      }
-                  }
-              })*/
 
             if (app.user.getAppLanguage() == 1) {
                 binding.editText.hint = resources.getString(R.string.search_here_h)
@@ -168,7 +142,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     override fun onClickAddOrRemoveItem(
         action: String,
         productDetail: ProductDetail,
-        addremoveText:TextView
+        addremoveText: TextView
     ) {
         when (action) {
             Constant.INSERT -> {
@@ -189,31 +163,40 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status)
-                                        addremoveText.isEnabled=true
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.status)
+                                        addremoveText.isEnabled = true
                                     lifecycleScope.launch(Dispatchers.IO) {
-                                        Utility().insertProduct(this@ProductListActivity, productDetail)
+                                        Utility().insertProduct(
+                                            this@ProductListActivity,
+                                            productDetail
+                                        )
                                     }
-                                }else{
-                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                } else {
+                                    Utility.serverNotResponding(
+                                        this@ProductListActivity,
+                                        response.message()
+                                    )
                                 }
                             }
 
                             override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                                Utility.serverNotResponding(
+                                    this@ProductListActivity,
+                                    t.message.toString()
+                                )
                             }
                         })
 
 
-                }else{
+                } else {
                     lifecycleScope.launch(Dispatchers.IO) {
                         Utility().insertProduct(this@ProductListActivity, productDetail)
                     }
                 }
             }
             Constant.ADD -> {
-                if(app.user.getLoginSession()){
+                if (app.user.getLoginSession()) {
                     val jsonObject = JsonObject()
                     jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
                     jsonObject.addProperty(Constant.ACTION, action)
@@ -230,25 +213,41 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status)
-                                        addremoveText.isEnabled=true
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.status)
+                                        addremoveText.isEnabled = true
                                     lifecycleScope.launch(Dispatchers.IO) {
-                                        AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                        AppDataBase.getInstance(this@ProductListActivity)
+                                            .productDao().updateProduct(
+                                            productDetail.itemQuantity,
+                                            productDetail.productId,
+                                            productDetail.variantId
+                                        )
                                     }
-                                }else{
-                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                } else {
+                                    Utility.serverNotResponding(
+                                        this@ProductListActivity,
+                                        response.message()
+                                    )
                                 }
                             }
 
                             override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                                Utility.serverNotResponding(
+                                    this@ProductListActivity,
+                                    t.message.toString()
+                                )
                             }
                         })
-                }else{
-                    addremoveText.isEnabled=true
+                } else {
+                    addremoveText.isEnabled = true
                     lifecycleScope.launch(Dispatchers.IO) {
-                        AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                        AppDataBase.getInstance(this@ProductListActivity).productDao()
+                            .updateProduct(
+                                productDetail.itemQuantity,
+                                productDetail.productId,
+                                productDetail.variantId
+                            )
                     }
                 }
             }
@@ -270,30 +269,45 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                                 call: Call<AddRemoveModel>,
                                 response: Response<AddRemoveModel>
                             ) {
-                                if(response.isSuccessful){
-                                    if(response.body()!!.status)
-                                        addremoveText.isEnabled=true
-                                    if(productDetail.itemQuantity>0){
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.status)
+                                        addremoveText.isEnabled = true
+                                    if (productDetail.itemQuantity > 0) {
                                         lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@ProductListActivity).productDao().updateProduct(productDetail.itemQuantity, productDetail.productId, productDetail.variantId)
+                                            AppDataBase.getInstance(this@ProductListActivity)
+                                                .productDao().updateProduct(
+                                                productDetail.itemQuantity,
+                                                productDetail.productId,
+                                                productDetail.variantId
+                                            )
                                         }
-                                    }else{
+                                    } else {
                                         lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@ProductListActivity).productDao().deleteProduct(productDetail.productId, productDetail.variantId)
+                                            AppDataBase.getInstance(this@ProductListActivity)
+                                                .productDao().deleteProduct(
+                                                productDetail.productId,
+                                                productDetail.variantId
+                                            )
                                         }
                                     }
 
-                                }else{
-                                    Utility.serverNotResponding(this@ProductListActivity,response.message())
+                                } else {
+                                    Utility.serverNotResponding(
+                                        this@ProductListActivity,
+                                        response.message()
+                                    )
                                 }
                             }
 
                             override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(this@ProductListActivity,t.message.toString())
+                                Utility.serverNotResponding(
+                                    this@ProductListActivity,
+                                    t.message.toString()
+                                )
                             }
                         })
-                }else{
-                    addremoveText.isEnabled=true
+                } else {
+                    addremoveText.isEnabled = true
                     if (productDetail.itemQuantity > 0) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             Utility().updateProduct(
@@ -329,23 +343,26 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     for (item in listofProduct) {
                         amount += (item.vPrice - (item.vPrice * item.vDiscount) / 100) * item.itemQuantity
                     }
-                    binding.cartLayout.tvTotalAmount.text = Utility().formatTotalAmount(amount).toString()
+                    binding.cartLayout.tvTotalAmount.text =
+                        Utility().formatTotalAmount(amount).toString()
                 } else {
                     binding.llCartLayout.visibility = View.GONE
                 }
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
 
-       // adapter?.notifyDataSetChanged()
+        // adapter?.notifyDataSetChanged()
         Thread {
             Log.e(TAG, "onResume: " + Utility().getAllProductList(this@ProductListActivity))
         }.start()
 
         Handler(Looper.getMainLooper()).postDelayed(Runnable { showCartLayout() }, 400)
     }
+
     fun getProductListRequestData(text: String, userId: String?, cateId: String?) {
         val json = JsonObject()
         json.addProperty(Constant.CATEGORY_ID, cateId)
@@ -386,7 +403,7 @@ class ProductListActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     }
 
                     binding.productShimmer.stopShimmer()
-                    binding.productShimmer.visibility=View.GONE
+                    binding.productShimmer.visibility = View.GONE
                     binding.productShimmer.hideShimmer()
                     adapter = ProductListAdapter(
                         this@ProductListActivity,

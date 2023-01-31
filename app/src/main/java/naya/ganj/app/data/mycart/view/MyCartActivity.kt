@@ -702,6 +702,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
         vId: String,
         promoCode: String
     ) {
+
         MaterialAlertDialogBuilder(this@MyCartActivity)
             .setTitle("Delete Item? ")
             .setMessage("Are you sure, you want to delete this product?")
@@ -769,6 +770,7 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                 "NO"
             ) { dialogInterface, i -> dialogInterface.dismiss() }
             .show()
+
     }
 
 }
