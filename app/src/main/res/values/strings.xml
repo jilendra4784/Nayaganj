@@ -196,5 +196,6 @@
     <string name="send_referral_link_via">" Send a referral link to your friends via SMS/Email/WhatsApp etc"</string>
     <string name="refer_earn_upto"><![CDATA["Refer now &amp; earn upto ₹ 100 "]]></string>
     <string name="referral_money">Your Referral Money</string>
+    <string name="search_hint">Search  Items</string>
 
 </resources>

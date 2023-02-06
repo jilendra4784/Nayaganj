@@ -82,10 +82,20 @@ class ProductListAdapter(
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {
         try {
             if (product.imgUrl.isNotEmpty()) {
-                ImageManager.onLoadingImage(app,context,product.imgUrl[0],holder.binding.ivImagview)
+                ImageManager.onLoadingImage(
+                    app,
+                    context,
+                    product.imgUrl[0],
+                    holder.binding.ivImagview
+                )
             } else {
                 holder.binding.ivImagview.setImageDrawable(null);
-                holder.binding.ivImagview.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.default_image))
+                holder.binding.ivImagview.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.default_image
+                    )
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -104,7 +114,7 @@ class ProductListAdapter(
             val listOfProduct =
                 AppDataBase.getInstance(context).productDao().getProductListByProductId(product.id)
             if (listOfProduct.isNotEmpty()) {
-                Log.e("TAG", "setUpData: "+listOfProduct )
+                Log.e("TAG", "setUpData: " + listOfProduct)
                 activity.runOnUiThread {
                     val price = listOfProduct[0].vPrice
                     var vDiscountPrice: Double
@@ -157,7 +167,7 @@ class ProductListAdapter(
                         "0",
                         "",
                         0
-                    ),holder.binding.tvMinus
+                    ), holder.binding.tvMinus
                 )
             }
         }.start()
@@ -184,10 +194,9 @@ class ProductListAdapter(
             context.startActivity(intent, options.toBundle())
 
 
-
         }
 
-        holder.binding.tvProductTitle.setOnClickListener{
+        holder.binding.tvProductTitle.setOnClickListener {
             var variantID = ""
             val unitQuantity: String = holder.binding.tvUnitQuantity.text.toString()
             for (item in product.variant) {
@@ -196,7 +205,7 @@ class ProductListAdapter(
                 }
             }
 
-            holder.binding.ivImagview.transitionName="product_image"
+            holder.binding.ivImagview.transitionName = "product_image"
 
             val intent = Intent(context, ProductDetailActivity::class.java)
             intent.putExtra(PRODUCT_ID, product.id)
@@ -211,28 +220,28 @@ class ProductListAdapter(
 
 
         holder.binding.addItem.setOnClickListener {
-            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+            if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
-                        updateItemToLocalDB("add", holder, product,holder.binding.addItem)
+                        updateItemToLocalDB("add", holder, product, holder.binding.addItem)
                     }
                 }))
-            updateItemToLocalDB("add", holder, product,holder.binding.addItem)
+                updateItemToLocalDB("add", holder, product, holder.binding.addItem)
         }
         holder.binding.tvPlus.setOnClickListener {
-            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+            if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
-                        updateItemToLocalDB("plus", holder, product,holder.binding.tvPlus)
+                        updateItemToLocalDB("plus", holder, product, holder.binding.tvPlus)
                     }
                 }))
-            updateItemToLocalDB("plus", holder, product,holder.binding.tvPlus)
+                updateItemToLocalDB("plus", holder, product, holder.binding.tvPlus)
         }
         holder.binding.tvMinus.setOnClickListener {
-            if(Utility.isAppOnLine(context,object: OnInternetCheckListener{
+            if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
-                        updateItemToLocalDB("minus", holder, product,holder.binding.tvMinus)
+                        updateItemToLocalDB("minus", holder, product, holder.binding.tvMinus)
                     }
                 }))
-            updateItemToLocalDB("minus", holder, product,holder.binding.tvMinus)
+                updateItemToLocalDB("minus", holder, product, holder.binding.tvMinus)
         }
     }
 
@@ -283,10 +292,13 @@ class ProductListAdapter(
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-                        if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                        }else{
-                            holder.binding.tvOff.text  = singleProduct.vDiscount.toString() + "% off"
+                        if (app.user.getAppLanguage() == 1) {
+                            holder.binding.tvOff.text =
+                                singleProduct.vDiscount.toString() + "% " + context.resources.getString(
+                                    R.string.off_h
+                                )
+                        } else {
+                            holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% off"
                         }
 
 
@@ -313,10 +325,14 @@ class ProductListAdapter(
                             holder.binding.tvOff.visibility = View.GONE
                         }
                         holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
-                        if(app.user.getAppLanguage()==1){
-                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                        }else{
-                            holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
+                        if (app.user.getAppLanguage() == 1) {
+                            holder.binding.tvOff.text =
+                                variant[vPosition].vDiscount.toString() + "% " + context.resources.getString(
+                                    R.string.off_h
+                                )
+                        } else {
+                            holder.binding.tvOff.text =
+                                variant[vPosition].vDiscount.toString() + "% off"
                         }
 
                         var vMaxQuantity = variant[vPosition].vQuantity
@@ -348,11 +364,12 @@ class ProductListAdapter(
             }
             holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-            if(app.user.getAppLanguage()==1){
-                holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% "+context.resources.getString(R.string.off_h)
-                holder.binding.tvNetWet.text=context.resources.getString(R.string.net_weight_h)
-                holder.binding.addItem.text=context.resources.getString(R.string.add_h)
-            }else{
+            if (app.user.getAppLanguage() == 1) {
+                holder.binding.tvOff.text =
+                    variant[vPosition].vDiscount.toString() + "% " + context.resources.getString(R.string.off_h)
+                holder.binding.tvNetWet.text = context.resources.getString(R.string.net_weight_h)
+                holder.binding.addItem.text = context.resources.getString(R.string.add_h)
+            } else {
                 holder.binding.tvOff.text = variant[vPosition].vDiscount.toString() + "% off"
             }
 
@@ -371,7 +388,7 @@ class ProductListAdapter(
         variantList.layoutManager = LinearLayoutManager(context)
 
         val customVariantAdapter =
-            CustomVariantAdapter(context,app,product.variant, object : OnitemClickListener {
+            CustomVariantAdapter(context, app, product.variant, object : OnitemClickListener {
                 @SuppressLint("SetTextI18n")
                 override fun onclick(vPos: Int, data: String) {
                     // Variant Click Handle
@@ -402,10 +419,14 @@ class ProductListAdapter(
                                     holder.binding.tvPrice.text = price.toString()
                                     holder.binding.tvDiscountPrice.text = vDiscountPrice.toString()
 
-                                    if(app.user.getAppLanguage()==1){
-                                        holder.binding.tvOff.text =singleProduct.vDiscount.toString()+"% "+ context.resources.getString(R.string.off_h)
-                                    }else{
-                                        holder.binding.tvOff.text = singleProduct.vDiscount.toString() + "% off"
+                                    if (app.user.getAppLanguage() == 1) {
+                                        holder.binding.tvOff.text =
+                                            singleProduct.vDiscount.toString() + "% " + context.resources.getString(
+                                                R.string.off_h
+                                            )
+                                    } else {
+                                        holder.binding.tvOff.text =
+                                            singleProduct.vDiscount.toString() + "% off"
                                     }
 
                                     holder.binding.tvQuantity.text =
@@ -579,11 +600,11 @@ class ProductListAdapter(
             }
             "minus" -> {
 
-                if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+                if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                         override fun onInternetAvailable() {
 
                         }
-                    })){
+                    })) {
                     var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
                     quantity--
 
@@ -633,7 +654,7 @@ class ProductListAdapter(
     fun setFadeAnimation(view: View) {
         val anim = AlphaAnimation(0.0f, 1.0f)
         anim.duration = 500
-        anim.backgroundColor=context.resources.getColor(R.color.gray)
+        anim.backgroundColor = context.resources.getColor(R.color.gray)
         view.startAnimation(anim)
     }
 }

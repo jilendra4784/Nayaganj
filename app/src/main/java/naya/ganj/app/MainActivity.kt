@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import naya.ganj.app.data.category.view.ProductListActivity
+import naya.ganj.app.data.category.view.SearchActivity
 import naya.ganj.app.data.mycart.model.AddressListModel
 import naya.ganj.app.data.mycart.repositry.AddressListRespositry
 import naya.ganj.app.data.mycart.view.LoginActivity
@@ -129,9 +130,9 @@ class MainActivity : AppCompatActivity() {
                         binding.include14.textView2.text = "Nayaganj"
                     }
 
-                    if(app.user.getLoginSession()){
+                    if (app.user.getLoginSession()) {
                         binding.include14.ivCameraIcon.visibility = View.VISIBLE
-                    }else{
+                    } else {
                         binding.include14.ivCameraIcon.visibility = View.GONE
                     }
                     binding.include14.imageView9.visibility = View.VISIBLE
@@ -152,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_notifications -> {}
                 R.id.navigation_search -> {
-                    startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
+                    startActivity(Intent(this@MainActivity, SearchActivity::class.java))
                 }
                 R.id.navigation_mycart -> {
                     val intent = Intent(this@MainActivity, MyCartActivity::class.java)
@@ -201,7 +202,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.refer_earn -> {
                     isDrawerIsOpen()
-                    startActivity(Intent(this@MainActivity,ReferAndEarnActivity::class.java))
+                    startActivity(Intent(this@MainActivity, ReferAndEarnActivity::class.java))
                 }
                 R.id.customer_support -> {
                     isDrawerIsOpen()
@@ -232,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setOnItemReselectedListener { }
         binding.include14.llSearchLayout.setOnClickListener {
-            startActivity(Intent(this@MainActivity, ProductListActivity::class.java))
+            startActivity(Intent(this@MainActivity, SearchActivity::class.java))
         }
 
 
@@ -255,7 +256,8 @@ class MainActivity : AppCompatActivity() {
 
         setUIDataForLoginUser()
         setBadgeCount()
-        LocationService.getInstance().startLocationUpdate(this@MainActivity, binding.include14.tvLocation)
+        LocationService.getInstance()
+            .startLocationUpdate(this@MainActivity, binding.include14.tvLocation)
         applyTransition()
     }
 
@@ -266,38 +268,57 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUIDataForLoginUser() {
 
-        if(app.user.getAppLanguage()==1){
-            binding.include14.textView2.text=resources.getString(R.string.nayaganj_h)
+        if (app.user.getAppLanguage() == 1) {
+            binding.include14.textView2.text = resources.getString(R.string.nayaganj_h)
             // Todo Bottom Menu Title in Hindi
-            binding.navView.menu.findItem(R.id.navigation_home).title=resources.getString(R.string.home_h)
-            binding.navView.menu.findItem(R.id.navigation_dashboard).title=resources.getString(R.string.category_h)
-            binding.navView.menu.findItem(R.id.navigation_search).title=resources.getString(R.string.search_h)
-            binding.navView.menu.findItem(R.id.navigation_notifications).title=resources.getString(R.string.all_offers_h)
-            binding.navView.menu.findItem(R.id.navigation_mycart).title=resources.getString(R.string.my_cart_h)
+            binding.navView.menu.findItem(R.id.navigation_home).title =
+                resources.getString(R.string.home_h)
+            binding.navView.menu.findItem(R.id.navigation_dashboard).title =
+                resources.getString(R.string.category_h)
+            binding.navView.menu.findItem(R.id.navigation_search).title =
+                resources.getString(R.string.search_h)
+            binding.navView.menu.findItem(R.id.navigation_notifications).title =
+                resources.getString(R.string.all_offers_h)
+            binding.navView.menu.findItem(R.id.navigation_mycart).title =
+                resources.getString(R.string.my_cart_h)
 
             // Todo Hide Side Menu Item in Hindi
-            binding.sideNavigation.menu.findItem(R.id.home).title=resources.getString(R.string.home_h)
-            binding.sideNavigation.menu.findItem(R.id.myaccount).title=resources.getString(R.string.my_account_h)
-            binding.sideNavigation.menu.findItem(R.id.shop_category).title=resources.getString(R.string.category_h)
-            binding.sideNavigation.menu.findItem(R.id.my_order).title=resources.getString(R.string.myorders_h)
-            binding.sideNavigation.menu.findItem(R.id.myvirtualorder).title=resources.getString(R.string.my_virtual_order_hindi)
-            binding.sideNavigation.menu.findItem(R.id.all_offer).title=resources.getString(R.string.all_offers_h)
-            binding.sideNavigation.menu.findItem(R.id.share_App).title=resources.getString(R.string.share_h)
-            binding.sideNavigation.menu.findItem(R.id.refer_earn).title=resources.getString(R.string.refer_and_earn_h)
-            binding.sideNavigation.menu.findItem(R.id.customer_support).title=resources.getString(R.string.csupport_h)
-            binding.sideNavigation.menu.findItem(R.id.about_us).title=resources.getString(R.string.about_us_h)
-            binding.sideNavigation.menu.findItem(R.id.privacy_policy).title=resources.getString(R.string.privacy_policy_h)
-            binding.sideNavigation.menu.findItem(R.id.logout).title=resources.getString(R.string.logout_h)
+            binding.sideNavigation.menu.findItem(R.id.home).title =
+                resources.getString(R.string.home_h)
+            binding.sideNavigation.menu.findItem(R.id.myaccount).title =
+                resources.getString(R.string.my_account_h)
+            binding.sideNavigation.menu.findItem(R.id.shop_category).title =
+                resources.getString(R.string.category_h)
+            binding.sideNavigation.menu.findItem(R.id.my_order).title =
+                resources.getString(R.string.myorders_h)
+            binding.sideNavigation.menu.findItem(R.id.myvirtualorder).title =
+                resources.getString(R.string.my_virtual_order_hindi)
+            binding.sideNavigation.menu.findItem(R.id.all_offer).title =
+                resources.getString(R.string.all_offers_h)
+            binding.sideNavigation.menu.findItem(R.id.share_App).title =
+                resources.getString(R.string.share_h)
+            binding.sideNavigation.menu.findItem(R.id.refer_earn).title =
+                resources.getString(R.string.refer_and_earn_h)
+            binding.sideNavigation.menu.findItem(R.id.customer_support).title =
+                resources.getString(R.string.csupport_h)
+            binding.sideNavigation.menu.findItem(R.id.about_us).title =
+                resources.getString(R.string.about_us_h)
+            binding.sideNavigation.menu.findItem(R.id.privacy_policy).title =
+                resources.getString(R.string.privacy_policy_h)
+            binding.sideNavigation.menu.findItem(R.id.logout).title =
+                resources.getString(R.string.logout_h)
         }
 
         // Todo Hide Side Menu Item
         binding.sideNavigation.menu.findItem(R.id.myaccount).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.my_order).isVisible = app.user.getLoginSession()
-        binding.sideNavigation.menu.findItem(R.id.myvirtualorder).isVisible = app.user.getLoginSession()
+        binding.sideNavigation.menu.findItem(R.id.myvirtualorder).isVisible =
+            app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.refer_earn).isVisible = app.user.getLoginSession()
         binding.sideNavigation.menu.findItem(R.id.logout).isVisible = app.user.getLoginSession()
 
-        val userName = binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
+        val userName =
+            binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_user_name) as TextView
         val mobileNo =
             binding.sideNavigation.getHeaderView(0).findViewById(R.id.tv_mobile) as TextView
         val llLoginSignUp = binding.sideNavigation.getHeaderView(0)
@@ -365,16 +386,16 @@ class MainActivity : AppCompatActivity() {
         var message: String
         var yes: String
         var no: String
-        if(app.user.getAppLanguage()==1){
-            title=resources.getString(R.string.logout_h)
-            message=resources.getString(R.string.logout_text_h)
-            yes=resources.getString(R.string.yes_h)
-            no=resources.getString(R.string.no_h)
-        }else{
-            title="LOGOUT"
-            message=" Are you sure, you want to logout?"
-            yes="YES"
-            no="CANCEL"
+        if (app.user.getAppLanguage() == 1) {
+            title = resources.getString(R.string.logout_h)
+            message = resources.getString(R.string.logout_text_h)
+            yes = resources.getString(R.string.yes_h)
+            no = resources.getString(R.string.no_h)
+        } else {
+            title = "LOGOUT"
+            message = " Are you sure, you want to logout?"
+            yes = "YES"
+            no = "CANCEL"
         }
         MaterialAlertDialogBuilder(this@MainActivity)
             .setTitle(title)
@@ -386,7 +407,8 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     AppDataBase.getInstance(this@MainActivity).productDao().deleteAllProduct()
                 }
-                URLConstant.BaseImageUrl=app.user.getUserDetails()?.configObj?.productImgUrl.toString()
+                URLConstant.BaseImageUrl =
+                    app.user.getUserDetails()?.configObj?.productImgUrl.toString()
                 app.user.clearSharedPreference()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -434,9 +456,9 @@ class MainActivity : AppCompatActivity() {
         binding.navView.addView(notificationsBadge)
     }
 
-     public fun updateCartValue(value:String){
-         addBadge(value)
-     }
+    public fun updateCartValue(value: String) {
+        addBadge(value)
+    }
 
     private fun setToolBar() {
 
@@ -784,7 +806,7 @@ class MainActivity : AppCompatActivity() {
         btnPlaceOrder!!.setOnClickListener {
             Log.i("nayaganj", "placing order: ")
             if (addressId != "") {
-                if(Utility.isAppOnLine(this@MainActivity,object : OnInternetCheckListener{
+                if (Utility.isAppOnLine(this@MainActivity, object : OnInternetCheckListener {
                         override fun onInternetAvailable() {
                             placeOrderApi(addressId, bottomSheetAddressDialog!!)
                         }
@@ -954,6 +976,8 @@ class MainActivity : AppCompatActivity() {
 
         this.doubleBackToExitPressedOnce = true
         Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show()
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 }

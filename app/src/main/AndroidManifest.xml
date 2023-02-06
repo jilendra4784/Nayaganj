@@ -55,13 +55,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".GlobalSearchActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
         <activity
             android:name=".data.mycart.view.CouponActivity"
             android:exported="false" />
@@ -102,9 +96,13 @@
             android:name=".data.category.view.ProductListActivity"
             android:exported="false" />
         <activity
+            android:name=".data.category.view.SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity
             android:name=".data.mycart.view.SignUpActivity"
             android:exported="false" />
@@ -122,8 +120,7 @@
         <activity
             android:name=".data.sidemenu.view.MyOrderActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            />
+            android:launchMode="singleTask" />
         <activity
             android:name=".data.mycart.view.PaymentOptionActivity"
             android:exported="false" />
@@ -145,12 +142,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="example.com"
-                    android:scheme="https"/>
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -193,9 +192,6 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <provider
-            android:name=".MySuggestionProvider"
-            android:authorities="naya.ganj.app.MySuggestionProvider" />
     </application>
 
 </manifest>

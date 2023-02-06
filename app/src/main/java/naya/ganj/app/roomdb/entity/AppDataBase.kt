@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ProductDetail::class, SavedAmountModel::class,CartModel::class,ReturnProduct::class], version = 1)
+@Database(entities = [ProductDetail::class, SavedAmountModel::class,CartModel::class,ReturnProduct::class,RecentSuggestion::class], version = 1)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun productDao(): ProductDao

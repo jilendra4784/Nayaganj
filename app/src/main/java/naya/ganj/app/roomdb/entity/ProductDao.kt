@@ -104,4 +104,19 @@ interface ProductDao {
     @Query("update returnproduct set itemQuantity=:quantiy where productId=:productId and variantId=:variantId")
     fun updateReturnProduct(productId: String, variantId: String, quantiy: Int)
 
+    // Recent Suggestion
+
+    @Insert
+    fun insertRecentQuery(recentSuggestion: RecentSuggestion)
+
+    @Query("SELECT * FROM recentsuggestion")
+    fun getSuggestionList(): List<RecentSuggestion>
+
+    @Query("delete from RecentSuggestion where `query`=:query ")
+    fun deleteSuggesiton(query: String)
+
+
+    @Query("SELECT EXISTS(SELECT * FROM RecentSuggestion WHERE `query` = :query)")
+    fun isSuggestionExist(query: String): Boolean
+
 }

@@ -18,6 +18,7 @@ dependencyResolutionManagement {
         maven {
             url "https://artifactory.paytm.in/libs-release-local"
         }
+
     }
 }
 rootProject.name = "Nayaganj"
