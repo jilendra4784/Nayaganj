@@ -522,7 +522,6 @@ class HomeFragment : Fragment() , OnclickAddOremoveItemListener {
          if (binding.llCate5.getLocalVisibleRect(scrollBounds)) {
              if (!binding.llCate5.getLocalVisibleRect(scrollBounds) || scrollBounds.height() < binding.llCate5.getHeight()) {
                  if (cate4Count == 0){
-
                      val jsonObject = getJsonObject(5)
                      homeViewModel.getHomeDataForIndex5(
                          app.user.getUserDetails()?.userId ?: "",

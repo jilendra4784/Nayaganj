@@ -169,6 +169,7 @@ class MainActivity : AppCompatActivity() {
                     moveToHomeFragment()
                 }
                 R.id.myaccount -> {
+                    isDrawerIsOpen()
                     startActivity(Intent(this@MainActivity, MyAccountActivity::class.java))
                 }
                 R.id.shop_category -> {
@@ -185,6 +186,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this@MainActivity, MyVirtualActivity::class.java))
                 }
                 R.id.all_offer -> {
+                    isDrawerIsOpen()
                     showMessage(item.title.toString())
                 }
                 R.id.share_App -> {
@@ -342,6 +344,7 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_notifications_to_navigation_dashboard)
             }
         }
+        isDrawerIsOpen()
 
     }
 
@@ -354,6 +357,7 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_navigation_dashboard_to_navigation_home)
             }
         }
+        isDrawerIsOpen()
     }
 
     private fun showLogoutDialog() {
