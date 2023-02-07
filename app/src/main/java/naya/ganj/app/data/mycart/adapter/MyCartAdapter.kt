@@ -68,24 +68,22 @@ class MyCartAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val cart = cartList[position]
-        for(i in 0 until couponList.size)
-        {
-            if(cart.productId.equals(couponList.get(i).productId)&&cart.variantId.equals(couponList.get(i).variantId))
-            {
-                if(couponList[i].actualPriceAfterPromoCode<=0)
-                {
-                    holder.binding.afterCouponApplyLayout.visibility=View.VISIBLE
-                    holder.binding.afterCouponApplyPrice.visibility=View.GONE
-                    holder.binding.couponNotApplied.visibility=View.VISIBLE
+        for (i in 0 until couponList.size) {
+            if (cart.productId.equals(couponList.get(i).productId) && cart.variantId.equals(
+                    couponList.get(i).variantId
+                )
+            ) {
+                if (couponList[i].actualPriceAfterPromoCode <= 0) {
+                    holder.binding.afterCouponApplyLayout.visibility = View.VISIBLE
+                    holder.binding.afterCouponApplyPrice.visibility = View.GONE
+                    holder.binding.couponNotApplied.visibility = View.VISIBLE
                     holder.binding.couponNotApplied.setText("Coupon not applicable on this product")
-                }
-                else
-                {
-                    holder.binding.afterCouponApplyLayout.visibility=View.VISIBLE
-                    holder.binding.couponNotApplied.visibility=View.VISIBLE
-                    if(Utility.equalsToZero(couponList.get(i).actualPriceAfterPromoCode.toString()))
-                    {
-                        holder.binding.afterCouponApplyPrice.text = "₹" + DecimalFormat("#").format((couponList.get(i).actualPriceAfterPromoCode))
+                } else {
+                    holder.binding.afterCouponApplyLayout.visibility = View.VISIBLE
+                    holder.binding.couponNotApplied.visibility = View.VISIBLE
+                    if (Utility.equalsToZero(couponList.get(i).actualPriceAfterPromoCode.toString())) {
+                        holder.binding.afterCouponApplyPrice.text =
+                            "₹" + DecimalFormat("#").format((couponList.get(i).actualPriceAfterPromoCode))
                     } else {
                         holder.binding.afterCouponApplyPrice.text =
                             "₹" + DecimalFormat("##.##").format((couponList.get(i).actualPriceAfterPromoCode))
@@ -98,28 +96,28 @@ class MyCartAdapter(
             holder.binding.afterCouponApplyLayout.visibility = View.GONE
         }
 
-           if (cart.discountPrice!=null && cart.discountPrice.toDouble() > 0) {
-               if (cart.discountPrice.toDouble() == cart.price.toDouble()) {
-                   holder.binding.tvRupeeSmall.visibility = View.GONE
-                   holder.binding.tvPrice.visibility = View.GONE
-               }
-               if (app.user.getAppLanguage() == 1) {
-                   holder.binding.tvSaveAmount.text =
-                       context.resources.getString(R.string.saved_h) + " " + context.resources.getString(
-                           R.string.Rs
-                       ) + cart.discountPrice
-               } else {
-                   holder.binding.tvSaveAmount.text =
-                       "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
-               }
+        if (cart.discountPrice != null && cart.discountPrice.toDouble() > 0) {
+            if (cart.discountPrice.toDouble() == cart.price.toDouble()) {
+                holder.binding.tvRupeeSmall.visibility = View.GONE
+                holder.binding.tvPrice.visibility = View.GONE
+            }
+            if (app.user.getAppLanguage() == 1) {
+                holder.binding.tvSaveAmount.text =
+                    context.resources.getString(R.string.saved_h) + " " + context.resources.getString(
+                        R.string.Rs
+                    ) + cart.discountPrice
+            } else {
+                holder.binding.tvSaveAmount.text =
+                    "SAVED " + context.resources.getString(R.string.Rs) + cart.discountPrice
+            }
 
-               holder.binding.tvSaveAmount.visibility = View.VISIBLE
-               setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
-           } else {
-               holder.binding.tvSaveAmount.visibility = View.GONE
-               holder.binding.tvRupeeSmall.visibility = View.GONE
-               holder.binding.tvPrice.visibility = View.GONE
-           }
+            holder.binding.tvSaveAmount.visibility = View.VISIBLE
+            setSavedAmount(cart.productId, cart.variantId, cart.discountPrice)
+        } else {
+            holder.binding.tvSaveAmount.visibility = View.GONE
+            holder.binding.tvRupeeSmall.visibility = View.GONE
+            holder.binding.tvPrice.visibility = View.GONE
+        }
 
         holder.binding.tvPlus.setOnClickListener {
             holder.binding.tvPlus.isEnabled = false
@@ -143,7 +141,7 @@ class MyCartAdapter(
                 val priceAmount = (cart.price / cart.quantity) * quantity
                 val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
 
-                if(couponList.size <= 0){
+                if (couponList.size <= 0) {
                     holder.binding.tvQuantity.text = quantity.toString()
                     holder.binding.tvPrice.text =
                         Utility().formatTotalAmount(priceAmount.toDouble()).toString()
@@ -151,10 +149,16 @@ class MyCartAdapter(
                         Utility().formatTotalAmount(discountAmount).toString()
                 }
                 val itemSavedAmount = (priceAmount - discountAmount)
-                if(app.user.getAppLanguage()==1){
-                    holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
-                }else{
-                    holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                if (app.user.getAppLanguage() == 1) {
+                    holder.binding.tvSaveAmount.text =
+                        context.resources.getString(R.string.saved_h) + " " + context.resources.getString(
+                            R.string.Rs
+                        ) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                } else {
+                    holder.binding.tvSaveAmount.text =
+                        "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(
+                            itemSavedAmount
+                        ).toString()
                 }
 
                 Thread {
@@ -190,12 +194,12 @@ class MyCartAdapter(
         }
         holder.binding.tvMinus.setOnClickListener {
 
-            if(Utility.isAppOnLine(context,object : OnInternetCheckListener{
+            if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
 
                     }
-                })){
-                holder.binding.tvMinus.isEnabled=false
+                })) {
+                holder.binding.tvMinus.isEnabled = false
                 var quantity: Int = holder.binding.tvQuantity.text.toString().toInt()
                 quantity--
 
@@ -217,7 +221,7 @@ class MyCartAdapter(
                             "0",
                             "",
                             0
-                        ),holder.binding.tvMinus
+                        ), holder.binding.tvMinus
                     )
                     Thread {
                         AppDataBase.getInstance(context).productDao()
@@ -233,7 +237,7 @@ class MyCartAdapter(
                 } else {
                     val priceAmount = (cart.price / cart.quantity) * quantity
                     val discountAmount = (cart.actualPrice.toDouble() / cart.quantity) * quantity
-                    if(couponList.size <= 0){
+                    if (couponList.size <= 0) {
                         holder.binding.tvQuantity.text = quantity.toString()
                         holder.binding.tvPrice.text =
                             Utility().formatTotalAmount(priceAmount.toDouble()).toString()
@@ -241,15 +245,25 @@ class MyCartAdapter(
                             Utility().formatTotalAmount(discountAmount).toString()
                     }
                     val itemSavedAmount = (priceAmount - discountAmount)
-                    if(app.user.getAppLanguage()==1){
-                        holder.binding.tvSaveAmount.text = context.resources.getString(R.string.saved_h) +" "+ context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
-                    }else{
-                        holder.binding.tvSaveAmount.text = "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                    if (app.user.getAppLanguage() == 1) {
+                        holder.binding.tvSaveAmount.text =
+                            context.resources.getString(R.string.saved_h) + " " + context.resources.getString(
+                                R.string.Rs
+                            ) + Utility().formatTotalAmount(itemSavedAmount).toString()
+                    } else {
+                        holder.binding.tvSaveAmount.text =
+                            "SAVED " + context.resources.getString(R.string.Rs) + Utility().formatTotalAmount(
+                                itemSavedAmount
+                            ).toString()
                     }
 
                     Thread {
                         AppDataBase.getInstance(context).productDao()
-                            .updateSavedAmount(cart.productId, cart.variantId.toInt(), itemSavedAmount)
+                            .updateSavedAmount(
+                                cart.productId,
+                                cart.variantId.toInt(),
+                                itemSavedAmount
+                            )
                     }.start()
 
                     addOremoveItemListener.onClickAddOrRemoveItem(
@@ -265,11 +279,12 @@ class MyCartAdapter(
                             "0",
                             "",
                             0
-                        ),holder.binding.tvMinus
+                        ), holder.binding.tvMinus
                     )
                     if (app.user.getLoginSession()) {
                         Thread {
-                            AppDataBase.getInstance(context).productDao().updateCart(cart.productId, cart.variantId, discountAmount)
+                            AppDataBase.getInstance(context).productDao()
+                                .updateCart(cart.productId, cart.variantId, discountAmount)
                         }.start()
                     }
                 }
@@ -278,7 +293,13 @@ class MyCartAdapter(
 
         }
         holder.binding.ivDelete.setOnClickListener {
-            removeProductListener.removeProductFromList(cartList,holder.adapterPosition,cart.productId, cart.variantId, promoId)
+            removeProductListener.removeProductFromList(
+                cartList,
+                holder.absoluteAdapterPosition,
+                cart.productId,
+                cart.variantId,
+                promoId
+            )
         }
         setListData(cart, holder.binding)
 
@@ -323,7 +344,7 @@ class MyCartAdapter(
         }
         holder.tvProductTitle.text = Utility.convertLanguage(cart.productName, app)
         if (app.user.getAppLanguage() == 1) {
-            if(cart.productName.contains("$")){
+            if (cart.productName.contains("$")) {
                 try {
                     holder.tvProductTitle.setTypeface(
                         Typeface.createFromAsset(
@@ -344,9 +365,9 @@ class MyCartAdapter(
         if (app.user.getAppLanguage() == 1) {
             holder.tvNetWet.text = context.resources.getString(R.string.net_weight_h)
         }
-        var discountPrice=0;
-        if(cart.discountPrice!=null){
-             discountPrice = ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
+        var discountPrice = 0;
+        if (cart.discountPrice != null) {
+            discountPrice = ((cart.discountPrice.toDouble() * 100) / cart.price).toInt()
         }
 
 
