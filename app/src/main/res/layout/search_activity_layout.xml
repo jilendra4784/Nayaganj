@@ -53,11 +53,22 @@
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/tv_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recent Search"
+        android:padding="@dimen/_5sdp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins__medium"
+        android:layout_below="@+id/frame_layout"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/frame_layout" />
+        android:layoutAnimation="@anim/layout_animation"
+        android:layout_below="@id/tv_recent" />
 
     <TextView
         android:id="@+id/tv_no_product"

@@ -110,7 +110,7 @@ interface ProductDao {
     fun insertRecentQuery(recentSuggestion: RecentSuggestion)
 
     @Query("SELECT * FROM recentsuggestion")
-    fun getSuggestionList(): List<RecentSuggestion>
+    fun getSuggestionList(): MutableList<RecentSuggestion>
 
     @Query("delete from RecentSuggestion where `query`=:query ")
     fun deleteSuggesiton(query: String)

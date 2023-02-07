@@ -1,6 +1,7 @@
 package naya.ganj.app.data.category.view
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,15 +9,19 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import naya.ganj.app.Nayaganj
 import naya.ganj.app.R
 import naya.ganj.app.data.category.adapter.ProductListAdapter
@@ -24,10 +29,10 @@ import naya.ganj.app.data.category.adapter.RecentListAdapter
 import naya.ganj.app.data.category.model.AddRemoveModel
 import naya.ganj.app.data.category.viewmodel.ProductListViewModel
 import naya.ganj.app.data.mycart.view.MyCartActivity
-import naya.ganj.app.databinding.ActivityProductListBinding
 import naya.ganj.app.databinding.SearchActivityLayoutBinding
 import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
+import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
 import naya.ganj.app.roomdb.entity.AppDataBase
 import naya.ganj.app.roomdb.entity.ProductDetail
@@ -40,7 +45,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
+class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, OnitemClickListener {
 
     lateinit var viewModel: ProductListViewModel
     lateinit var binding: SearchActivityLayoutBinding
@@ -92,6 +97,13 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
             }
         }
 
+        binding.editText.setOnClickListener {
+            if (binding.tvNoProduct.visibility == View.VISIBLE) {
+                loadRecentSuggestion()
+            }
+
+        }
+
         if (app.user.getAppLanguage() == 1) {
             binding.editText.hint = resources.getString(R.string.search_here_h)
         } else {
@@ -114,11 +126,28 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
     private fun loadRecentSuggestion() {
         lifecycleScope.launch(Dispatchers.IO)
         {
-            val list: List<RecentSuggestion> =
+            val list: MutableList<RecentSuggestion> =
                 AppDataBase.getInstance(this@SearchActivity).productDao().getSuggestionList()
             if (list.isNotEmpty()) {
-                binding.recentList.layoutManager = LinearLayoutManager(this@SearchActivity)
-                binding.recentList.adapter = RecentListAdapter(list)
+                withContext(Dispatchers.Main){
+                    binding.recentList.layoutManager = LinearLayoutManager(this@SearchActivity)
+                    binding.recentList.adapter = RecentListAdapter(
+                        this@SearchActivity,
+                        this@SearchActivity,
+                        list,
+                        this@SearchActivity
+                    )
+                    binding.tvRecent.visibility = View.VISIBLE
+                    binding.recentList.visibility = View.VISIBLE
+                    binding.tvNoProduct.visibility = View.GONE
+                }
+            } else {
+                withContext(Dispatchers.Main){
+                    binding.tvNoProduct.visibility = View.VISIBLE
+                    binding.tvRecent.visibility = View.GONE
+                    binding.recentList.visibility = View.GONE
+                }
+
             }
         }
     }
@@ -128,6 +157,8 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
         userId: String?,
         cateId: String?,
     ) {
+        binding.tvRecent.visibility = View.GONE
+        binding.recentList.visibility = View.GONE
         binding.productShimmer.showShimmer(true);
         binding.productShimmer.visibility = View.VISIBLE
         binding.tvNoProduct.visibility = View.GONE
@@ -375,7 +406,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
 
         viewModel.getProductList(this@SearchActivity, userId, Constant.DEVICE_TYPE, json)
             .observe(this) {
-                if (it.productList.isNotEmpty()) {
+                if (it != null && it.productList.isNotEmpty()) {
                     for (product in it.productList) {
                         for ((i, variant) in product.variant.withIndex()) {
                             if (variant.vQuantityInCart > 0) {
@@ -406,6 +437,9 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                         }
                     }
 
+                    binding.recentList.visibility = View.GONE
+                    binding.tvRecent.visibility = View.GONE
+
                     binding.productShimmer.stopShimmer()
                     binding.productShimmer.visibility = View.GONE
                     binding.productShimmer.hideShimmer()
@@ -422,7 +456,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.productList.setHasFixedSize(true)
                     binding.tvNoProduct.visibility = View.GONE
                     binding.productList.visibility = View.VISIBLE
-                    binding.recentList.visibility = View.GONE
+                    hideKeyBoard()
                 } else {
                     binding.productShimmer.stopShimmer()
                     binding.productShimmer.visibility = View.GONE
@@ -430,8 +464,29 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener {
                     binding.tvNoProduct.visibility = View.VISIBLE
                     binding.productList.visibility = View.GONE
                     binding.llCartLayout.visibility = View.GONE
-                    binding.recentList.visibility = View.VISIBLE
+
                 }
             }
+    }
+
+    override fun onclick(position: Int, data: String) {
+        binding.recentList.visibility = View.GONE
+        binding.tvRecent.visibility = View.GONE
+        if (app.user.getLoginSession()) {
+            getProductList(
+                data,
+                app.user.getUserDetails()?.userId,
+                ""
+            )
+        } else {
+            getProductList(binding.editText.text.toString(), "", "")
+        }
+    }
+
+    private fun hideKeyBoard() {
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }
