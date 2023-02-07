@@ -31,22 +31,42 @@
                 android:src="@drawable/back_arrow"
                 app:tint="@color/white" />
 
-            <EditText
-                android:id="@+id/editText"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
-                android:background="@drawable/edittext_round_corner"
-                android:drawableLeft="@drawable/search"
-                android:drawablePadding="@dimen/_10sdp"
-                android:drawableTint="@color/gray"
-                android:fontFamily="@font/poppins_regular"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:paddingStart="@dimen/_10sdp"
-                android:textSize="@dimen/_10sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/edittext_round_corner"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:drawableTint="@color/gray"
+                    android:fontFamily="@font/poppins_regular"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:textSize="@dimen/_10sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/voice_search"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/voice_search_icon"
+                    app:tint="@color/black" />
+
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 
@@ -57,18 +77,18 @@
         android:id="@+id/tv_recent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recent Search"
-        android:padding="@dimen/_5sdp"
-        android:textStyle="bold"
+        android:layout_below="@+id/frame_layout"
         android:fontFamily="@font/poppins__medium"
-        android:layout_below="@+id/frame_layout"/>
+        android:padding="@dimen/_5sdp"
+        android:text="Recent Search"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutAnimation="@anim/layout_animation"
-        android:layout_below="@id/tv_recent" />
+        android:layout_below="@id/tv_recent"
+        android:layoutAnimation="@anim/layout_animation" />
 
     <TextView
         android:id="@+id/tv_no_product"

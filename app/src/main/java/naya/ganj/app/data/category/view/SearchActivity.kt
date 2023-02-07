@@ -1,11 +1,13 @@
 package naya.ganj.app.data.category.view
 
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -51,6 +53,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
     lateinit var binding: SearchActivityLayoutBinding
     lateinit var app: Nayaganj
     var adapter: ProductListAdapter? = null
+    private val SPEECH_REQUEST_CODE = 123
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +76,11 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
                             .isSuggestionExist(binding.editText.text.toString().trim())
                         if (!isQueryExist) {
                             AppDataBase.getInstance(this@SearchActivity).productDao()
-                                .insertRecentQuery(RecentSuggestion(binding.editText.text.toString().trim()))
+                                .insertRecentQuery(
+                                    RecentSuggestion(
+                                        binding.editText.text.toString().trim()
+                                    )
+                                )
                         }
                     }
                     binding.productList.visibility = View.GONE
@@ -97,6 +104,8 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
             }
         }
 
+
+
         binding.editText.setOnClickListener {
             if (binding.tvNoProduct.visibility == View.VISIBLE) {
                 loadRecentSuggestion()
@@ -119,9 +128,63 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
             finish()
         }
 
+        binding.voiceSearch.setOnClickListener{
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                )
+            }
+            // This starts the activity and populates the intent with the speech text.
+            startActivityForResult(intent, SPEECH_REQUEST_CODE)
+        }
+
         binding.arrowIcon.setOnClickListener {
             finish()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val spokenText: String =
+                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).let { results ->
+                    results?.get(0) ?: ""
+                }
+
+            binding.editText.setText(spokenText)
+            // Do something with spokenText.
+            Log.e("TAG", "onActivityResult: " + spokenText)
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val isQueryExist = AppDataBase.getInstance(this@SearchActivity).productDao()
+                    .isSuggestionExist(spokenText)
+                if (!isQueryExist) {
+                    AppDataBase.getInstance(this@SearchActivity).productDao()
+                        .insertRecentQuery(
+                            RecentSuggestion(
+                                spokenText
+                            )
+                        )
+                }
+            }
+            binding.productList.visibility = View.GONE
+            if (spokenText.length >= 3) {
+                if (app.user.getLoginSession()) {
+                    getProductList(
+                        spokenText,
+                        app.user.getUserDetails()?.userId,
+                        ""
+                    )
+                } else {
+                    getProductList(spokenText, "", "")
+                }
+            } else {
+                binding.tvNoProduct.visibility = View.VISIBLE
+                binding.llCartLayout.visibility = View.GONE
+            }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun loadRecentSuggestion() {
@@ -130,7 +193,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
             val list: MutableList<RecentSuggestion> =
                 AppDataBase.getInstance(this@SearchActivity).productDao().getSuggestionList()
             if (list.isNotEmpty()) {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     binding.recentList.layoutManager = LinearLayoutManager(this@SearchActivity)
                     binding.recentList.adapter = RecentListAdapter(
                         this@SearchActivity,
@@ -143,7 +206,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
                     binding.tvNoProduct.visibility = View.GONE
                 }
             } else {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     binding.tvNoProduct.visibility = View.VISIBLE
                     binding.tvRecent.visibility = View.GONE
                     binding.recentList.visibility = View.GONE
