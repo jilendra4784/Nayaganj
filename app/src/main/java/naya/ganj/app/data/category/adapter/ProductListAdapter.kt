@@ -75,8 +75,8 @@ class ProductListAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         //setFadeAnimation(holder.itemView)
-        val product = productList[holder.adapterPosition]
-        setUpData(holder, product, holder.adapterPosition)
+        val product = productList[holder.absoluteAdapterPosition]
+        setUpData(holder, product, holder.absoluteAdapterPosition)
     }
 
     private fun setUpData(holder: MyViewHolder, product: ProductListModel.Product, position: Int) {

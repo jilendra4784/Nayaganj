@@ -70,10 +70,10 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
                 EditorInfo.IME_ACTION_DONE -> {
                     lifecycleScope.launch(Dispatchers.IO) {
                         val isQueryExist = AppDataBase.getInstance(this@SearchActivity).productDao()
-                            .isSuggestionExist(binding.editText.text.toString())
+                            .isSuggestionExist(binding.editText.text.toString().trim())
                         if (!isQueryExist) {
                             AppDataBase.getInstance(this@SearchActivity).productDao()
-                                .insertRecentQuery(RecentSuggestion(binding.editText.text.toString()))
+                                .insertRecentQuery(RecentSuggestion(binding.editText.text.toString().trim()))
                         }
                     }
                     binding.productList.visibility = View.GONE
@@ -116,6 +116,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
             intent.putExtra(isListActivity, true)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finish()
         }
 
         binding.arrowIcon.setOnClickListener {
@@ -470,6 +471,7 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
     }
 
     override fun onclick(position: Int, data: String) {
+        binding.editText.setText(data)
         binding.recentList.visibility = View.GONE
         binding.tvRecent.visibility = View.GONE
         if (app.user.getLoginSession()) {

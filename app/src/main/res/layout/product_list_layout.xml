@@ -42,7 +42,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="@dimen/_5sdp"
-                    android:transitionName="product_image" />
+                    android:transitionName="product_image"
+                    android:scaleType="fitXY"
+                    />
 
                 <TextView
                     android:id="@+id/tv_off"
