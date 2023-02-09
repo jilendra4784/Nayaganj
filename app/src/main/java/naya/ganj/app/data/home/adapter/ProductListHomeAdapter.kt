@@ -75,12 +75,12 @@ class ProductListHomeAdapter(val context : Context, val product: List<HomePageMo
         holder.binding.tvDescription.text =
             Utility.convertLanguage(product[position].description as String?, app)
 
-        if (app.user.getAppLanguage() == 1) {
+       /* if (app.user.getAppLanguage() == 1) {
             holder.binding.tvTitle.typeface =
                 Typeface.createFromAsset(context.assets, "agrawide.ttf")
             holder.binding.tvDescription.typeface =
                 Typeface.createFromAsset(context.assets, "agrawide.ttf")
-        }
+        }*/
 
         holder.binding.llVariantLayout.setOnClickListener {
             showVariantDialog(
