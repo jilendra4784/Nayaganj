@@ -34,8 +34,6 @@ data class HomePageModel(
         val subCategoryName: String,
         @SerializedName("brandList")
         val brandList: List<Brand>,
-
-
         ) {
         data class Category(
             @SerializedName("category")
