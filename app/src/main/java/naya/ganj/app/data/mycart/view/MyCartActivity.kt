@@ -1,6 +1,7 @@
 package naya.ganj.app.data.mycart.view
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -711,6 +712,10 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
             ) { dialogInterface, _ ->
                 dialogInterface.dismiss()
 
+                val progressDialog=ProgressDialog(this@MyCartActivity)
+                progressDialog.setMessage("Deleting item...")
+                progressDialog.show()
+
                 val jsonObject = JsonObject()
                 jsonObject.addProperty(Constant.PRODUCT_ID, pId)
                 jsonObject.addProperty(Constant.VARIANT_ID, vId)
@@ -727,6 +732,9 @@ class MyCartActivity : AppCompatActivity(), OnclickAddOremoveItemListener,
                             response: Response<ApiResponseModel>
                         ) {
                             if (response.body()!!.status) {
+
+                                Handler(Looper.getMainLooper()).postDelayed({progressDialog.dismiss()},300)
+
                                 Thread {
                                     AppDataBase.getInstance(this@MyCartActivity).productDao()
                                         .deleteProduct(pId, vId)

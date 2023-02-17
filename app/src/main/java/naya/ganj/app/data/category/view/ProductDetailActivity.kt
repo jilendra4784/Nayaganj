@@ -42,6 +42,7 @@ import naya.ganj.app.utility.Constant.PRODUCT_ID
 import naya.ganj.app.utility.Constant.VARIANT_ID
 import naya.ganj.app.utility.ImageManager
 import naya.ganj.app.utility.Utility
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -446,7 +447,6 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun calculateAmount() {
-        Log.e("TAG", "calculateAmount: " )
         lifecycleScope.launch(Dispatchers.IO) {
             val listofProduct = Utility().getAllProductList(applicationContext)
             runOnUiThread {
@@ -464,6 +464,16 @@ class ProductDetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun getJsonObject(action :String): JsonObject {
+        val jsonObject=JsonObject()
+        jsonObject.addProperty(PRODUCT_ID, productId)
+        jsonObject.addProperty(Constant.ACTION, action)
+        jsonObject.addProperty(VARIANT_ID, variantId)
+        jsonObject.addProperty(Constant.PROMO_CODE, "")
+
+        return jsonObject
     }
 
     private fun updateItemToLocalDB(
@@ -491,12 +501,7 @@ class ProductDetailActivity : AppCompatActivity() {
         when (action) {
             "insert" -> {
                 if(app.user.getLoginSession()){
-                    val jsonObject = JsonObject()
-                    jsonObject.addProperty(PRODUCT_ID, productId)
-                    jsonObject.addProperty(Constant.ACTION, "add")
-                    jsonObject.addProperty(VARIANT_ID, variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
-
+                    val jsonObject = getJsonObject("add")
                     RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
                         Constant.DEVICE_TYPE,
@@ -598,13 +603,7 @@ class ProductDetailActivity : AppCompatActivity() {
                             Utility.showToast(this@ProductDetailActivity,"Sorry! you can not add more item for this product")
                             return
                         }
-
-                        val jsonObject = JsonObject()
-                        jsonObject.addProperty(PRODUCT_ID, productId)
-                        jsonObject.addProperty(Constant.ACTION, "add")
-                        jsonObject.addProperty(VARIANT_ID, variantId)
-                        jsonObject.addProperty(Constant.PROMO_CODE, "")
-
+                        val jsonObject =getJsonObject("add")
                         RetrofitClient.instance.addremoveItemRequest(
                             app.user.getUserDetails()?.userId,
                             Constant.DEVICE_TYPE,
@@ -663,12 +662,7 @@ class ProductDetailActivity : AppCompatActivity() {
             }
             "minus" -> {
                 if (app.user.getLoginSession()) {
-                    val jsonObject = JsonObject()
-                    jsonObject.addProperty(PRODUCT_ID, productId)
-                    jsonObject.addProperty(Constant.ACTION, "remove")
-                    jsonObject.addProperty(VARIANT_ID, variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
-
+                    val jsonObject = getJsonObject("remove")
                     RetrofitClient.instance.addremoveItemRequest(
                         app.user.getUserDetails()?.userId,
                         Constant.DEVICE_TYPE,
@@ -680,7 +674,6 @@ class ProductDetailActivity : AppCompatActivity() {
                                 response: Response<AddRemoveModel>
                             ) {
                                 if(response.isSuccessful){
-
                                     if(response.body()!!.status){
                                         addremoveText.isEnabled=true
                                         var quantity: Int = binding.tvQuantity.text.toString().toInt()
