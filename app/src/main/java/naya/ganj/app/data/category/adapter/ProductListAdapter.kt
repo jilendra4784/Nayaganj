@@ -230,7 +230,7 @@ class ProductListAdapter(
         holder.binding.tvPlus.setOnClickListener {
             if (Utility.isAppOnLine(context, object : OnInternetCheckListener {
                     override fun onInternetAvailable() {
-                        updateItemToLocalDB("plus", holder, product, holder.binding.tvPlus)
+                        updateItemToLocalDB(Constant.INSERT, holder, product, holder.binding.tvPlus)
                     }
                 }))
                 updateItemToLocalDB("plus", holder, product, holder.binding.tvPlus)

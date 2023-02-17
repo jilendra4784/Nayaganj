@@ -492,9 +492,9 @@ class ProductDetailActivity : AppCompatActivity() {
             "insert" -> {
                 if(app.user.getLoginSession()){
                     val jsonObject = JsonObject()
-                    jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                    jsonObject.addProperty(PRODUCT_ID, productId)
                     jsonObject.addProperty(Constant.ACTION, "add")
-                    jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                    jsonObject.addProperty(VARIANT_ID, variantId)
                     jsonObject.addProperty(Constant.PROMO_CODE, "")
 
                     RetrofitClient.instance.addremoveItemRequest(
@@ -600,9 +600,9 @@ class ProductDetailActivity : AppCompatActivity() {
                         }
 
                         val jsonObject = JsonObject()
-                        jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                        jsonObject.addProperty(PRODUCT_ID, productId)
                         jsonObject.addProperty(Constant.ACTION, "add")
-                        jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                        jsonObject.addProperty(VARIANT_ID, variantId)
                         jsonObject.addProperty(Constant.PROMO_CODE, "")
 
                         RetrofitClient.instance.addremoveItemRequest(
@@ -664,9 +664,9 @@ class ProductDetailActivity : AppCompatActivity() {
             "minus" -> {
                 if (app.user.getLoginSession()) {
                     val jsonObject = JsonObject()
-                    jsonObject.addProperty(Constant.PRODUCT_ID, productId)
+                    jsonObject.addProperty(PRODUCT_ID, productId)
                     jsonObject.addProperty(Constant.ACTION, "remove")
-                    jsonObject.addProperty(Constant.VARIANT_ID, variantId)
+                    jsonObject.addProperty(VARIANT_ID, variantId)
                     jsonObject.addProperty(Constant.PROMO_CODE, "")
 
                     RetrofitClient.instance.addremoveItemRequest(

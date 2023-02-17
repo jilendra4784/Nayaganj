@@ -22,8 +22,7 @@
         android:textColor="@color/red"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,8 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/include7"
+        android:layout_above="@+id/ll_cart_layout"
         android:layoutAnimation="@anim/layout_animation"
-        android:paddingBottom="@dimen/_50sdp"
         android:visibility="gone" />
 
     <com.facebook.shimmer.ShimmerFrameLayout

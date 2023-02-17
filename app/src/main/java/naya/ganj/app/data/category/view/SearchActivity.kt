@@ -36,9 +36,7 @@ import naya.ganj.app.interfaces.OnInternetCheckListener
 import naya.ganj.app.interfaces.OnclickAddOremoveItemListener
 import naya.ganj.app.interfaces.OnitemClickListener
 import naya.ganj.app.retrofit.RetrofitClient
-import naya.ganj.app.roomdb.entity.AppDataBase
-import naya.ganj.app.roomdb.entity.ProductDetail
-import naya.ganj.app.roomdb.entity.RecentSuggestion
+import naya.ganj.app.roomdb.entity.*
 import naya.ganj.app.utility.Constant
 import naya.ganj.app.utility.Constant.isListActivity
 import naya.ganj.app.utility.Utility
@@ -125,7 +123,6 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
             intent.putExtra(isListActivity, true)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            finish()
         }
 
         binding.voiceSearch.setOnClickListener{
@@ -246,184 +243,28 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
         when (action) {
             Constant.INSERT -> {
                 if (app.user.getLoginSession()) {
-                    val jsonObject = JsonObject()
-                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
-                    jsonObject.addProperty(Constant.ACTION, "add")
-                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
-
-                    RetrofitClient.instance.addremoveItemRequest(
-                        app.user.getUserDetails()?.userId,
-                        Constant.DEVICE_TYPE,
-                        jsonObject
-                    )
-                        .enqueue(object : Callback<AddRemoveModel> {
-                            override fun onResponse(
-                                call: Call<AddRemoveModel>,
-                                response: Response<AddRemoveModel>
-                            ) {
-                                if (response.isSuccessful) {
-                                    if (response.body()!!.status)
-                                        addremoveText.isEnabled = true
-                                    lifecycleScope.launch(Dispatchers.IO) {
-                                        Utility().insertProduct(
-                                            this@SearchActivity,
-                                            productDetail
-                                        )
-                                    }
-                                } else {
-                                    Utility.serverNotResponding(
-                                        this@SearchActivity,
-                                        response.message()
-                                    )
-                                }
-                            }
-
-                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(
-                                    this@SearchActivity,
-                                    t.message.toString()
-                                )
-                            }
-                        })
-
-
+                    ApiManager.updateProductCart(this@SearchActivity,app,action,productDetail,addremoveText)
                 } else {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Utility().insertProduct(this@SearchActivity, productDetail)
-                    }
+                    LocalDBManager.insertItemInLocal(this@SearchActivity,productDetail)
                 }
             }
             Constant.ADD -> {
                 if (app.user.getLoginSession()) {
-                    val jsonObject = JsonObject()
-                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
-                    jsonObject.addProperty(Constant.ACTION, action)
-                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
-
-                    RetrofitClient.instance.addremoveItemRequest(
-                        app.user.getUserDetails()?.userId,
-                        Constant.DEVICE_TYPE,
-                        jsonObject
-                    )
-                        .enqueue(object : Callback<AddRemoveModel> {
-                            override fun onResponse(
-                                call: Call<AddRemoveModel>,
-                                response: Response<AddRemoveModel>
-                            ) {
-                                if (response.isSuccessful) {
-                                    if (response.body()!!.status)
-                                        addremoveText.isEnabled = true
-                                    lifecycleScope.launch(Dispatchers.IO) {
-                                        AppDataBase.getInstance(this@SearchActivity)
-                                            .productDao().updateProduct(
-                                                productDetail.itemQuantity,
-                                                productDetail.productId,
-                                                productDetail.variantId
-                                            )
-                                    }
-                                } else {
-                                    Utility.serverNotResponding(
-                                        this@SearchActivity,
-                                        response.message()
-                                    )
-                                }
-                            }
-
-                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(
-                                    this@SearchActivity,
-                                    t.message.toString()
-                                )
-                            }
-                        })
+                    ApiManager.updateProductCart(this@SearchActivity,app,action,productDetail,addremoveText)
                 } else {
                     addremoveText.isEnabled = true
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        AppDataBase.getInstance(this@SearchActivity).productDao()
-                            .updateProduct(
-                                productDetail.itemQuantity,
-                                productDetail.productId,
-                                productDetail.variantId
-                            )
-                    }
+                    LocalDBManager.updateProduct(this@SearchActivity,productDetail)
                 }
             }
             Constant.REMOVE -> {
                 if (app.user.getLoginSession()) {
-                    val jsonObject = JsonObject()
-                    jsonObject.addProperty(Constant.PRODUCT_ID, productDetail.productId)
-                    jsonObject.addProperty(Constant.ACTION, action)
-                    jsonObject.addProperty(Constant.VARIANT_ID, productDetail.variantId)
-                    jsonObject.addProperty(Constant.PROMO_CODE, "")
-
-                    RetrofitClient.instance.addremoveItemRequest(
-                        app.user.getUserDetails()?.userId,
-                        Constant.DEVICE_TYPE,
-                        jsonObject
-                    )
-                        .enqueue(object : Callback<AddRemoveModel> {
-                            override fun onResponse(
-                                call: Call<AddRemoveModel>,
-                                response: Response<AddRemoveModel>
-                            ) {
-                                if (response.isSuccessful) {
-                                    if (response.body()!!.status)
-                                        addremoveText.isEnabled = true
-                                    if (productDetail.itemQuantity > 0) {
-                                        lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@SearchActivity)
-                                                .productDao().updateProduct(
-                                                    productDetail.itemQuantity,
-                                                    productDetail.productId,
-                                                    productDetail.variantId
-                                                )
-                                        }
-                                    } else {
-                                        lifecycleScope.launch(Dispatchers.IO) {
-                                            AppDataBase.getInstance(this@SearchActivity)
-                                                .productDao().deleteProduct(
-                                                    productDetail.productId,
-                                                    productDetail.variantId
-                                                )
-                                        }
-                                    }
-
-                                } else {
-                                    Utility.serverNotResponding(
-                                        this@SearchActivity,
-                                        response.message()
-                                    )
-                                }
-                            }
-
-                            override fun onFailure(call: Call<AddRemoveModel>, t: Throwable) {
-                                Utility.serverNotResponding(
-                                    this@SearchActivity,
-                                    t.message.toString()
-                                )
-                            }
-                        })
+                    ApiManager.updateProductCart(this@SearchActivity,app,action,productDetail,addremoveText)
                 } else {
                     addremoveText.isEnabled = true
                     if (productDetail.itemQuantity > 0) {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            Utility().updateProduct(
-                                this@SearchActivity,
-                                productDetail.productId,
-                                productDetail.variantId,
-                                productDetail.itemQuantity
-                            )
-                        }
+                        LocalDBManager.updateProduct(this@SearchActivity,productDetail)
                     } else {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            Utility().deleteProduct(
-                                this@SearchActivity,
-                                productDetail.productId,
-                                productDetail.variantId
-                            )
-                        }
+                        LocalDBManager.deleteProduct(this@SearchActivity,productDetail)
                     }
                 }
             }
@@ -454,12 +295,8 @@ class SearchActivity : AppCompatActivity(), OnclickAddOremoveItemListener, Onite
     override fun onResume() {
         super.onResume()
 
-        // adapter?.notifyDataSetChanged()
-        Thread {
-            Log.e(TAG, "onResume: " + Utility().getAllProductList(this@SearchActivity))
-        }.start()
-
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { showCartLayout() }, 400)
+        adapter?.notifyDataSetChanged()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { showCartLayout() }, 300)
     }
 
     fun getProductListRequestData(text: String, userId: String?, cateId: String?) {

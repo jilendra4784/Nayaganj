@@ -54,7 +54,7 @@ public class LocationService {
                     longitude = String.valueOf(location.getLongitude());
 
                     getCompleteAddressString(context,location.getLatitude(),location.getLongitude(),tvLocation);
-                    Log.e("TAG", "onLocationResult: latitude" + latitude + ", Longitude: " + longitude);
+                    //Log.e("TAG", "onLocationResult: latitude" + latitude + ", Longitude: " + longitude);
                 }
             }
         };
