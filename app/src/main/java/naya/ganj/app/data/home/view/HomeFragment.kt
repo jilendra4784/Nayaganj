@@ -1,5 +1,6 @@
 package naya.ganj.app.data.home.view
 
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
@@ -53,6 +54,11 @@ class HomeFragment : Fragment(), OnclickAddOremoveItemListener {
     lateinit var binding: FragmentHomeBinding
     lateinit var homeViewModel: HomeViewModel
     lateinit var app: Nayaganj
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +119,9 @@ class HomeFragment : Fragment(), OnclickAddOremoveItemListener {
                                 binding.promoBannerSlider.scrollTimeInSec = 3
                                 binding.promoBannerSlider.isAutoCycle = true
                                 binding.promoBannerSlider.startAutoCycle()
+
+                                val mainActivity = requireActivity() as MainActivity
+                                mainActivity.updateCartValue(response.data.data.itemsInCart.toString())
 
                                 setPromoBannerList(response.data.data, binding.slider)
                                 setProductList(
@@ -269,10 +278,13 @@ class HomeFragment : Fragment(), OnclickAddOremoveItemListener {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val list: List<ProductDetail> = Utility().getAllProductList(requireActivity())
-                withContext(Dispatchers.Main) {
-                    val mainActivity = requireActivity() as MainActivity
-                    mainActivity.updateCartValue(list.size.toString())
+                if (list.isNotEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        val mainActivity = requireActivity() as MainActivity
+                        mainActivity.updateCartValue(list.size.toString())
+                    }
                 }
+
             } catch (_: Exception) {
             }
         }
